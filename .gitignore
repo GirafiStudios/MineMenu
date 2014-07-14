@@ -1,0 +1,14 @@
+# Ignore Everything
+/*
+/*/
+
+# Except These
+!/.gitignore
+!/src/
+!/gradle/
+!/gradlew
+!/gradlew.bat
+!/README
+!/LICENSE
+!/build.properties
+!/build.gradle
