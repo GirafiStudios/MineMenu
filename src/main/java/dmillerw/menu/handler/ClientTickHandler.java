@@ -8,6 +8,7 @@ import dmillerw.menu.data.RadialMenu;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -69,6 +70,14 @@ public class ClientTickHandler {
 
 	@SubscribeEvent
 	public void onRenderOverlay(RenderGameOverlayEvent event) {
+		if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && MouseHandler.showMenu) {
+			event.setCanceled(true);
+		}
+
+		if (!(event instanceof RenderGameOverlayEvent.Post) || event.type != RenderGameOverlayEvent.ElementType.ALL) {
+			return;
+		}
+
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
 			if (MouseHandler.showMenu) {
@@ -180,6 +189,26 @@ public class ClientTickHandler {
 	}
 
 	private void renderText(ScaledResolution resolution, double zLevel) {
+		Minecraft mc = Minecraft.getMinecraft();
+		FontRenderer fontRenderer = mc.fontRenderer;
+		double mouseAngle = AngleHelper.getMouseAngle();
+		mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
+		mouseAngle = 360 - mouseAngle;
+		mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
+		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
+			double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
+			double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
+			currAngle = AngleHelper.correctAngle(currAngle);
+			nextAngle = AngleHelper.correctAngle(nextAngle);
+
+			boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
+
+			if (mouseIn) {
+				MenuItem item = RadialMenu.menuItems[i];
+				String string = item == null ? "Add Item" : item.title;
+				fontRenderer.drawStringWithShadow(string, resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2, resolution.getScaledHeight() / 2, 0xFFFFFF);
+			}
+		}
 	}
 }

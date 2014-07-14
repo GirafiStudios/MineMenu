@@ -2,7 +2,6 @@ package dmillerw.menu;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import dmillerw.menu.data.RadialMenu;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.ConfigHandler;
@@ -34,9 +33,7 @@ public class MineMenu {
 		KeyboardHandler.register();
 		MouseHandler.register();
 		ClientTickHandler.register();
-		RadialMenu.fillWithDummyData();
 
 		MenuLoader.load();
-//		MenuLoader.save();
 	}
 }
