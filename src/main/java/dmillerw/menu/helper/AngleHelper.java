@@ -27,26 +27,7 @@ public class AngleHelper {
 		return angle;
 	}
 
-	public static void rotate(double x, double y, double angle) {
-		double length = Math.sqrt(x * x + y * y);
-
-		x = (length * Math.cos(StrictMath.toRadians(angle)));
-		y = (length * Math.sin(StrictMath.toRadians(angle)));
-	}
-
 	public static double correctAngle(double angle) {
-		if (angle < 0) {
-			angle += 360;
-		} else if (angle > 360) {
-			angle -= 360;
-		}
-
-		return angle;
-	}
-
-	public static double offsetAngle(double angle, double offset) {
-		angle -= offset;
-
 		if (angle < 0) {
 			angle += 360;
 		} else if (angle > 360) {
