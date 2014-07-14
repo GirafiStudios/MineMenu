@@ -1,5 +1,6 @@
 package dmillerw.menu.data;
 
+import com.google.gson.annotations.SerializedName;
 import dmillerw.menu.data.click.IClickAction;
 import net.minecraft.item.ItemStack;
 
@@ -12,6 +13,7 @@ public class MenuItem {
 
 	public final ItemStack icon;
 
+	@SerializedName("action")
 	public final IClickAction clickAction;
 
 	public MenuItem(String title, ItemStack icon, IClickAction clickAction) {

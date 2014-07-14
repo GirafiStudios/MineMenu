@@ -13,7 +13,7 @@ public class GuiForgeConfig extends GuiConfig {
 	public GuiForgeConfig(GuiScreen parent) {
 		super(
 			parent,
-			new ConfigElement(MineMenu.configHandler.configuration.getCategory("visual")).getChildElements(),
+			(new ConfigElement(MineMenu.configHandler.configuration.getCategory("visual"))).getChildElements(),
 			"MineMenu",
 			false,
 			false,

@@ -26,12 +26,14 @@ public class ConfigHandler {
 		this.configuration.load();
 
 		this.configuration.setCategoryComment("visual", "All values here correspond to the RGBA standard, and must be whole numbers between 0 and 255");
+		this.configuration.setCategoryLanguageKey("visual.menu", "config.visual.menu");
+		this.configuration.setCategoryLanguageKey("visual.select", "config.visual.select");
 
 		FMLCommonHandler.instance().bus().register(this);
 	}
 
 	public void syncConfig() {
-		Property p_alpha = configuration.get("visual.menu", "alpha", 153);
+		Property p_alpha = configuration.get("visual", "alpha", 153);
 		Property p_menuRed = configuration.get("visual.menu", "red", 0);
 		Property p_menuGreen = configuration.get("visual.menu", "green", 0);
 		Property p_menuBlue = configuration.get("visual.menu", "blue", 0);

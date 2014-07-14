@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
  */
 public class CommandClickAction implements IClickAction {
 
-	private final String command;
+	public final String command;
 
 	public CommandClickAction(String command) {
 		this.command = command;

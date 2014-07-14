@@ -1,6 +1,8 @@
 package dmillerw.menu.data;
 
 import dmillerw.menu.data.click.CommandClickAction;
+import dmillerw.menu.data.click.KeyClickAction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -25,5 +27,7 @@ public class RadialMenu {
 		menuItems[1] = day;
 		MenuItem rain = new MenuItem("Toggle Rain", new ItemStack(Items.water_bucket), new CommandClickAction("/toggledownfall"));
 		menuItems[2] = rain;
+		MenuItem inventory = new MenuItem("Inventory", new ItemStack(Blocks.crafting_table), new KeyClickAction(Minecraft.getMinecraft().gameSettings.keyBindInventory));
+		menuItems[3] = inventory;
 	}
 }

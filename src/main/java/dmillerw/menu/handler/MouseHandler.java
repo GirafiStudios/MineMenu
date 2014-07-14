@@ -5,6 +5,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;
@@ -56,6 +57,13 @@ public class MouseHandler {
 
 								if (item != null && item.clickAction != null) {
 									item.clickAction.onClicked();
+
+									if (item.clickAction instanceof KeyClickAction) {
+										// Key bindings have a chance to cause some GUI wonkiness, so we close the menu if one is used
+										showMenu = false;
+										grabMouse(false, true);
+										break;
+									}
 								}
 							}
 						}

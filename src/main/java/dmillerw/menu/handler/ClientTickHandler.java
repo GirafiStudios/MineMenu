@@ -57,7 +57,7 @@ public class ClientTickHandler {
 			Minecraft mc = Minecraft.getMinecraft();
 			double zLevel = 0.05D;
 
-			if (mc.theWorld != null) {
+			if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
 				if (MouseHandler.showMenu) {
 					ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 					renderGui(resolution, zLevel);
@@ -70,11 +70,9 @@ public class ClientTickHandler {
 	@SubscribeEvent
 	public void onRenderOverlay(RenderGameOverlayEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.theWorld != null) {
+		if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
 			if (MouseHandler.showMenu) {
-				if (!mc.gameSettings.hideGUI) {
-					renderText(event.resolution, Z_LEVEL);
-				}
+				renderText(event.resolution, Z_LEVEL);
 			}
 		}
 	}
