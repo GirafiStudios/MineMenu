@@ -1,8 +1,8 @@
 package dmillerw.menu.data;
 
-import cpw.mods.fml.common.registry.GameData;
 import dmillerw.menu.data.click.CommandClickAction;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import java.util.Random;
@@ -23,5 +23,7 @@ public class RadialMenu {
 		menuItems[0] = night;
 		MenuItem day = new MenuItem("Set time to Day", new ItemStack(Blocks.quartz_block), new CommandClickAction("/time set day"));
 		menuItems[1] = day;
+		MenuItem rain = new MenuItem("Toggle Rain", new ItemStack(Items.water_bucket), new CommandClickAction("/toggledownfall"));
+		menuItems[2] = rain;
 	}
 }

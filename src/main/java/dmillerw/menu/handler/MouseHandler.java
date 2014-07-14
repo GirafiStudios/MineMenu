@@ -5,8 +5,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 
 /**
@@ -16,6 +16,12 @@ public class MouseHandler {
 
 	public static void register() {
 		FMLCommonHandler.instance().bus().register(new MouseHandler());
+	}
+
+	public static double getMouseDistanceFromCenter() {
+		int mx = Mouse.getX() - Minecraft.getMinecraft().displayWidth / 2;
+		int my = Mouse.getY() - Minecraft.getMinecraft().displayHeight / 2;
+		return Math.sqrt(mx * mx + my * my);
 	}
 
 	public static boolean showMenu = false;
@@ -31,24 +37,19 @@ public class MouseHandler {
 		if (Mouse.isButtonDown(0)) {
 			if (mc.theWorld != null) {
 				if (MouseHandler.showMenu) {
-					ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-
-					int mx = Mouse.getX();
-					int my = Mouse.getY();
-					int roundness = 100;
-
-					double mouse = Math.atan2(my - mc.displayHeight / 2, mx - mc.displayWidth / 2);
-					mouse = Math.toDegrees(mouse);
-					if (mouse < 0) {
-						mouse += 360;
-					}
-
-					float rad = (0.82F) * 1 * (257F / (float) resolution.getScaledHeight());
+					double mouseAngle = AngleHelper.getMouseAngle();
+					mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
+					mouseAngle = 360 - mouseAngle;
+					mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
 					if (!mc.gameSettings.hideGUI) {
 						for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-							double anglePer = 360F / RadialMenu.MAX_ITEMS;
-							boolean mouseIn = mouse > anglePer * i && mouse < anglePer * (i + 1);
+							double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
+							double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
+							currAngle = AngleHelper.correctAngle(currAngle);
+							nextAngle = AngleHelper.correctAngle(nextAngle);
+
+							boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
 							if (mouseIn) {
 								MenuItem item = RadialMenu.menuItems[i];
@@ -63,19 +64,27 @@ public class MouseHandler {
 			}
 		}
 
-		if (Mouse.isButtonDown(2)) {
-			grabMouse(false);
-			MouseHandler.showMenu = true;
-		} else {
-			grabMouse(true);
-			MouseHandler.showMenu = false;
+		if (Mouse.isButtonDown(0) && showMenu) {
+			grabMouse(false, false); // MC re-grabs the mouse upon click, but the user may wish to choose more options
+		}
+
+		if (!Mouse.isButtonDown(0)) {
+			if (Mouse.isButtonDown(2) && !showMenu) {
+				grabMouse(false, true);
+				MouseHandler.showMenu = true;
+			} else if (!Mouse.isButtonDown(2) && showMenu) {
+				grabMouse(true, true);
+				MouseHandler.showMenu = false;
+			}
 		}
 	}
 
-	private void grabMouse(boolean grab) {
+	public static void grabMouse(boolean grab, boolean resetPosition) {
 		if (grab != Mouse.isGrabbed()) {
 			Mouse.setGrabbed(grab);
-			Mouse.setCursorPosition(Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2);
+			if (resetPosition) {
+				Mouse.setCursorPosition(Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2);
+			}
 			Minecraft.getMinecraft().inGameHasFocus = grab;
 		}
 	}
