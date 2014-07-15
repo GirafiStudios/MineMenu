@@ -61,7 +61,7 @@ public class MouseHandler {
 							boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
 							if (mouseIn) {
-								MenuItem item = RadialMenu.menuItems[i];
+								MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
 
 								if (item != null && item.clickAction != null) {
 									if (mc.thePlayer.isSneaking()) {

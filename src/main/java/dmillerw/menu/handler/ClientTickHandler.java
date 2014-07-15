@@ -157,7 +157,7 @@ public class ClientTickHandler {
 		RenderHelper.enableGUIStandardItemLighting();
 
 		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-			MenuItem item = RadialMenu.menuItems[i];
+			MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
 			ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
 
 			switch (stack.getItemSpriteNumber()) {
@@ -205,7 +205,7 @@ public class ClientTickHandler {
 			boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
 			if (mouseIn) {
-				MenuItem item = RadialMenu.menuItems[i];
+				MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
 				String string = item == null ? "Add Item" : item.title;
 				fontRenderer.drawStringWithShadow(string, resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2, resolution.getScaledHeight() / 2, 0xFFFFFF);
 			}
