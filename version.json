@@ -2,6 +2,17 @@
 	"versionList": [
 		{
 			"mcVersion":"Minecraft 1.7.10",
+			"modVersion":1.0.1",
+			"changeLog": [
+				"More reliable session data storage",
+				"Added support for Dynious's Version Checker mod"
+			],
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208166/download",
+			"isDirectLink":"true",
+			"newFileName":""
+		},
+		{
+			"mcVersion":"Minecraft 1.7.10",
 			"modVersion":1.0.0",
 			"changeLog": [
 				"Initial release"
