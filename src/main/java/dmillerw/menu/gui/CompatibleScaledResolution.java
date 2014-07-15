@@ -19,7 +19,7 @@ public class CompatibleScaledResolution {
 		this.scaledWidth = width;
 		this.scaledHeight = height;
 		this.scaleFactor = 1;
-		boolean flag = minecraft.func_152349_b();
+		boolean flag = minecraft.getLanguageManager().isCurrentLocaleUnicode() || minecraft.gameSettings.forceUnicodeFont;
 		int k = minecraft.gameSettings.guiScale;
 
 		if (k == 0) {
