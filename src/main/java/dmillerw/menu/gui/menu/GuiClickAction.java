@@ -14,6 +14,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
+import java.util.Arrays;
+
 /**
  * @author dmillerw
  */
@@ -149,5 +151,10 @@ public class GuiClickAction extends GuiScreen {
 		this.drawDefaultBackground();
 		this.textCommand.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partial);
+		if (modeCommand.enabled && mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
+			this.func_146283_a(Arrays.asList("Click Action: Command"), mouseX, mouseY);
+		} else if (modeKeybinding.enabled && mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {
+			this.func_146283_a(Arrays.asList("Click Action: KeyBinding"), mouseX, mouseY);
+		}
 	}
 }
