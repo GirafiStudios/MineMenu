@@ -115,6 +115,7 @@ public class GuiMenuItem extends GuiScreen {
 
 	@Override
 	protected void keyTyped(char key, int keycode) {
+		this.textTitle.textboxKeyTyped(key, keycode);
 		this.buttonConfirm.enabled = this.textTitle.getText().trim().length() > 0;
 
 		if (keycode != 28 && keycode != 156) {
