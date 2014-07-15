@@ -4,7 +4,6 @@ import cpw.mods.fml.client.config.GuiButtonExt;
 import cpw.mods.fml.client.config.GuiUnicodeGlyphButton;
 import cpw.mods.fml.client.config.GuiUtils;
 import dmillerw.menu.data.click.CommandClickAction;
-import dmillerw.menu.data.click.IClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -22,8 +21,6 @@ import java.util.Arrays;
 public class GuiClickAction extends GuiScreen {
 
 	private static final String KEYBOARD = "\u0182";
-
-	public IClickAction clickAction;
 
 	public KeyBinding keyBinding;
 
@@ -48,7 +45,7 @@ public class GuiClickAction extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		mode = (clickAction instanceof KeyClickAction) ? (byte)1 : (byte)0;
+		mode = (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) ? (byte)1 : (byte)0;
 
 		Keyboard.enableRepeatEvents(true);
 
@@ -64,7 +61,7 @@ public class GuiClickAction extends GuiScreen {
 		this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textCommand.setMaxStringLength(32767);
 		this.textCommand.setFocused(true);
-		this.textCommand.setText((this.clickAction != null && this.clickAction instanceof CommandClickAction) ? ((CommandClickAction)clickAction).command : "");
+		this.textCommand.setText((SessionData.clickAction != null && SessionData.clickAction instanceof CommandClickAction) ? ((CommandClickAction)SessionData.clickAction).command : "");
 
 		this.modeCommand.enabled = mode == 1;
 		this.modeKeybinding.enabled = mode == 0;
@@ -108,9 +105,9 @@ public class GuiClickAction extends GuiScreen {
 				GuiStack.pop();
 			} else if (button.id == 0) {
 				if (mode == 0) {
-					clickAction = !(textCommand.getText().trim().isEmpty()) ? new CommandClickAction(textCommand.getText().trim()) : null;
+					SessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new CommandClickAction(textCommand.getText().trim()) : null;
 				} else if (mode == 1) {
-					clickAction = keyBinding != null ? new KeyClickAction(keyBinding) : null;
+					SessionData.clickAction = keyBinding != null ? new KeyClickAction(keyBinding) : null;
 				}
 				GuiStack.pop();
 			}

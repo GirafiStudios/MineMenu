@@ -22,11 +22,6 @@ public class GuiMenuItem extends GuiScreen {
 
 	public int slot;
 
-	public MenuItem menuItem;
-
-	private GuiPickIcon pickIcon;
-	private GuiClickAction clickAction;
-
 	private GuiTextField textTitle;
 
 	private GuiButton buttonCancel;
@@ -37,11 +32,8 @@ public class GuiMenuItem extends GuiScreen {
 
 	public GuiMenuItem(int slot, MenuItem menuItem) {
 		this.slot = slot;
-		this.menuItem = menuItem;
-		this.pickIcon = new GuiPickIcon();
-		this.pickIcon.icon = (this.menuItem != null ? menuItem.icon : new ItemStack(Blocks.stone));
-		this.clickAction = new GuiClickAction();
-		this.clickAction.clickAction = (this.menuItem != null ? this.menuItem.clickAction : null);
+
+		SessionData.fromMenuItem(menuItem);
 	}
 
 	@Override
@@ -61,10 +53,10 @@ public class GuiMenuItem extends GuiScreen {
 
 		this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 46, this.height / 2 - 3, 26, 26, new ItemStack(Blocks.stone)));
 		String string = "Click Action";
-		if (clickAction.clickAction != null) {
-			if (clickAction.clickAction instanceof CommandClickAction) {
+		if (SessionData.clickAction != null) {
+			if (SessionData.clickAction instanceof CommandClickAction) {
 				string = "Command";
-			} else if (clickAction.clickAction instanceof KeyClickAction) {
+			} else if (SessionData.clickAction instanceof KeyClickAction) {
 				string = "KeyBind";
 			}
 		}
@@ -73,9 +65,9 @@ public class GuiMenuItem extends GuiScreen {
 		this.textTitle = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textTitle.setMaxStringLength(32767);
 		this.textTitle.setFocused(false);
-		this.textTitle.setText(this.menuItem != null ? menuItem.title : "");
+		this.textTitle.setText(SessionData.title);
 
-		this.buttonPickIcon.icon = this.pickIcon.icon;
+		this.buttonPickIcon.icon = SessionData.icon;
 
 		this.buttonConfirm.enabled = !this.textTitle.getText().trim().isEmpty();
 	}
@@ -94,9 +86,9 @@ public class GuiMenuItem extends GuiScreen {
 	protected void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			if (button.id == 4) {
-				GuiStack.push(clickAction);
+				GuiStack.push(new GuiClickAction());
 			} else if (button.id == 3) {
-				GuiStack.push(pickIcon);
+				GuiStack.push(new GuiPickIcon());
 			} else if (button.id == 2) {
 				RadialMenu.menuItems[slot] = null;
 				MenuLoader.save();
@@ -104,8 +96,7 @@ public class GuiMenuItem extends GuiScreen {
 			} else if (button.id == 1) {
 				Minecraft.getMinecraft().displayGuiScreen(null);
 			} else if (button.id == 0) {
-				menuItem = new MenuItem(this.textTitle.getText(), pickIcon.icon, clickAction.clickAction);
-				RadialMenu.menuItems[slot] = menuItem;
+				RadialMenu.menuItems[slot] = SessionData.toMenuItem();
 
 				MenuLoader.save();
 				Minecraft.getMinecraft().displayGuiScreen(null);
@@ -115,7 +106,10 @@ public class GuiMenuItem extends GuiScreen {
 
 	@Override
 	protected void keyTyped(char key, int keycode) {
-		this.textTitle.textboxKeyTyped(key, keycode);
+		if (this.textTitle.textboxKeyTyped(key, keycode)) {
+			SessionData.title = textTitle.getText().trim();
+		}
+
 		this.buttonConfirm.enabled = this.textTitle.getText().trim().length() > 0;
 
 		if (keycode != 28 && keycode != 156) {

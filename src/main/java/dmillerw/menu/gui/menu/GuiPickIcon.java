@@ -21,8 +21,6 @@ import java.util.List;
  */
 public class GuiPickIcon extends GuiScreen {
 
-	public ItemStack icon;
-
 	private GuiTextField textSearch;
 
 	private GuiButton buttonCancel;
@@ -130,10 +128,10 @@ public class GuiPickIcon extends GuiScreen {
 		super.mouseClicked(mouseX, mouseY, button);
 
 		if (!buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-			icon = getClickedStack(this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
+			SessionData.icon = getClickedStack(this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
 		}
 
-		if (icon != null || buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+		if (SessionData.icon != null || buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
 			GuiStack.pop();
 		}
 	}
