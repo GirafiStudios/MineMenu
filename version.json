@@ -1,0 +1,14 @@
+{
+	"versionList": [
+		{
+			"mcVersion":"Minecraft 1.7.10",
+			"modVersion":1.0.0",
+			"changeLog": [
+				"Initial release"
+			],
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208166/download",
+			"isDirectLink":"true",
+			"newFileName":""
+		}
+	]
+}

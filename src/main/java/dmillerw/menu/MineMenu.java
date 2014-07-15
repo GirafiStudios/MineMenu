@@ -1,6 +1,7 @@
 package dmillerw.menu;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import dmillerw.menu.data.json.MenuLoader;
@@ -30,6 +31,8 @@ public class MineMenu {
 		configFolder = new File(event.getModConfigurationDirectory(), "MineMenu");
 		configHandler = new ConfigHandler(new Configuration(new File(configFolder, "MineMenu.cfg")));
 		configHandler.syncConfig();
+
+		FMLInterModComms.sendRuntimeMessage(this, "VersionChecker", "addVersionCheck", "https://raw.githubusercontent.com/dmillerw/MineMenu/master/version.json");
 
 		KeyboardHandler.register();
 		MouseHandler.register();
