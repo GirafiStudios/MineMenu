@@ -60,10 +60,10 @@ public class GuiClickAction extends GuiScreen {
 		this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")));
 		String keyString = "";
 		if (GuiClickAction.keyBinding != null) {
-			keyString = keyBinding.getKeyDescription();
+			keyString = I18n.format(keyBinding.getKeyDescription());
 		} else {
 			if (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) {
-				keyString = ((KeyClickAction) SessionData.clickAction).key;
+				keyString = I18n.format(((KeyClickAction) SessionData.clickAction).key);
 			} else {
 				keyString = "Select a key";
 			}
