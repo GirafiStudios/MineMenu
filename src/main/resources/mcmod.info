@@ -2,7 +2,7 @@
 {
   "modid": "MineMenu",
   "name": "MineMenu",
-  "description": "Generic Description",
+  "description": "MineMenu supports key bindings, commands, and creative functions to make your life easier.",
   "version": "${mod_version}",
   "mcversion": "${minecraft_version}",
   "authors": [ "dmillerw" ],
