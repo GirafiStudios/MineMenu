@@ -5,7 +5,7 @@ import cpw.mods.fml.client.config.GuiUnicodeGlyphButton;
 import cpw.mods.fml.client.config.GuiUtils;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
-import net.minecraft.client.Minecraft;
+import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -22,7 +22,7 @@ public class GuiClickAction extends GuiScreen {
 
 	private static final String KEYBOARD = "\u0182";
 
-	public KeyBinding keyBinding;
+	public static KeyBinding keyBinding;
 
 	private GuiTextField textCommand;
 
@@ -38,6 +38,10 @@ public class GuiClickAction extends GuiScreen {
 
 	private byte mode = 0;
 
+	public GuiClickAction() {
+		GuiClickAction.keyBinding = null;
+	}
+
 	@Override
 	public void updateScreen() {
 		this.textCommand.updateCursorCounter();
@@ -45,18 +49,28 @@ public class GuiClickAction extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		mode = (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) ? (byte)1 : (byte)0;
+		mode = (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) || GuiClickAction.keyBinding != null ? (byte)1 : (byte)0;
 
 		Keyboard.enableRepeatEvents(true);
 
 		this.buttonList.clear();
 
-		this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height / 4 + 120 + 12, 150, 20, I18n.format("gui.done")));
-		this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height / 4 + 120 + 12, 150, 20, I18n.format("gui.cancel")));
-		this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, (this.keyBinding != null ? this.keyBinding.getKeyDescription() : "")));
+		this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 150, 20, I18n.format("gui.done")));
+		this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")));
+		String keyString = "";
+		if (GuiClickAction.keyBinding != null) {
+			keyString = keyBinding.getKeyDescription();
+		} else {
+			if (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) {
+				keyString = ((KeyClickAction)SessionData.clickAction).key;
+			} else {
+				keyString = "Select a key";
+			}
+		}
+		this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString));
 
-		this.buttonList.add(this.modeCommand = new GuiUnicodeGlyphButton(3, this.width / 2 - 30, 20, 20, 20, "", GuiUtils.RESET_CHAR, 1));
-		this.buttonList.add(this.modeKeybinding = new GuiUnicodeGlyphButton(4, this.width / 2 + 10, 20, 20, 20, "", KEYBOARD, 1));
+		this.buttonList.add(this.modeCommand = new GuiUnicodeGlyphButton(3, this.width / 2 - 30, this.height - 90, 20, 20, "", GuiUtils.RESET_CHAR, 1));
+		this.buttonList.add(this.modeKeybinding = new GuiUnicodeGlyphButton(4, this.width / 2 + 10, this.height - 90, 20, 20, "", KEYBOARD, 1));
 
 		this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textCommand.setMaxStringLength(32767);
@@ -98,16 +112,14 @@ public class GuiClickAction extends GuiScreen {
 				textCommand.setVisible(true);
 				keybindButton.visible = false;
 			} if (button.id == 2) {
-				// Key binding
-				this.keybindButton.displayString = "Select a key...";
-				listeningForKey = true;
+				GuiStack.push(new GuiPickKey());
 			} else if (button.id == 1) {
 				GuiStack.pop();
 			} else if (button.id == 0) {
 				if (mode == 0) {
 					SessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new CommandClickAction(textCommand.getText().trim()) : null;
-				} else if (mode == 1) {
-					SessionData.clickAction = keyBinding != null ? new KeyClickAction(keyBinding) : null;
+				} else if (mode == 1 && GuiClickAction.keyBinding != null) {
+					SessionData.clickAction = new KeyClickAction(keyBinding.getKeyDescription());
 				}
 				GuiStack.pop();
 			}
@@ -116,22 +128,11 @@ public class GuiClickAction extends GuiScreen {
 
 	@Override
 	protected void keyTyped(char key, int keycode) {
-		if (listeningForKey) {
-			for (KeyBinding binding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-				if (binding.getKeyCode() == keycode) {
-					keyBinding = binding;
-					break;
-				}
-			}
-			this.keybindButton.displayString = this.keyBinding != null ? this.keyBinding.getKeyDescription() : "INVALID KEYBINDING";
-			listeningForKey = false;
-		} else {
-			this.textCommand.textboxKeyTyped(key, keycode);
+		this.textCommand.textboxKeyTyped(key, keycode);
 
-			if (keycode != 28 && keycode != 156) {
-				if (keycode == 1) {
-					this.actionPerformed(this.buttonCancel);
-				}
+		if (keycode != 28 && keycode != 156) {
+			if (keycode == 1) {
+				this.actionPerformed(this.buttonCancel);
 			}
 		}
 	}
@@ -148,6 +149,7 @@ public class GuiClickAction extends GuiScreen {
 		this.drawDefaultBackground();
 		this.textCommand.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partial);
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
 		if (modeCommand.enabled && mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
 			this.func_146283_a(Arrays.asList("Click Action: Command"), mouseX, mouseY);
 		} else if (modeKeybinding.enabled && mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {

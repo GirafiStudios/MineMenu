@@ -11,26 +11,27 @@ import net.minecraft.client.settings.KeyBinding;
  */
 public class KeyClickAction implements IClickAction {
 
-	public final KeyBinding keyBinding;
+	public final String key;
 
-	public KeyClickAction(String description) {
-		KeyBinding temp = null; // Fucking really? *sigh*
-		for (KeyBinding binding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-			if (binding.getKeyDescription().equals(description)) {
-				temp = binding;
-				break;
-			}
-		}
-		this.keyBinding = temp; // Ridiculous
+	public KeyClickAction(String key) {
+		this.key = key;
 	}
 
-	public KeyClickAction(KeyBinding keyBinding) {
-		this.keyBinding = keyBinding;
+	public KeyBinding getKeyBinding() {
+		for (KeyBinding binding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+			if (binding.getKeyDescription().equalsIgnoreCase(key)) {
+				return binding;
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public void onClicked() {
-		KeyboardHandler.INSTANCE.fireKey(keyBinding);
-		FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+		KeyBinding binding = getKeyBinding();
+		if (binding != null) {
+			KeyboardHandler.INSTANCE.fireKey(binding);
+			FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+		}
 	}
 }

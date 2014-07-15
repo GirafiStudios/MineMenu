@@ -67,7 +67,7 @@ public class MenuLoader {
 							if ((item.clickAction instanceof CommandClickAction && ((CommandClickAction)item.clickAction).command.isEmpty())) {
 								LogHandler.warn(String.format("Menu item in slot %s is defined as a command action, but is missing a command. It will be reset!", String.valueOf(id)));
 								array[id] = null;
-							} else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction)item.clickAction).keyBinding == null) {
+							} else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction)item.clickAction).getKeyBinding() == null) {
 								LogHandler.warn(String.format("Menu item in slot %s is defined as a key action, but is missing a keybinding. It will be reset!", String.valueOf(id)));
 								array[id] = null;
 							}

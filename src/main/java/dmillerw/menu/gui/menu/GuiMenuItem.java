@@ -6,6 +6,7 @@ import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.gui.menu.button.GuiItemButton;
+import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -47,9 +48,9 @@ public class GuiMenuItem extends GuiScreen {
 
 		this.buttonList.clear();
 
-		this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 70, 100, 20, I18n.format("gui.done")));
-		this.buttonList.add(this.buttonCancel = new GuiButton(1,  this.width / 2 + 4 + 50,  this.height - 70, 100, 20, I18n.format("gui.cancel")));
-		this.buttonList.add(this.buttonDelete = new GuiButton(2,  this.width / 2 - 50,      this.height - 70, 100, 20, "Delete"));
+		this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done")));
+		this.buttonList.add(this.buttonCancel = new GuiButton(1,  this.width / 2 + 4 + 50,  this.height - 60, 100, 20, I18n.format("gui.cancel")));
+		this.buttonList.add(this.buttonDelete = new GuiButton(2,  this.width / 2 - 50,      this.height - 60, 100, 20, "Delete"));
 
 		this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 46, this.height / 2 - 3, 26, 26, new ItemStack(Blocks.stone)));
 		String string = "Click Action";
@@ -131,5 +132,6 @@ public class GuiMenuItem extends GuiScreen {
 		this.drawDefaultBackground();
 		this.textTitle.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partial);
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
 	}
 }

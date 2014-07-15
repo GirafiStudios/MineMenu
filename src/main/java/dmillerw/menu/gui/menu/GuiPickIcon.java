@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -141,9 +142,12 @@ public class GuiPickIcon extends GuiScreen {
 		onWheelScrolled(mouseX, mouseY, Mouse.getDWheel());
 
 		this.drawDefaultBackground();
+
 		this.textSearch.drawTextBox();
 
 		super.drawScreen(mouseX, mouseY, partial);
+
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
 
 		drawList(this, this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
 	}

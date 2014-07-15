@@ -20,7 +20,7 @@ public class ClickActionSerializer implements JsonSerializer<IClickAction>, Json
 		if (src instanceof CommandClickAction) {
 			object.add("command", new JsonPrimitive(((CommandClickAction)src).command));
 		} else if (src instanceof KeyClickAction) {
-			object.add("key", new JsonPrimitive(((KeyClickAction)src).keyBinding.getKeyDescription()));
+			object.add("key", new JsonPrimitive(((KeyClickAction)src).key));
 		}
 
 		return object;

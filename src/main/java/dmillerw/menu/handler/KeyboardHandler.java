@@ -4,6 +4,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
@@ -22,7 +23,7 @@ public class KeyboardHandler {
 		ClientRegistry.registerKeyBinding(WHEEL);
 	}
 
-	public int lastKey;
+	public KeyBinding lastKey;
 
 	private boolean ignoreNextTick = false;
 	private boolean ignoreNextWheelTick = false;
@@ -31,14 +32,10 @@ public class KeyboardHandler {
 
 	}
 
-	public void fireKey(KeyBinding binding) {
-		fireKey(binding.getKeyCode());
-	}
-
-	public void fireKey(int key) {
+	public void fireKey(KeyBinding key) {
 		lastKey = key;
-		KeyBinding.setKeyBindState(key, true);
-		KeyBinding.onTick(key);
+		KeyReflectionHelper.pressKey(key);
+		KeyReflectionHelper.increasePressTime(key);
 		ignoreNextTick = true;
 	}
 
@@ -67,14 +64,15 @@ public class KeyboardHandler {
 			}
 		}
 
-		if (lastKey != -1) {
+		if (lastKey != null) {
 			if (ignoreNextTick) {
 				ignoreNextTick = false;
 				return;
 			}
 
-			KeyBinding.setKeyBindState(lastKey, false);
-			lastKey = -1;
+			KeyReflectionHelper.unpressKey(lastKey);
+
+			lastKey = null;
 		}
 	}
 }

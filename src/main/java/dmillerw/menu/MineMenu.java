@@ -9,6 +9,7 @@ import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.handler.MouseHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -33,6 +34,8 @@ public class MineMenu {
 		configHandler.syncConfig();
 
 		FMLInterModComms.sendRuntimeMessage(this, "VersionChecker", "addVersionCheck", "https://raw.githubusercontent.com/dmillerw/MineMenu/master/version.json");
+
+		KeyReflectionHelper.gatherFields();
 
 		KeyboardHandler.register();
 		MouseHandler.register();
