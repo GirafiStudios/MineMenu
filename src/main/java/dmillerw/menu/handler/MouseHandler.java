@@ -5,7 +5,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
-import dmillerw.menu.data.click.KeyClickAction;
+import dmillerw.menu.gui.menu.GuiMenuItem;
+import dmillerw.menu.gui.menu.GuiStack;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;
@@ -27,11 +28,18 @@ public class MouseHandler {
 
 	public static boolean showMenu = false;
 
+	private boolean ignoreNextTick = false;
+
 	@SubscribeEvent
 	public void onMouseEvent(InputEvent.MouseInputEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (Minecraft.getMinecraft().currentScreen != null || Minecraft.getMinecraft().theWorld == null) {
+			return;
+		}
+
+		if (ignoreNextTick) {
+			ignoreNextTick = false;
 			return;
 		}
 
@@ -56,14 +64,30 @@ public class MouseHandler {
 								MenuItem item = RadialMenu.menuItems[i];
 
 								if (item != null && item.clickAction != null) {
-									item.clickAction.onClicked();
+									if (mc.thePlayer.isSneaking()) {
+										GuiStack.push(new GuiMenuItem(i, item));
 
-									if (item.clickAction instanceof KeyClickAction) {
-										// Key bindings have a chance to cause some GUI wonkiness, so we close the menu if one is used
 										showMenu = false;
-										grabMouse(false, true);
-										break;
+//										grabMouse(false, true);
+
+										return;
+									} else {
+										showMenu = false;
+//										grabMouse(true, true);
+
+										item.clickAction.onClicked();
+
+										ignoreNextTick = true;
+
+										return;
 									}
+								} else {
+									GuiStack.push(new GuiMenuItem(i, item));
+
+									showMenu = false;
+//									grabMouse(false, true);
+
+									return;
 								}
 							}
 						}
@@ -76,15 +100,15 @@ public class MouseHandler {
 			grabMouse(false, false); // MC re-grabs the mouse upon click, but the user may wish to choose more options
 		}
 
-		if (!Mouse.isButtonDown(0)) {
-			if (Mouse.isButtonDown(2) && !showMenu) {
-				grabMouse(false, true);
-				MouseHandler.showMenu = true;
-			} else if (!Mouse.isButtonDown(2) && showMenu) {
-				grabMouse(true, true);
-				MouseHandler.showMenu = false;
-			}
-		}
+//		if (!Mouse.isButtonDown(0)) {
+//			if (Mouse.isButtonDown(2) && !showMenu) {
+//				grabMouse(false, true);
+//				MouseHandler.showMenu = true;
+//			} else if (!Mouse.isButtonDown(2) && showMenu) {
+//				grabMouse(true, true);
+//				MouseHandler.showMenu = false;
+//			}
+//		}
 	}
 
 	public static void grabMouse(boolean grab, boolean resetPosition) {
@@ -93,7 +117,7 @@ public class MouseHandler {
 			if (resetPosition) {
 				Mouse.setCursorPosition(Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2);
 			}
-			Minecraft.getMinecraft().inGameHasFocus = grab;
 		}
+		Minecraft.getMinecraft().inGameHasFocus = grab;
 	}
 }

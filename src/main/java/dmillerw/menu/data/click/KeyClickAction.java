@@ -1,5 +1,7 @@
 package dmillerw.menu.data.click;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.handler.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -29,5 +31,6 @@ public class KeyClickAction implements IClickAction {
 	@Override
 	public void onClicked() {
 		KeyboardHandler.INSTANCE.fireKey(keyBinding);
+		FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
 	}
 }

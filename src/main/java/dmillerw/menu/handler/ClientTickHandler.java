@@ -158,7 +158,7 @@ public class ClientTickHandler {
 
 		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
 			MenuItem item = RadialMenu.menuItems[i];
-			ItemStack stack = item != null ? item.icon : new ItemStack(Blocks.stone);
+			ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
 
 			switch (stack.getItemSpriteNumber()) {
 				case 1:

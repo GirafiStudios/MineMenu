@@ -1,4 +1,4 @@
-package dmillerw.menu.gui;
+package dmillerw.menu.gui.config;
 
 import cpw.mods.fml.client.config.GuiConfig;
 import dmillerw.menu.MineMenu;

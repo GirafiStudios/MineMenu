@@ -7,7 +7,11 @@ import com.google.gson.JsonObject;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.IClickAction;
+import dmillerw.menu.data.click.KeyClickAction;
+import dmillerw.menu.handler.LogHandler;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
 import java.io.*;
@@ -32,7 +36,8 @@ public class MenuLoader {
 			JsonElement element = gson.fromJson(new FileReader(new File(MineMenu.configFolder, "menu.json")), JsonElement.class);
 
 			if (!element.isJsonObject()) {
-				// Woah, very bad
+				LogHandler.error(String.format("Failed to load menu.json! Improperly formatted file!"));
+				return;
 			}
 
 			for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
@@ -44,9 +49,30 @@ public class MenuLoader {
 
 					if (id < RadialMenu.MAX_ITEMS) {
 						RadialMenu.menuItems[id] = gson.fromJson(data, MenuItem.class);
+
+						MenuItem item = RadialMenu.menuItems[id];
+
+						if (item.icon == null || item.icon.getItem() == null) {
+							LogHandler.warn(String.format("Menu item in slot %s is looking for an item that no longer exists", String.valueOf(id)));
+							MenuItem newItem = new MenuItem(item.title, new ItemStack(Blocks.stone), item.clickAction);
+							RadialMenu.menuItems[id] = newItem;
+						}
+
+						if (item.clickAction == null) {
+							LogHandler.error(String.format("Menu item in slot %s is missing a click action. It will be reset!", String.valueOf(id)));
+							RadialMenu.menuItems[id] = null;
+						} else {
+							if ((item.clickAction instanceof CommandClickAction && ((CommandClickAction)item.clickAction).command.isEmpty())) {
+								LogHandler.warn(String.format("Menu item in slot %s is defined as a command action, but is missing a command. It will be reset!", String.valueOf(id)));
+								RadialMenu.menuItems[id] = null;
+							} else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction)item.clickAction).keyBinding == null) {
+								LogHandler.warn(String.format("Menu item in slot %s is defined as a key action, but is missing a keybinding. It will be reset!", String.valueOf(id)));
+								RadialMenu.menuItems[id] = null;
+							}
+						}
 					}
 				} catch (NumberFormatException ex) {
-					// Bad key, log and skip
+					LogHandler.warn(String.format("Menu item found with invalid key. Ignoring."));
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -55,6 +81,12 @@ public class MenuLoader {
 	}
 
 	public static void save() {
+		File file = new File(MineMenu.configFolder, "menu.json");
+
+		if (file.exists()) {
+			file.delete();
+		}
+
 		JsonObject object = new JsonObject();
 		for (int i=0; i< RadialMenu.MAX_ITEMS; i++) {
 			if (RadialMenu.menuItems[i] != null) {
