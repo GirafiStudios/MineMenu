@@ -16,7 +16,7 @@ import java.io.File;
 /**
  * @author dmillerw
  */
-@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION", dependencies = "required-after:Forge@[%FORGE_VERSION%,)", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
+@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[%FORGE_VERSION%,)", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
 public class MineMenu {
 
 	@Mod.Instance("MineMenu")
