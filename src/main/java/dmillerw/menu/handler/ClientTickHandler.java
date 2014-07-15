@@ -125,9 +125,9 @@ public class ClientTickHandler {
 			tessellator.startDrawingQuads();
 
 			if (mouseIn) {
-				tessellator.setColorRGBA_F((float) ConfigHandler.selectRed / (float) 255, (float) ConfigHandler.selectGreen / (float) 255, (float) ConfigHandler.selectBlue / (float) 255, (float) ConfigHandler.alpha / (float) 255);
+				tessellator.setColorRGBA_F((float) ConfigHandler.selectRed / (float) 255, (float) ConfigHandler.selectGreen / (float) 255, (float) ConfigHandler.selectBlue / (float) 255, (float) ConfigHandler.selectAlpha / (float) 255);
 			} else {
-				tessellator.setColorRGBA_F((float) ConfigHandler.menuRed / (float) 255, (float) ConfigHandler.menuGreen / (float) 255, (float) ConfigHandler.menuBlue / (float) 255, (float) ConfigHandler.alpha / (float) 255);
+				tessellator.setColorRGBA_F((float) ConfigHandler.menuRed / (float) 255, (float) ConfigHandler.menuGreen / (float) 255, (float) ConfigHandler.menuBlue / (float) 255, (float) ConfigHandler.menuAlpha / (float) 255);
 			}
 
 			tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
