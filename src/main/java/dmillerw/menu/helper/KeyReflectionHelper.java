@@ -1,6 +1,7 @@
 package dmillerw.menu.helper;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.settings.KeyBinding;
 
 import java.lang.reflect.Field;
@@ -32,8 +33,10 @@ public class KeyReflectionHelper {
 			unpressKeyMethod.invoke(keyBinding);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+			throwReflectionError("unpressKey", KeyBinding.class);
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+			throwReflectionError("unpressKey", KeyBinding.class);
 		}
 	}
 
@@ -42,6 +45,7 @@ public class KeyReflectionHelper {
 			pressedField.set(binding, true);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+			throwReflectionError("pressed", KeyBinding.class);
 		}
 	}
 
@@ -50,6 +54,13 @@ public class KeyReflectionHelper {
 			pressTimeField.set(binding, pressTimeField.getInt(binding) + 1);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+			throwReflectionError("pressTime", KeyBinding.class);
 		}
+	}
+
+	private static void throwReflectionError(String field, Class<?> clazz) {
+		String error = String.format("Ran into an issue regarding reflection with field %s from %s. REPORT THIS TO THE MOD AUTHOR!", field, clazz.getName());
+		LogHandler.fatal(error);
+		throw new RuntimeException(error);
 	}
 }
