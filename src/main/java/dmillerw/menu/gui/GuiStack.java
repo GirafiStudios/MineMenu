@@ -1,4 +1,4 @@
-package dmillerw.menu.gui.menu;
+package dmillerw.menu.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

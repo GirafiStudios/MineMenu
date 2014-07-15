@@ -6,7 +6,7 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
 import dmillerw.menu.gui.menu.GuiMenuItem;
-import dmillerw.menu.gui.menu.GuiStack;
+import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;

@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
 import net.minecraft.client.gui.GuiScreen;
 

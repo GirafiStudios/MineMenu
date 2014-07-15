@@ -5,6 +5,7 @@ import dmillerw.menu.data.RadialMenu;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;
+import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.button.GuiItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.Minecraft;
