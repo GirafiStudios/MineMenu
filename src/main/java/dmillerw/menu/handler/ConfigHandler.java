@@ -11,10 +11,11 @@ import net.minecraftforge.common.config.Property;
  */
 public class ConfigHandler {
 
-	public static int alpha;
+	public static int menuAlpha;
 	public static int menuRed;
 	public static int menuGreen;
 	public static int menuBlue;
+	public static int selectAlpha;
 	public static int selectRed;
 	public static int selectGreen;
 	public static int selectBlue;
@@ -33,18 +34,20 @@ public class ConfigHandler {
 	}
 
 	public void syncConfig() {
-		Property p_alpha = configuration.get("visual", "alpha", 153);
+		Property p_menuAlpha = configuration.get("visual.menu", "alpha", 153);
 		Property p_menuRed = configuration.get("visual.menu", "red", 0);
 		Property p_menuGreen = configuration.get("visual.menu", "green", 0);
 		Property p_menuBlue = configuration.get("visual.menu", "blue", 0);
-		Property p_selectRed = configuration.get("visual.select", "red", 0);
+		Property p_selectAlpha = configuration.get("visual.menu", "alpha", 153);
+		Property p_selectRed = configuration.get("visual.select", "red", 255);
 		Property p_selectGreen = configuration.get("visual.select", "green", 0);
-		Property p_selectBlue = configuration.get("visual.select", "blue", 255);
+		Property p_selectBlue = configuration.get("visual.select", "blue", 0);
 
-		alpha = verify(p_alpha);
+		menuAlpha = verify(p_menuAlpha);
 		menuRed = verify(p_menuRed);
 		menuGreen = verify(p_menuGreen);
 		menuBlue = verify(p_menuBlue);
+		selectAlpha = verify(p_selectAlpha);
 		selectRed = verify(p_selectRed);
 		selectGreen = verify(p_selectGreen);
 		selectBlue = verify(p_selectBlue);
@@ -59,7 +62,7 @@ public class ConfigHandler {
 		if (value < 0) {
 			value = 0;
 			property.set(0);
-		} else if (alpha > 255) {
+		} else if (value > 255) {
 			value = 255;
 			property.set(255);
 		}
