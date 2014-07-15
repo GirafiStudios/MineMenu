@@ -5,6 +5,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.MenuItem;
 import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.gui.CompatibleScaledResolution;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
@@ -60,7 +61,7 @@ public class ClientTickHandler {
 
 			if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
 				if (MouseHandler.showMenu) {
-					ScaledResolution resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+					CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 					renderGui(resolution, zLevel);
 					renderItems(resolution, zLevel);
 				}
@@ -86,7 +87,7 @@ public class ClientTickHandler {
 		}
 	}
 
-	private void renderGui(ScaledResolution resolution, double zLevel) {
+	private void renderGui(CompatibleScaledResolution resolution, double zLevel) {
 		GL11.glPushMatrix();
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -149,7 +150,7 @@ public class ClientTickHandler {
 		GL11.glPopMatrix();
 	}
 
-	private void renderItems(ScaledResolution resolution, double zLevel) {
+	private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
