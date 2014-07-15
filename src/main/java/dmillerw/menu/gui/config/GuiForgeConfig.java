@@ -12,12 +12,12 @@ public class GuiForgeConfig extends GuiConfig {
 
 	public GuiForgeConfig(GuiScreen parent) {
 		super(
-			parent,
-			(new ConfigElement(MineMenu.configHandler.configuration.getCategory("visual"))).getChildElements(),
-			"MineMenu",
-			false,
-			false,
-			GuiConfig.getAbridgedConfigPath(MineMenu.configHandler.configuration.toString())
+				parent,
+				(new ConfigElement(MineMenu.configHandler.configuration.getCategory("visual"))).getChildElements(),
+				"MineMenu",
+				false,
+				false,
+				GuiConfig.getAbridgedConfigPath(MineMenu.configHandler.configuration.toString())
 		);
 	}
 }

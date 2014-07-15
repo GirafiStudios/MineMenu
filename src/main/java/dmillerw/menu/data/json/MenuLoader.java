@@ -41,7 +41,7 @@ public class MenuLoader {
 			}
 
 			MenuItem[] array = RadialMenu.getArray(RadialMenu.MAIN_TAG);
-			
+
 			for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
 				String key = entry.getKey();
 				JsonElement data = entry.getValue();
@@ -64,10 +64,10 @@ public class MenuLoader {
 							LogHandler.error(String.format("Menu item in slot %s is missing a click action. It will be reset!", String.valueOf(id)));
 							array[id] = null;
 						} else {
-							if ((item.clickAction instanceof CommandClickAction && ((CommandClickAction)item.clickAction).command.isEmpty())) {
+							if ((item.clickAction instanceof CommandClickAction && ((CommandClickAction) item.clickAction).command.isEmpty())) {
 								LogHandler.warn(String.format("Menu item in slot %s is defined as a command action, but is missing a command. It will be reset!", String.valueOf(id)));
 								array[id] = null;
-							} else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction)item.clickAction).getKeyBinding() == null) {
+							} else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction) item.clickAction).getKeyBinding() == null) {
 								LogHandler.warn(String.format("Menu item in slot %s is defined as a key action, but is missing a keybinding. It will be reset!", String.valueOf(id)));
 								array[id] = null;
 							}
@@ -94,7 +94,7 @@ public class MenuLoader {
 		MenuItem[] array = RadialMenu.getArray(RadialMenu.MAIN_TAG);
 
 		JsonObject object = new JsonObject();
-		for (int i=0; i< RadialMenu.MAX_ITEMS; i++) {
+		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
 			if (array[i] != null) {
 				object.add(String.valueOf(i), gson.toJsonTree(array[i]));
 			}

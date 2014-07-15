@@ -148,7 +148,7 @@ public class GuiPickIcon extends GuiScreen {
 
 		super.drawScreen(mouseX, mouseY, partial);
 
-		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Select an Icon:");
 
 		drawList(this, this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
 	}

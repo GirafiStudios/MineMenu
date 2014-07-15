@@ -23,9 +23,9 @@ import java.util.List;
 public class GuiControlList extends GuiListExtended {
 
 	private final Minecraft mc;
-	
+
 	private final List<IGuiListEntry> list;
-	
+
 	private int maxWidth = 0;
 
 	public GuiControlList(GuiScreen parent, Minecraft mc) {

@@ -46,7 +46,7 @@ public class GuiPickKey extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partial) {
 		this.drawDefaultBackground();
 		this.controlList.drawScreen(mouseX, mouseY, partial);
-		this.drawCenteredString(this.fontRendererObj, "Select a Key", this.width / 2, 8, 16777215);
+		this.drawCenteredString(this.fontRendererObj, "Select a Key:", this.width / 2, 8, 16777215);
 		super.drawScreen(mouseX, mouseY, partial);
 	}
 }

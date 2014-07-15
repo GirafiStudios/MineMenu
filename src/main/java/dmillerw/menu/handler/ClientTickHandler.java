@@ -119,8 +119,8 @@ public class ClientTickHandler {
 			currAngle = Math.toRadians(currAngle);
 			nextAngle = Math.toRadians(nextAngle);
 
-			double innerRadius = ((INNER_RADIUS - (mouseIn ? 2 : 0)) / 100F) * (257F / (float)resolution.getScaledHeight());
-			double outerRadius = ((OUTER_RADIUS + (mouseIn ? 2 : 0)) / 100F) * (257F / (float)resolution.getScaledHeight());
+			double innerRadius = ((INNER_RADIUS - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+			double outerRadius = ((OUTER_RADIUS + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
 			tessellator.startDrawingQuads();
 

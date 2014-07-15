@@ -41,7 +41,7 @@ public class ItemRenderHelper {
 		}
 
 		if (!ForgeHooksClient.renderInventoryItem(renderBlocks, Minecraft.getMinecraft().getTextureManager(), stack, true, z, x, y)) {
-			renderItem.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().getTextureManager(), stack, (int)x, (int)y);
+			renderItem.renderItemAndEffectIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().getTextureManager(), stack, (int) x, (int) y);
 		}
 
 		GL11.glColor4f(1, 1, 1, 1);

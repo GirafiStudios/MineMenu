@@ -50,7 +50,7 @@ public class GuiClickAction extends GuiScreen {
 
 	@Override
 	public void initGui() {
-		mode = (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) || GuiClickAction.keyBinding != null ? (byte)1 : (byte)0;
+		mode = (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) || GuiClickAction.keyBinding != null ? (byte) 1 : (byte) 0;
 
 		Keyboard.enableRepeatEvents(true);
 
@@ -63,7 +63,7 @@ public class GuiClickAction extends GuiScreen {
 			keyString = keyBinding.getKeyDescription();
 		} else {
 			if (SessionData.clickAction != null && SessionData.clickAction instanceof KeyClickAction) {
-				keyString = ((KeyClickAction)SessionData.clickAction).key;
+				keyString = ((KeyClickAction) SessionData.clickAction).key;
 			} else {
 				keyString = "Select a key";
 			}
@@ -76,7 +76,7 @@ public class GuiClickAction extends GuiScreen {
 		this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textCommand.setMaxStringLength(32767);
 		this.textCommand.setFocused(true);
-		this.textCommand.setText((SessionData.clickAction != null && SessionData.clickAction instanceof CommandClickAction) ? ((CommandClickAction)SessionData.clickAction).command : "");
+		this.textCommand.setText((SessionData.clickAction != null && SessionData.clickAction instanceof CommandClickAction) ? ((CommandClickAction) SessionData.clickAction).command : "");
 
 		this.modeCommand.enabled = mode == 1;
 		this.modeKeybinding.enabled = mode == 0;
@@ -112,7 +112,8 @@ public class GuiClickAction extends GuiScreen {
 				modeCommand.enabled = false;
 				textCommand.setVisible(true);
 				keybindButton.visible = false;
-			} if (button.id == 2) {
+			}
+			if (button.id == 2) {
 				GuiStack.push(new GuiPickKey());
 			} else if (button.id == 1) {
 				GuiStack.pop();
@@ -150,7 +151,7 @@ public class GuiClickAction extends GuiScreen {
 		this.drawDefaultBackground();
 		this.textCommand.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partial);
-		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, mode == 1 ? "Select a Key:" : "Enter a Command:");
 		if (modeCommand.enabled && mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
 			this.func_146283_a(Arrays.asList("Click Action: Command"), mouseX, mouseY);
 		} else if (modeKeybinding.enabled && mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {

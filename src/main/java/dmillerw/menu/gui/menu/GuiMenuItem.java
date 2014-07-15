@@ -50,16 +50,16 @@ public class GuiMenuItem extends GuiScreen {
 		this.buttonList.clear();
 
 		this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done")));
-		this.buttonList.add(this.buttonCancel = new GuiButton(1,  this.width / 2 + 4 + 50,  this.height - 60, 100, 20, I18n.format("gui.cancel")));
-		this.buttonList.add(this.buttonDelete = new GuiButton(2,  this.width / 2 - 50,      this.height - 60, 100, 20, "Delete"));
+		this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel")));
+		this.buttonList.add(this.buttonDelete = new GuiButton(2, this.width / 2 - 50, this.height - 60, 100, 20, "Delete"));
 
 		this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 46, this.height / 2 - 3, 26, 26, new ItemStack(Blocks.stone)));
-		String string = "Click Action";
+		String string = "Action";
 		if (SessionData.clickAction != null) {
 			if (SessionData.clickAction instanceof CommandClickAction) {
 				string = "Command";
 			} else if (SessionData.clickAction instanceof KeyClickAction) {
-				string = "KeyBind";
+				string = "Keybind";
 			}
 		}
 		this.buttonList.add(this.buttonClickAction = new GuiButton(4, this.width / 2 - 20, this.height / 2, 100, 20, string));
@@ -67,7 +67,7 @@ public class GuiMenuItem extends GuiScreen {
 		this.textTitle = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textTitle.setMaxStringLength(32767);
 		this.textTitle.setFocused(false);
-		this.textTitle.setText(SessionData.title);
+		this.textTitle.setText(SessionData.title != null && !SessionData.title.isEmpty() ? SessionData.title : "");
 
 		this.buttonPickIcon.icon = SessionData.icon;
 
@@ -132,7 +132,8 @@ public class GuiMenuItem extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partial) {
 		this.drawDefaultBackground();
 		this.textTitle.drawTextBox();
+		this.drawCenteredString(this.fontRendererObj, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
 		super.drawScreen(mouseX, mouseY, partial);
-		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5);
+		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Modifying Menu Item #" + slot);
 	}
 }
