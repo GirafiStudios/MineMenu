@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import dmillerw.menu.data.SessionData;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;

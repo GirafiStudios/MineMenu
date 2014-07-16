@@ -1,7 +1,8 @@
 package dmillerw.menu.gui.menu;
 
-import dmillerw.menu.data.MenuItem;
-import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.data.menu.MenuItem;
+import dmillerw.menu.data.menu.RadialMenu;
+import dmillerw.menu.data.SessionData;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;

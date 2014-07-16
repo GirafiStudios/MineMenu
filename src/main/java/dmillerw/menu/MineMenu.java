@@ -1,15 +1,14 @@
 package dmillerw.menu;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import dmillerw.menu.data.json.MenuLoader;
-import dmillerw.menu.handler.ClientTickHandler;
-import dmillerw.menu.handler.ConfigHandler;
-import dmillerw.menu.handler.KeyboardHandler;
-import dmillerw.menu.handler.MouseHandler;
-import dmillerw.menu.helper.KeyReflectionHelper;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import dmillerw.menu.proxy.CommonProxy;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -23,27 +22,43 @@ public class MineMenu {
 	@Mod.Instance("MineMenu")
 	public static MineMenu instance;
 
-	public static ConfigHandler configHandler;
+	@SidedProxy(serverSide = "dmillerw.menu.proxy.CommonProxy", clientSide = "dmillerw.menu.proxy.ClientProxy")
+	public static CommonProxy proxy;
+
+	public static Configuration configuration;
 
 	public static File configFolder;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		configFolder = new File(event.getModConfigurationDirectory(), "MineMenu");
-		configHandler = new ConfigHandler(new Configuration(new File(configFolder, "MineMenu.cfg")));
-		configHandler.syncConfig();
+		configuration = new Configuration(new File(configFolder, "MineMenu.cfg"));
+		configuration.load();
 
-		FMLInterModComms.sendRuntimeMessage(this, "VersionChecker", "addVersionCheck", "https://raw.githubusercontent.com/dmillerw/MineMenu/master/version.json");
+		configuration.setCategoryComment("server", "All these values control security when a client connects to a MineMenu capable server");
+		configuration.setCategoryComment("visual", "All values here correspond to the RGBA standard, and must be whole numbers between 0 and 255");
 
-		KeyReflectionHelper.gatherFields();
+		proxy.syncConfig(configuration);
 
-		KeyboardHandler.register();
-		MouseHandler.register();
-		ClientTickHandler.register();
+		FMLCommonHandler.instance().bus().register(MineMenu.instance);
+
+		proxy.preInit(event);
+	}
+
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event) {
+		proxy.init(event);
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		MenuLoader.load();
+		proxy.postInit(event);
+	}
+
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.PostConfigChangedEvent event) {
+		if (event.modID.equals("MineMenu")) {
+			proxy.syncConfig(configuration);
+		}
 	}
 }

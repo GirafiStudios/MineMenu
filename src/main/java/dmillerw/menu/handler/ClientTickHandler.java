@@ -3,11 +3,12 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import dmillerw.menu.data.MenuItem;
-import dmillerw.menu.data.RadialMenu;
+import dmillerw.menu.data.menu.MenuItem;
+import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.CompatibleScaledResolution;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
+import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -126,9 +127,9 @@ public class ClientTickHandler {
 			tessellator.startDrawingQuads();
 
 			if (mouseIn) {
-				tessellator.setColorRGBA_F((float) ConfigHandler.selectRed / (float) 255, (float) ConfigHandler.selectGreen / (float) 255, (float) ConfigHandler.selectBlue / (float) 255, (float) ConfigHandler.selectAlpha / (float) 255);
+				tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
 			} else {
-				tessellator.setColorRGBA_F((float) ConfigHandler.menuRed / (float) 255, (float) ConfigHandler.menuGreen / (float) 255, (float) ConfigHandler.menuBlue / (float) 255, (float) ConfigHandler.menuAlpha / (float) 255);
+				tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
 			}
 
 			tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);

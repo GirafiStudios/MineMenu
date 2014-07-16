@@ -1,4 +1,4 @@
-package dmillerw.menu.data;
+package dmillerw.menu.data.menu;
 
 import com.google.gson.annotations.SerializedName;
 import dmillerw.menu.data.click.IClickAction;

@@ -3,6 +3,7 @@ package dmillerw.menu.gui.menu;
 import cpw.mods.fml.client.config.GuiButtonExt;
 import cpw.mods.fml.client.config.GuiUnicodeGlyphButton;
 import cpw.mods.fml.client.config.GuiUtils;
+import dmillerw.menu.data.SessionData;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.gui.GuiStack;

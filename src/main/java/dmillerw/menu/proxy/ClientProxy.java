@@ -1,15 +1,22 @@
-package dmillerw.menu.handler;
+package dmillerw.menu.proxy;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import dmillerw.menu.data.json.MenuLoader;
+import dmillerw.menu.handler.ClientTickHandler;
+import dmillerw.menu.handler.KeyboardHandler;
+import dmillerw.menu.handler.MouseHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
+import dmillerw.menu.network.NetworkEventHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 /**
  * @author dmillerw
  */
-public class ConfigHandler {
+public class ClientProxy extends CommonProxy {
 
 	public static int menuAlpha;
 	public static int menuRed;
@@ -20,25 +27,41 @@ public class ConfigHandler {
 	public static int selectGreen;
 	public static int selectBlue;
 
-	public final Configuration configuration;
+	@Override
+	public void preInit(FMLPreInitializationEvent event) {
+		super.preInit(event);
 
-	public ConfigHandler(Configuration configuration) {
-		this.configuration = configuration;
-		this.configuration.load();
+		FMLInterModComms.sendRuntimeMessage(this, "VersionChecker", "addVersionCheck", "https://raw.githubusercontent.com/dmillerw/MineMenu/master/version.json");
 
-		this.configuration.setCategoryComment("visual", "All values here correspond to the RGBA standard, and must be whole numbers between 0 and 255");
-		this.configuration.setCategoryLanguageKey("visual.menu", "config.visual.menu");
-		this.configuration.setCategoryLanguageKey("visual.select", "config.visual.select");
+		KeyReflectionHelper.gatherFields();
 
-		FMLCommonHandler.instance().bus().register(this);
+		NetworkEventHandler.register();
+		KeyboardHandler.register();
+		MouseHandler.register();
+		ClientTickHandler.register();
 	}
 
-	public void syncConfig() {
+	@Override
+	public void init(FMLInitializationEvent event) {
+		super.init(event);
+	}
+
+	@Override
+	public void postInit(FMLPostInitializationEvent event) {
+		super.postInit(event);
+
+		MenuLoader.load();
+	}
+
+	@Override
+	public void syncConfig(Configuration configuration) {
+		super.syncConfig(configuration);
+
 		Property p_menuAlpha = configuration.get("visual.menu", "alpha", 153);
 		Property p_menuRed = configuration.get("visual.menu", "red", 0);
 		Property p_menuGreen = configuration.get("visual.menu", "green", 0);
 		Property p_menuBlue = configuration.get("visual.menu", "blue", 0);
-		Property p_selectAlpha = configuration.get("visual.menu", "alpha", 153);
+		Property p_selectAlpha = configuration.get("visual.select", "alpha", 153);
 		Property p_selectRed = configuration.get("visual.select", "red", 255);
 		Property p_selectGreen = configuration.get("visual.select", "green", 0);
 		Property p_selectBlue = configuration.get("visual.select", "blue", 0);
@@ -67,12 +90,5 @@ public class ConfigHandler {
 			property.set(255);
 		}
 		return value;
-	}
-
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.PostConfigChangedEvent event) {
-		if (event.modID.equals("MineMenu")) {
-			syncConfig();
-		}
 	}
 }

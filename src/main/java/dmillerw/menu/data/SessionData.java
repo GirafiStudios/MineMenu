@@ -1,6 +1,6 @@
-package dmillerw.menu.gui.menu;
+package dmillerw.menu.data;
 
-import dmillerw.menu.data.MenuItem;
+import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.click.IClickAction;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
