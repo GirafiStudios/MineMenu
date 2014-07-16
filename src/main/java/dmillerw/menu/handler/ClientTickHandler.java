@@ -3,6 +3,7 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import dmillerw.menu.data.ActionSessionData;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.CompatibleScaledResolution;
@@ -111,6 +112,8 @@ public class ClientTickHandler {
 		mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
 		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
+			MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+			boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
 			double currAngle = ANGLE_PER_ITEM * i;
 			double nextAngle = currAngle + ANGLE_PER_ITEM;
 			currAngle = AngleHelper.correctAngle(currAngle);
@@ -127,7 +130,11 @@ public class ClientTickHandler {
 			tessellator.startDrawingQuads();
 
 			if (mouseIn) {
-				tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+				if (disabled) {
+					tessellator.setColorRGBA_F((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+				} else {
+					tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+				}
 			} else {
 				tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
 			}

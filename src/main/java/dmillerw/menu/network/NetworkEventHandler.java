@@ -2,9 +2,11 @@ package dmillerw.menu.network;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
-import dmillerw.menu.data.SecuritySettings;
-import dmillerw.menu.network.packet.server.PacketServerPing;
+import cpw.mods.fml.relauncher.Side;
+import dmillerw.menu.data.ActionSessionData;
+import dmillerw.menu.handler.LogHandler;
 
 /**
  * @author dmillerw
@@ -16,17 +18,29 @@ public class NetworkEventHandler {
 	}
 
 	@SubscribeEvent
+	public void onPlyerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
+//			if (FMLServerHandler.instance().getServer().isDedicatedServer()) {
+				LogHandler.info("SERVER: MineMenu is installed. Sending server response packet");
+//				PacketHandler.INSTANCE.sendTo(new PacketServerResponse(), (EntityPlayerMP) event.player);
+//			}
+		}
+	}
+
+	@SubscribeEvent
 	public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
 		if (!event.isLocal) {
 			// Disable server specific options, which will be re-enabled if the server replies
-			SecuritySettings.allowItemUsage = false;
-
-			PacketHandler.INSTANCE.sendToServer(new PacketServerPing());
+			LogHandler.info("CLIENT: Connected to server. Disabling server-side click actions until server replies");
+			ActionSessionData.activateClientValues();
+		} else {
+			ActionSessionData.activateAll();
 		}
 	}
 
 	@SubscribeEvent
 	public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-		SecuritySettings.restoreDefaults();
+		LogHandler.info("CLIENT: Disconnected from server, enabling all click actions");
+		ActionSessionData.activateAll();
 	}
 }

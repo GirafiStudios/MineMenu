@@ -1,5 +1,6 @@
 package dmillerw.menu.data.click;
 
+import dmillerw.menu.data.ClickAction;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -11,6 +12,11 @@ public class CommandClickAction implements IClickAction {
 
 	public CommandClickAction(String command) {
 		this.command = command;
+	}
+
+	@Override
+	public ClickAction getClickAction() {
+		return ClickAction.COMMAND;
 	}
 
 	@Override

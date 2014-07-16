@@ -2,6 +2,7 @@ package dmillerw.menu.data.click;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import dmillerw.menu.data.ClickAction;
 import dmillerw.menu.handler.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -24,6 +25,11 @@ public class KeyClickAction implements IClickAction {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public ClickAction getClickAction() {
+		return ClickAction.KEYBIND;
 	}
 
 	@Override

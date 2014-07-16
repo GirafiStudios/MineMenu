@@ -2,7 +2,7 @@ package dmillerw.menu.gui.menu;
 
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.data.SessionData;
+import dmillerw.menu.data.EditSessionData;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;
@@ -36,7 +36,7 @@ public class GuiMenuItem extends GuiScreen {
 	public GuiMenuItem(int slot, MenuItem menuItem) {
 		this.slot = slot;
 
-		SessionData.fromMenuItem(menuItem);
+		EditSessionData.fromMenuItem(menuItem);
 	}
 
 	@Override
@@ -54,12 +54,12 @@ public class GuiMenuItem extends GuiScreen {
 		this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel")));
 		this.buttonList.add(this.buttonDelete = new GuiButton(2, this.width / 2 - 50, this.height - 60, 100, 20, "Delete"));
 
-		this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 46, this.height / 2 - 3, 26, 26, new ItemStack(Blocks.stone)));
+		this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.stone)));
 		String string = "Action";
-		if (SessionData.clickAction != null) {
-			if (SessionData.clickAction instanceof CommandClickAction) {
+		if (EditSessionData.clickAction != null) {
+			if (EditSessionData.clickAction instanceof CommandClickAction) {
 				string = "Command";
-			} else if (SessionData.clickAction instanceof KeyClickAction) {
+			} else if (EditSessionData.clickAction instanceof KeyClickAction) {
 				string = "Keybind";
 			}
 		}
@@ -68,9 +68,9 @@ public class GuiMenuItem extends GuiScreen {
 		this.textTitle = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.textTitle.setMaxStringLength(32767);
 		this.textTitle.setFocused(false);
-		this.textTitle.setText(SessionData.title != null && !SessionData.title.isEmpty() ? SessionData.title : "");
+		this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
-		this.buttonPickIcon.icon = SessionData.icon;
+		this.buttonPickIcon.icon = EditSessionData.icon;
 
 		this.buttonConfirm.enabled = !this.textTitle.getText().trim().isEmpty();
 	}
@@ -99,7 +99,9 @@ public class GuiMenuItem extends GuiScreen {
 			} else if (button.id == 1) {
 				Minecraft.getMinecraft().displayGuiScreen(null);
 			} else if (button.id == 0) {
-				RadialMenu.getArray(RadialMenu.MAIN_TAG)[slot] = SessionData.toMenuItem();
+				if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
+					RadialMenu.getArray(RadialMenu.MAIN_TAG)[slot] = EditSessionData.toMenuItem();
+				}
 
 				MenuLoader.save();
 				Minecraft.getMinecraft().displayGuiScreen(null);
@@ -110,7 +112,7 @@ public class GuiMenuItem extends GuiScreen {
 	@Override
 	protected void keyTyped(char key, int keycode) {
 		if (this.textTitle.textboxKeyTyped(key, keycode)) {
-			SessionData.title = textTitle.getText().trim();
+			EditSessionData.title = textTitle.getText().trim();
 		}
 
 		this.buttonConfirm.enabled = this.textTitle.getText().trim().length() > 0;

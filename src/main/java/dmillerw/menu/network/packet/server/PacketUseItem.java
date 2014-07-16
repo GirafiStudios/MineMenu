@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author dmillerw
@@ -34,7 +35,27 @@ public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, I
 	@Override
 	public IMessage onMessage(PacketUseItem message, MessageContext ctx) {
 		EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-		player.theItemInWorldManager.tryUseItem(player, player.worldObj, player.inventory.getStackInSlot(message.slot));
+		ItemStack stack = player.inventory.getStackInSlot(message.slot);
+		if (stack != null) {
+			ItemStack backup = player.inventory.getCurrentItem();
+			if (backup != null) {
+				backup = backup.copy();
+			}
+
+			if (player.theItemInWorldManager.tryUseItem(player, player.worldObj, stack)) {
+				// tryUseItem is hardcoded to set the CURRENT slot to the resulting item, so we reverse that
+				ItemStack current = player.inventory.getCurrentItem();
+				if (current != null) {
+					current = current.copy();
+				}
+
+				player.inventory.setInventorySlotContents(message.slot, current);
+				player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
+
+				// Send updated inventory
+				player.sendContainerToPlayer(player.inventoryContainer);
+			}
+		}
 		return null;
 	}
 }

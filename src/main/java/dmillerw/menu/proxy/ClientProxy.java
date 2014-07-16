@@ -9,7 +9,6 @@ import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.handler.MouseHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
-import dmillerw.menu.network.NetworkEventHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -35,7 +34,6 @@ public class ClientProxy extends CommonProxy {
 
 		KeyReflectionHelper.gatherFields();
 
-		NetworkEventHandler.register();
 		KeyboardHandler.register();
 		MouseHandler.register();
 		ClientTickHandler.register();

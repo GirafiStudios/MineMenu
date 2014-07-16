@@ -21,6 +21,8 @@ public class GuiStack {
 	public static void pop() {
 		if (guiList.size() > 0) {
 			guiList.remove(0);
+		}
+		if (guiList.size() > 0) {
 			Minecraft.getMinecraft().displayGuiScreen(guiList.get(0));
 		} else {
 			Minecraft.getMinecraft().displayGuiScreen(null);

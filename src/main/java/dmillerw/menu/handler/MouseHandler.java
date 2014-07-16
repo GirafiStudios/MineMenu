@@ -3,6 +3,7 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import dmillerw.menu.data.ActionSessionData;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.menu.GuiMenuItem;
@@ -62,31 +63,24 @@ public class MouseHandler {
 
 							if (mouseIn) {
 								MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+								boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
 
 								if (item != null && item.clickAction != null) {
 									if (mc.thePlayer.isSneaking()) {
 										GuiStack.push(new GuiMenuItem(i, item));
-
 										showMenu = false;
-//										grabMouse(false, true);
-
 										return;
 									} else {
-										showMenu = false;
-//										grabMouse(true, true);
-
-										item.clickAction.onClicked();
-
-										ignoreNextTick = true;
-
-										return;
+										if (!disabled) {
+											showMenu = false;
+											item.clickAction.onClicked();
+											ignoreNextTick = true;
+											return;
+										}
 									}
 								} else {
 									GuiStack.push(new GuiMenuItem(i, item));
-
 									showMenu = false;
-//									grabMouse(false, true);
-
 									return;
 								}
 							}

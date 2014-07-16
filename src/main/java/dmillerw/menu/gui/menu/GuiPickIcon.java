@@ -1,6 +1,6 @@
 package dmillerw.menu.gui.menu;
 
-import dmillerw.menu.data.SessionData;
+import dmillerw.menu.data.EditSessionData;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
@@ -131,10 +131,10 @@ public class GuiPickIcon extends GuiScreen {
 		super.mouseClicked(mouseX, mouseY, button);
 
 		if (!buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-			SessionData.icon = getClickedStack(this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
+			EditSessionData.icon = getClickedStack(this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
 		}
 
-		if (SessionData.icon != null || buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+		if (EditSessionData.icon != null || buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
 			GuiStack.pop();
 		}
 	}

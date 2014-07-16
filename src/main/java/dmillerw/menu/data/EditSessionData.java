@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 /**
  * @author dmillerw
  */
-public class SessionData {
+public class EditSessionData {
 
 	public static String title;
 
