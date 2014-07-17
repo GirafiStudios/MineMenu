@@ -2,25 +2,21 @@
 	"versionList": [
 		{
 			"mcVersion":"Minecraft 1.7.10",
-			"modVersion":"1.0.3",
+			"modVersion":"1.0.4",
 			"changeLog": [
-				"Better keybind handling (user now picks from a list of keybinds)",
-                "Made the GUIs prettier",
-                "Added separate alpha values for the radial menu and selected menu item"
+				"Fixed bug where exiting GUI caused crash"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208436/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208729/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		},
 		{
 			"mcVersion":"Minecraft 1.7.2",
-			"modVersion":"1.0.3",
+			"modVersion":"1.0.4",
 			"changeLog": [
-				"Better keybind handling (user now picks from a list of keybinds)",
-				"Made the GUIs prettier",
-				"Added separate alpha values for the radial menu and selected menu item"
+				"Fixed bug where exiting GUI caused crash"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208436/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208729/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
