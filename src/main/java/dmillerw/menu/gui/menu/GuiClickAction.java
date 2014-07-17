@@ -121,14 +121,14 @@ public class GuiClickAction extends GuiScreen {
 		if (button.enabled) {
 			if (button.id == 6) {
 				// Select item
-				mode = 2;
+				/* mode = 2;
 				modeUseItem.enabled = false;
 				modeKeybinding.enabled = true;
 				modeCommand.enabled = true;
 
 				selectItemButton.visible = true;
 				textCommand.setVisible(false);
-				keybindButton.visible = false;
+				keybindButton.visible = false; */
 			} else if (button.id == 5) {
 				// Keybinding
 				mode = 1;
