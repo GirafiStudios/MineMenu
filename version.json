@@ -2,21 +2,21 @@
 	"versionList": [
 		{
 			"mcVersion":"Minecraft 1.7.10",
-			"modVersion":"1.0.4",
+			"modVersion":"1.0.5",
 			"changeLog": [
-				"Fixed bug where exiting GUI caused crash"
+				"Added support for opening menu using mouse buttons"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208729/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209047/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		},
 		{
 			"mcVersion":"Minecraft 1.7.2",
-			"modVersion":"1.0.4",
+			"modVersion":"1.0.5",
 			"changeLog": [
-				"Fixed bug where exiting GUI caused crash"
+				"Added support for opening menu using mouse buttons"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2208729/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209047/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
