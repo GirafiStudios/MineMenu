@@ -8,6 +8,7 @@ import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 /**
  * @author dmillerw
@@ -49,20 +50,19 @@ public class KeyboardHandler {
 			return;
 		}
 
-		if (Keyboard.isKeyDown(WHEEL.getKeyCode()) && Minecraft.getMinecraft().currentScreen == null && !MouseHandler.showMenu) {
-			if (ignoreNextWheelTick) {
-				ignoreNextWheelTick = false;
-			} else {
-				MouseHandler.showMenu = true;
-				Minecraft.getMinecraft().setIngameNotInFocus();
-			}
-		} else if ((!Keyboard.isKeyDown(WHEEL.getKeyCode()) || Minecraft.getMinecraft().currentScreen != null) && MouseHandler.showMenu) {
-			MouseHandler.showMenu = false;
-			ignoreNextWheelTick = true;
-			if (Minecraft.getMinecraft().currentScreen == null) {
-				Minecraft.getMinecraft().setIngameFocus();
-			}
-		}
+        boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
+        boolean showMenu = wheelKeyPressed && Minecraft.getMinecraft().currentScreen == null;
+
+        if (showMenu != MouseHandler.showMenu) {
+            MouseHandler.showMenu = showMenu;
+            if (showMenu) {
+                Minecraft.getMinecraft().setIngameNotInFocus();
+            } else {
+                if (Minecraft.getMinecraft().currentScreen == null) {
+                    Minecraft.getMinecraft().setIngameFocus();
+                }
+            }
+        }
 
 		if (lastKey != null) {
 			if (ignoreNextTick) {
