@@ -9,16 +9,16 @@ import net.minecraft.item.ItemStack;
  */
 public class MenuItem {
 
-	public final String title;
+    public final String title;
 
-	public final ItemStack icon;
+    public final ItemStack icon;
 
-	@SerializedName("action")
-	public final IClickAction clickAction;
+    @SerializedName("action")
+    public final IClickAction clickAction;
 
-	public MenuItem(String title, ItemStack icon, IClickAction clickAction) {
-		this.title = title;
-		this.icon = icon;
-		this.clickAction = clickAction;
-	}
+    public MenuItem(String title, ItemStack icon, IClickAction clickAction) {
+        this.title = title;
+        this.icon = icon;
+        this.clickAction = clickAction;
+    }
 }

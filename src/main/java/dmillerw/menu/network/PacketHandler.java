@@ -11,10 +11,10 @@ import dmillerw.menu.network.packet.server.PacketUseItem;
  */
 public class PacketHandler {
 
-	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("MineMenu");
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("MineMenu");
 
-	public static void initialize() {
-		INSTANCE.registerMessage(PacketServerResponse.class, PacketServerResponse.class, 0, Side.CLIENT);
-		INSTANCE.registerMessage(PacketUseItem.class, PacketUseItem.class, 1, Side.SERVER);
-	}
+    public static void initialize() {
+        INSTANCE.registerMessage(PacketServerResponse.class, PacketServerResponse.class, 0, Side.CLIENT);
+        INSTANCE.registerMessage(PacketUseItem.class, PacketUseItem.class, 1, Side.SERVER);
+    }
 }

@@ -8,19 +8,19 @@ import net.minecraft.client.Minecraft;
  */
 public class CommandClickAction implements IClickAction {
 
-	public final String command;
+    public final String command;
 
-	public CommandClickAction(String command) {
-		this.command = command;
-	}
+    public CommandClickAction(String command) {
+        this.command = command;
+    }
 
-	@Override
-	public ClickAction getClickAction() {
-		return ClickAction.COMMAND;
-	}
+    @Override
+    public ClickAction getClickAction() {
+        return ClickAction.COMMAND;
+    }
 
-	@Override
-	public void onClicked() {
-		Minecraft.getMinecraft().thePlayer.sendChatMessage(command);
-	}
+    @Override
+    public void onClicked() {
+        Minecraft.getMinecraft().thePlayer.sendChatMessage(command);
+    }
 }

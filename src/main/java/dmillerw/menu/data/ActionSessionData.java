@@ -9,19 +9,19 @@ import java.util.EnumSet;
  */
 public class ActionSessionData {
 
-	public static EnumSet<ClickAction> availableActions = EnumSet.noneOf(ClickAction.class);
+    public static EnumSet<ClickAction> availableActions = EnumSet.noneOf(ClickAction.class);
 
-	public static void activateAll() {
-		availableActions.clear();
-		availableActions.addAll(ClickAction.getValues());
-	}
+    public static void activateAll() {
+        availableActions.clear();
+        availableActions.addAll(ClickAction.getValues());
+    }
 
-	public static void activateClientValues() {
-		availableActions.clear();
-		availableActions.addAll(ClickAction.getClientValues());
-	}
+    public static void activateClientValues() {
+        availableActions.clear();
+        availableActions.addAll(ClickAction.getClientValues());
+    }
 
-	public static void restoreDefaults() {
-		LogHandler.info("CLIENT: Disconnected from server, restoring default security settings");
-	}
+    public static void restoreDefaults() {
+        LogHandler.info("CLIENT: Disconnected from server, restoring default security settings");
+    }
 }

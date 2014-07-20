@@ -12,25 +12,25 @@ import net.minecraft.item.ItemStack;
  */
 public class ItemClickAction implements IClickAction {
 
-	public final int slot;
+    public final int slot;
 
-	public ItemClickAction(int slot) {
-		this.slot = 0;
-	}
+    public ItemClickAction(int slot) {
+        this.slot = 0;
+    }
 
-	@Override
-	public ClickAction getClickAction() {
-		return ClickAction.ITEM_USE;
-	}
+    @Override
+    public ClickAction getClickAction() {
+        return ClickAction.ITEM_USE;
+    }
 
-	@Override
-	public void onClicked() {
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		ItemStack stack = player.inventory.getStackInSlot(slot);
+    @Override
+    public void onClicked() {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        ItemStack stack = player.inventory.getStackInSlot(slot);
 
-		if (stack != null) {
-			stack.useItemRightClick(player.worldObj, player);
-			PacketHandler.INSTANCE.sendToServer(new PacketUseItem(slot));
-		}
-	}
+        if (stack != null) {
+            stack.useItemRightClick(player.worldObj, player);
+            PacketHandler.INSTANCE.sendToServer(new PacketUseItem(slot));
+        }
+    }
 }

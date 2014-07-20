@@ -12,24 +12,24 @@ import net.minecraftforge.common.config.Configuration;
  */
 public class CommonProxy implements IProxy {
 
-	@Override
-	public void preInit(FMLPreInitializationEvent event) {
-		PacketHandler.initialize();
-		NetworkEventHandler.register();
-	}
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        PacketHandler.initialize();
+        NetworkEventHandler.register();
+    }
 
-	@Override
-	public void init(FMLInitializationEvent event) {
+    @Override
+    public void init(FMLInitializationEvent event) {
 
-	}
+    }
 
-	@Override
-	public void postInit(FMLPostInitializationEvent event) {
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
 
-	}
+    }
 
-	@Override
-	public void syncConfig(Configuration configuration) {
+    @Override
+    public void syncConfig(Configuration configuration) {
 
-	}
+    }
 }

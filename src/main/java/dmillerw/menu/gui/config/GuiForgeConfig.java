@@ -10,14 +10,14 @@ import net.minecraftforge.common.config.ConfigElement;
  */
 public class GuiForgeConfig extends GuiConfig {
 
-	public GuiForgeConfig(GuiScreen parent) {
-		super(
-				parent,
-				(new ConfigElement(MineMenu.configuration.getCategory("visual"))).getChildElements(),
-				"MineMenu",
-				false,
-				false,
-				GuiConfig.getAbridgedConfigPath(MineMenu.configuration.toString())
-		);
-	}
+    public GuiForgeConfig(GuiScreen parent) {
+        super(
+                parent,
+                (new ConfigElement(MineMenu.configuration.getCategory("visual"))).getChildElements(),
+                "MineMenu",
+                false,
+                false,
+                GuiConfig.getAbridgedConfigPath(MineMenu.configuration.toString())
+        );
+    }
 }

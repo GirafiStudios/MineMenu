@@ -11,21 +11,21 @@ import java.util.List;
  */
 public class GuiStack {
 
-	public static List<GuiScreen> guiList = new ArrayList<GuiScreen>();
+    public static List<GuiScreen> guiList = new ArrayList<GuiScreen>();
 
-	public static void push(GuiScreen screen) {
-		guiList.add(0, screen);
-		Minecraft.getMinecraft().displayGuiScreen(screen);
-	}
+    public static void push(GuiScreen screen) {
+        guiList.add(0, screen);
+        Minecraft.getMinecraft().displayGuiScreen(screen);
+    }
 
-	public static void pop() {
-		if (guiList.size() > 0) {
-			guiList.remove(0);
-		}
-		if (guiList.size() > 0) {
-			Minecraft.getMinecraft().displayGuiScreen(guiList.get(0));
-		} else {
-			Minecraft.getMinecraft().displayGuiScreen(null);
-		}
-	}
+    public static void pop() {
+        if (guiList.size() > 0) {
+            guiList.remove(0);
+        }
+        if (guiList.size() > 0) {
+            Minecraft.getMinecraft().displayGuiScreen(guiList.get(0));
+        } else {
+            Minecraft.getMinecraft().displayGuiScreen(null);
+        }
+    }
 }

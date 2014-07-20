@@ -28,196 +28,196 @@ import org.lwjgl.opengl.GL11;
  */
 public class ClientTickHandler {
 
-	public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
+    public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
 
-	public static final int ITEM_RENDER_ANGLE_OFFSET = -2;
+    public static final int ITEM_RENDER_ANGLE_OFFSET = -2;
 
-	private static final double OUTER_RADIUS = 80;
-	private static final double INNER_RADIUS = 60;
+    private static final double OUTER_RADIUS = 80;
+    private static final double INNER_RADIUS = 60;
 
-	private static final float Z_LEVEL = 0.05F;
+    private static final float Z_LEVEL = 0.05F;
 
-	public static void register() {
-		ClientTickHandler clientTickHandler = new ClientTickHandler();
-		FMLCommonHandler.instance().bus().register(clientTickHandler);
-		MinecraftForge.EVENT_BUS.register(clientTickHandler);
-	}
+    public static void register() {
+        ClientTickHandler clientTickHandler = new ClientTickHandler();
+        FMLCommonHandler.instance().bus().register(clientTickHandler);
+        MinecraftForge.EVENT_BUS.register(clientTickHandler);
+    }
 
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
-		// Cancel out all mouse interaction (except our own) if the menu is open
-		Minecraft mc = Minecraft.getMinecraft();
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        // Cancel out all mouse interaction (except our own) if the menu is open
+        Minecraft mc = Minecraft.getMinecraft();
 
-		if (MouseHandler.showMenu) {
-			Mouse.getDX();
-			Mouse.getDY();
-			mc.mouseHelper.deltaX = mc.mouseHelper.deltaY = 0;
-		}
-	}
+        if (MouseHandler.showMenu) {
+            Mouse.getDX();
+            Mouse.getDY();
+            mc.mouseHelper.deltaX = mc.mouseHelper.deltaY = 0;
+        }
+    }
 
-	@SubscribeEvent
-	public void onRenderTick(TickEvent.RenderTickEvent event) {
-		if (event.phase == TickEvent.Phase.END) {
-			Minecraft mc = Minecraft.getMinecraft();
-			double zLevel = 0.05D;
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            Minecraft mc = Minecraft.getMinecraft();
+            double zLevel = 0.05D;
 
-			if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
-				if (MouseHandler.showMenu) {
-					CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-					renderGui(resolution, zLevel);
-					renderItems(resolution, zLevel);
-				}
-			}
-		}
-	}
+            if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
+                if (MouseHandler.showMenu) {
+                    CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+                    renderGui(resolution, zLevel);
+                    renderItems(resolution, zLevel);
+                }
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void onRenderOverlay(RenderGameOverlayEvent event) {
-		if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && MouseHandler.showMenu) {
-			event.setCanceled(true);
-		}
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent event) {
+        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && MouseHandler.showMenu) {
+            event.setCanceled(true);
+        }
 
-		if (!(event instanceof RenderGameOverlayEvent.Post) || event.type != RenderGameOverlayEvent.ElementType.ALL) {
-			return;
-		}
+        if (!(event instanceof RenderGameOverlayEvent.Post) || event.type != RenderGameOverlayEvent.ElementType.ALL) {
+            return;
+        }
 
-		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
-			if (MouseHandler.showMenu) {
-				renderText(event.resolution, Z_LEVEL);
-			}
-		}
-	}
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
+            if (MouseHandler.showMenu) {
+                renderText(event.resolution, Z_LEVEL);
+            }
+        }
+    }
 
-	private void renderGui(CompatibleScaledResolution resolution, double zLevel) {
-		GL11.glPushMatrix();
+    private void renderGui(CompatibleScaledResolution resolution, double zLevel) {
+        GL11.glPushMatrix();
 
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glPushMatrix();
-		GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
 
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glPushMatrix();
-		GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glPushMatrix();
+        GL11.glLoadIdentity();
 
-		Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.instance;
 
-		double mouseAngle = AngleHelper.getMouseAngle();
-		mouseAngle -= 270; // I DON'T KNOW WHERE THIS 270 EVEN COMES FROM!!! :(
-		mouseAngle = AngleHelper.correctAngle(mouseAngle);
+        double mouseAngle = AngleHelper.getMouseAngle();
+        mouseAngle -= 270; // I DON'T KNOW WHERE THIS 270 EVEN COMES FROM!!! :(
+        mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
-		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-			MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
-			boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
-			double currAngle = ANGLE_PER_ITEM * i;
-			double nextAngle = currAngle + ANGLE_PER_ITEM;
-			currAngle = AngleHelper.correctAngle(currAngle);
-			nextAngle = AngleHelper.correctAngle(nextAngle);
+        for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
+            MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+            boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
+            double currAngle = ANGLE_PER_ITEM * i;
+            double nextAngle = currAngle + ANGLE_PER_ITEM;
+            currAngle = AngleHelper.correctAngle(currAngle);
+            nextAngle = AngleHelper.correctAngle(nextAngle);
 
-			boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
+            boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
-			currAngle = Math.toRadians(currAngle);
-			nextAngle = Math.toRadians(nextAngle);
+            currAngle = Math.toRadians(currAngle);
+            nextAngle = Math.toRadians(nextAngle);
 
-			double innerRadius = ((INNER_RADIUS - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
-			double outerRadius = ((OUTER_RADIUS + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+            double outerRadius = ((OUTER_RADIUS + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-			tessellator.startDrawingQuads();
+            tessellator.startDrawingQuads();
 
-			if (mouseIn) {
-				if (disabled) {
-					tessellator.setColorRGBA_F((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
-				} else {
-					tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
-				}
-			} else {
-				tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
-			}
+            if (mouseIn) {
+                if (disabled) {
+                    tessellator.setColorRGBA_F((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                } else {
+                    tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                }
+            } else {
+                tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+            }
 
-			tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
-			tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0);
-			tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0);
-			tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0);
+            tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
+            tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0);
+            tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0);
+            tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0);
 
-			tessellator.draw();
-		}
+            tessellator.draw();
+        }
 
-		GL11.glPopMatrix();
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		GL11.glPopMatrix();
+        GL11.glPopMatrix();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glPopMatrix();
 
-		GL11.glDisable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_BLEND);
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
-	private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
-		GL11.glPushMatrix();
+    private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
+        GL11.glPushMatrix();
 
-		GL11.glTranslated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
+        GL11.glTranslated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
 
-		RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.enableGUIStandardItemLighting();
 
-		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-			MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
-			ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
+        for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
+            MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+            ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
 
-			switch (stack.getItemSpriteNumber()) {
-				case 1:
-					Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-					break;
-				case 0:
-				default:
-					Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-					break;
-			}
+            switch (stack.getItemSpriteNumber()) {
+                case 1:
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+                    break;
+                case 0:
+                default:
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+                    break;
+            }
 
-			double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
-			double drawOffset = 1.5; //TODO Make constant
-			double drawX = INNER_RADIUS + drawOffset;
-			double drawY = INNER_RADIUS + drawOffset;
+            double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
+            double drawOffset = 1.5; //TODO Make constant
+            double drawX = INNER_RADIUS + drawOffset;
+            double drawY = INNER_RADIUS + drawOffset;
 
-			double length = Math.sqrt(drawX * drawX + drawY * drawY);
+            double length = Math.sqrt(drawX * drawX + drawY * drawY);
 
-			drawX = (length * Math.cos(StrictMath.toRadians(angle)));
-			drawY = (length * Math.sin(StrictMath.toRadians(angle)));
+            drawX = (length * Math.cos(StrictMath.toRadians(angle)));
+            drawY = (length * Math.sin(StrictMath.toRadians(angle)));
 
-			ItemRenderHelper.renderItem((float) drawX, (float) drawY, 0.05F, stack);
-		}
+            ItemRenderHelper.renderItem((float) drawX, (float) drawY, 0.05F, stack);
+        }
 
-		RenderHelper.disableStandardItemLighting();
+        RenderHelper.disableStandardItemLighting();
 
-		GL11.glPopMatrix();
-	}
+        GL11.glPopMatrix();
+    }
 
-	private void renderText(ScaledResolution resolution, double zLevel) {
-		Minecraft mc = Minecraft.getMinecraft();
-		FontRenderer fontRenderer = mc.fontRenderer;
-		double mouseAngle = AngleHelper.getMouseAngle();
-		mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
-		mouseAngle = 360 - mouseAngle;
-		mouseAngle = AngleHelper.correctAngle(mouseAngle);
+    private void renderText(ScaledResolution resolution, double zLevel) {
+        Minecraft mc = Minecraft.getMinecraft();
+        FontRenderer fontRenderer = mc.fontRenderer;
+        double mouseAngle = AngleHelper.getMouseAngle();
+        mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
+        mouseAngle = 360 - mouseAngle;
+        mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
-		for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-			double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
-			double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
-			currAngle = AngleHelper.correctAngle(currAngle);
-			nextAngle = AngleHelper.correctAngle(nextAngle);
+        for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
+            double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
+            double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
+            currAngle = AngleHelper.correctAngle(currAngle);
+            nextAngle = AngleHelper.correctAngle(nextAngle);
 
-			boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
+            boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
-			if (mouseIn) {
-				MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
-				String string = item == null ? "Add Item" : item.title;
-				fontRenderer.drawStringWithShadow(string, resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2, resolution.getScaledHeight() / 2, 0xFFFFFF);
-			}
-		}
-	}
+            if (mouseIn) {
+                MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+                String string = item == null ? "Add Item" : item.title;
+                fontRenderer.drawStringWithShadow(string, resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2, resolution.getScaledHeight() / 2, 0xFFFFFF);
+            }
+        }
+    }
 }

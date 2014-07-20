@@ -7,7 +7,7 @@ import dmillerw.menu.data.ClickAction;
  */
 public interface IClickAction {
 
-	public ClickAction getClickAction();
+    public ClickAction getClickAction();
 
-	public void onClicked();
+    public void onClicked();
 }

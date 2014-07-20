@@ -12,20 +12,20 @@ import io.netty.buffer.ByteBuf;
  */
 public class PacketServerResponse implements IMessage, IMessageHandler<PacketServerResponse, IMessage> {
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeBoolean(true);
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(true);
+    }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
+    @Override
+    public void fromBytes(ByteBuf buf) {
 
-	}
+    }
 
-	@Override
-	public IMessage onMessage(PacketServerResponse message, MessageContext ctx) {
-		LogHandler.info("CLIENT: Received response from server, activating server-side click actions");
-		ActionSessionData.activateAll();
-		return null;
-	}
+    @Override
+    public IMessage onMessage(PacketServerResponse message, MessageContext ctx) {
+        LogHandler.info("CLIENT: Received response from server, activating server-side click actions");
+        ActionSessionData.activateAll();
+        return null;
+    }
 }

@@ -12,36 +12,36 @@ import java.util.Map;
  */
 public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
 
-	@Override
-	public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
-		JsonObject object = new JsonObject();
+    @Override
+    public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject object = new JsonObject();
 
-		object.add("name", new JsonPrimitive(GameData.getItemRegistry().getNameForObject(src.getItem())));
-		object.add("damage", new JsonPrimitive(src.getItemDamage()));
+        object.add("name", new JsonPrimitive(GameData.getItemRegistry().getNameForObject(src.getItem())));
+        object.add("damage", new JsonPrimitive(src.getItemDamage()));
 
-		return object;
-	}
+        return object;
+    }
 
-	@Override
-	public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-		if (!json.isJsonObject()) {
-			return null;
-		}
+    @Override
+    public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        if (!json.isJsonObject()) {
+            return null;
+        }
 
-		String name = "";
-		int damage = 0;
+        String name = "";
+        int damage = 0;
 
-		for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-			String key = entry.getKey();
-			JsonElement element = entry.getValue();
+        for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
+            String key = entry.getKey();
+            JsonElement element = entry.getValue();
 
-			if (key.equals("name")) {
-				name = element.getAsString();
-			} else if (key.equals("damage")) {
-				damage = element.getAsInt();
-			}
-		}
+            if (key.equals("name")) {
+                name = element.getAsString();
+            } else if (key.equals("damage")) {
+                damage = element.getAsInt();
+            }
+        }
 
-		return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(name), damage);
-	}
+        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(name), damage);
+    }
 }

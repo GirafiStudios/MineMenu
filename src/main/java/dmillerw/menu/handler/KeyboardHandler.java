@@ -15,40 +15,40 @@ import org.lwjgl.input.Mouse;
  */
 public class KeyboardHandler {
 
-	public static final KeyboardHandler INSTANCE = new KeyboardHandler();
+    public static final KeyboardHandler INSTANCE = new KeyboardHandler();
 
-	public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.gameplay");
+    public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.gameplay");
 
-	public static void register() {
-		FMLCommonHandler.instance().bus().register(KeyboardHandler.INSTANCE);
-		ClientRegistry.registerKeyBinding(WHEEL);
-	}
+    public static void register() {
+        FMLCommonHandler.instance().bus().register(KeyboardHandler.INSTANCE);
+        ClientRegistry.registerKeyBinding(WHEEL);
+    }
 
-	public KeyBinding lastKey;
+    public KeyBinding lastKey;
 
-	private boolean ignoreNextTick = false;
-	private boolean ignoreNextWheelTick = false;
+    private boolean ignoreNextTick = false;
+    private boolean ignoreNextWheelTick = false;
 
-	private KeyboardHandler() {
+    private KeyboardHandler() {
 
-	}
+    }
 
-	public void fireKey(KeyBinding key) {
-		lastKey = key;
-		KeyReflectionHelper.pressKey(key);
-		KeyReflectionHelper.increasePressTime(key);
-		ignoreNextTick = true;
-	}
+    public void fireKey(KeyBinding key) {
+        lastKey = key;
+        KeyReflectionHelper.pressKey(key);
+        KeyReflectionHelper.increasePressTime(key);
+        ignoreNextTick = true;
+    }
 
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.END) {
-			return;
-		}
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            return;
+        }
 
-		if (Minecraft.getMinecraft().theWorld == null) {
-			return;
-		}
+        if (Minecraft.getMinecraft().theWorld == null) {
+            return;
+        }
 
         boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
         boolean showMenu = wheelKeyPressed && Minecraft.getMinecraft().currentScreen == null;
@@ -64,15 +64,15 @@ public class KeyboardHandler {
             }
         }
 
-		if (lastKey != null) {
-			if (ignoreNextTick) {
-				ignoreNextTick = false;
-				return;
-			}
+        if (lastKey != null) {
+            if (ignoreNextTick) {
+                ignoreNextTick = false;
+                return;
+            }
 
-			KeyReflectionHelper.unpressKey(lastKey);
+            KeyReflectionHelper.unpressKey(lastKey);
 
-			lastKey = null;
-		}
-	}
+            lastKey = null;
+        }
+    }
 }

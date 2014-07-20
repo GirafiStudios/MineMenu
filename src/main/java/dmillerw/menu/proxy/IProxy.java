@@ -10,11 +10,11 @@ import net.minecraftforge.common.config.Configuration;
  */
 public interface IProxy {
 
-	public void preInit(FMLPreInitializationEvent event);
+    public void preInit(FMLPreInitializationEvent event);
 
-	public void init(FMLInitializationEvent event);
+    public void init(FMLInitializationEvent event);
 
-	public void postInit(FMLPostInitializationEvent event);
+    public void postInit(FMLPostInitializationEvent event);
 
-	public void syncConfig(Configuration configuration);
+    public void syncConfig(Configuration configuration);
 }
