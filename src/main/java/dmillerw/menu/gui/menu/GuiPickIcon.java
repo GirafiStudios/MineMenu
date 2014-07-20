@@ -24,6 +24,9 @@ import java.util.List;
  */
 public class GuiPickIcon extends GuiScreen {
 
+    private static final int MAX_COLUMN = 14;
+    private static final int MAX_ROW = 4; // Actually increased by one
+
 	private GuiTextField textSearch;
 
 	private GuiButton buttonCancel;
@@ -54,9 +57,9 @@ public class GuiPickIcon extends GuiScreen {
 
 		this.buttonList.clear();
 
-		this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height / 4 + 120 + 12, 150, 20, I18n.format("gui.cancel")));
+		this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")));
 
-		this.textSearch = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 30, 300, 20);
+		this.textSearch = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
 		this.textSearch.setMaxStringLength(32767);
 		this.textSearch.setFocused(true);
 	}
@@ -130,13 +133,16 @@ public class GuiPickIcon extends GuiScreen {
 	protected void mouseClicked(int mouseX, int mouseY, int button) {
 		super.mouseClicked(mouseX, mouseY, button);
 
-		if (!buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-			EditSessionData.icon = getClickedStack(this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
-		}
+        ItemStack clicked = getClickedStack(this.width / 2, this.height / 2 - 40, mouseX, mouseY);
 
-		if (EditSessionData.icon != null || buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-			GuiStack.pop();
-		}
+        if (clicked != null) {
+            EditSessionData.icon = clicked;
+            GuiStack.pop();
+        }
+
+		if (buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+			EditSessionData.icon = null;
+        }
 	}
 
 	@Override
@@ -151,7 +157,7 @@ public class GuiPickIcon extends GuiScreen {
 
 		GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Select an Icon:");
 
-		drawList(this, this.width / 2, textSearch.yPosition + 40, mouseX, mouseY);
+		drawList(this, this.width / 2, this.height / 2 - 40, mouseX, mouseY);
 	}
 
 	public void onWheelScrolled(int x, int y, int wheel) {
@@ -166,8 +172,8 @@ public class GuiPickIcon extends GuiScreen {
 
 		if (wheel > 0) {
 			listScrollIndex += 2;
-			if (listScrollIndex > Math.max(0, (stacks.size() / 14)) - 5) {
-				listScrollIndex = Math.max(0, (stacks.size() / 14) - 5);
+			if (listScrollIndex > Math.max(0, (stacks.size() / MAX_COLUMN)) - MAX_ROW) {
+				listScrollIndex = Math.max(0, (stacks.size() / MAX_COLUMN) - MAX_ROW);
 			}
 		}
 	}
@@ -177,11 +183,11 @@ public class GuiPickIcon extends GuiScreen {
 		float highlightedX = 0;
 		float highlightedY = 0;
 
-		for (int i = 14 * listScrollIndex; i < stacks.size(); i++) {
-			int drawX = i % 14;
-			int drawY = i / 14;
+		for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
+			int drawX = i % MAX_COLUMN;
+			int drawY = i / MAX_COLUMN;
 
-			if (((i - 14 * listScrollIndex) / 14) <= 5) {
+			if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
 				GL11.glPushMatrix();
 
 				boolean scaled = false;
@@ -215,11 +221,11 @@ public class GuiPickIcon extends GuiScreen {
 	}
 
 	private ItemStack getClickedStack(int x, int y, int mx, int my) {
-		for (int i = 14 * listScrollIndex; i < stacks.size(); i++) {
-			int drawX = i % 14;
-			int drawY = i / 14;
+		for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
+            int drawX = i % MAX_COLUMN;
+            int drawY = i / MAX_COLUMN;
 
-			if (((i - 14 * listScrollIndex) / 14) <= 5) {
+            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
 				float actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
 				float actualDrawY = (y + drawY * 20);
 				actualDrawY -= 20 * listScrollIndex;
