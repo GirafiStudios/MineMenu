@@ -30,22 +30,7 @@ public class ItemClickAction implements IClickAction {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && this.item.isItemEqual(stack)) {
-                boolean client = true;
-
-                // Basic hack for allowing activatable sigils to be used without issue
-                // DAMN YOU WayOfTime >:(
-                Class<?> bloodMagic = null;
-                try {
-                    bloodMagic = Class.forName("WayofTime.alchemicalWizardry.common.items.EnergyItems");
-                } catch (ClassNotFoundException e) {}
-                if (bloodMagic != null && bloodMagic.isAssignableFrom(stack.getItem().getClass())) {
-                    client = false;
-                }
-
-                if (client) {
-                    stack.useItemRightClick(player.worldObj, player);
-                }
-
+                stack.useItemRightClick(player.worldObj, player);
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }
