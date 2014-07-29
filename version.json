@@ -2,11 +2,12 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.0.5",
+			"modVersion":"1.0.6",
 			"changeLog": [
-				"Added support for opening menu using mouse buttons"
+				"Fixed menu items sometimes not being saved",
+				"Made it more obvious that item use actions aren't available yet"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209047/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209986/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
