@@ -1,17 +1,7 @@
 {
 	"versionList": [
 		{
-			"mcVersion":"Minecraft 1.7.10",
-			"modVersion":"1.0.5",
-			"changeLog": [
-				"Added support for opening menu using mouse buttons"
-			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209047/download",
-			"isDirectLink":"true",
-			"newFileName":""
-		},
-		{
-			"mcVersion":"Minecraft 1.7.2",
+			"mcVersion":"*",
 			"modVersion":"1.0.5",
 			"changeLog": [
 				"Added support for opening menu using mouse buttons"
