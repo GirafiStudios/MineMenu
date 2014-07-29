@@ -1,4 +1,4 @@
-package dmillerw.menu.data;
+package dmillerw.menu.data.session;
 
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.click.IClickAction;

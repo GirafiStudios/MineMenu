@@ -3,7 +3,7 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import dmillerw.menu.data.ActionSessionData;
+import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.menu.GuiMenuItem;

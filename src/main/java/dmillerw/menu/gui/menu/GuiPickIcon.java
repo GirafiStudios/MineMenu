@@ -1,6 +1,6 @@
 package dmillerw.menu.gui.menu;
 
-import dmillerw.menu.data.EditSessionData;
+import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
@@ -92,10 +92,9 @@ public class GuiPickIcon extends GuiScreen {
                 stacks.clear();
 
                 ArrayList<ItemStack> temp = new ArrayList<ItemStack>();
-                Iterator iterator = Item.itemRegistry.iterator();
 
-                while (iterator.hasNext()) {
-                    Item item = (Item) iterator.next();
+                for (Object anItemRegistry : Item.itemRegistry) {
+                    Item item = (Item) anItemRegistry;
 
                     if (item != null && item.getCreativeTab() != null) {
                         item.getSubItems(item, null, temp);
@@ -110,10 +109,8 @@ public class GuiPickIcon extends GuiScreen {
             } else {
                 stacks.clear();
 
-                Iterator iterator = Item.itemRegistry.iterator();
-
-                while (iterator.hasNext()) {
-                    Item item = (Item) iterator.next();
+                for (Object anItemRegistry : Item.itemRegistry) {
+                    Item item = (Item) anItemRegistry;
 
                     if (item != null && item.getCreativeTab() != null) {
                         item.getSubItems(item, null, stacks);

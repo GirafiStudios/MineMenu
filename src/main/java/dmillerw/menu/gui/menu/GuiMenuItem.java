@@ -2,7 +2,7 @@ package dmillerw.menu.gui.menu;
 
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.data.EditSessionData;
+import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;

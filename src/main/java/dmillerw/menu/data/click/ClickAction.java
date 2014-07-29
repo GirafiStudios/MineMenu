@@ -1,4 +1,4 @@
-package dmillerw.menu.data;
+package dmillerw.menu.data.click;
 
 import java.util.ArrayList;
 import java.util.Arrays;

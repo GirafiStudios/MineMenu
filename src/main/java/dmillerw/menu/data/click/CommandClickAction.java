@@ -1,6 +1,5 @@
 package dmillerw.menu.data.click;
 
-import dmillerw.menu.data.ClickAction;
 import net.minecraft.client.Minecraft;
 
 /**

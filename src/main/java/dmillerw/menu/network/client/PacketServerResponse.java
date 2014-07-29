@@ -3,7 +3,7 @@ package dmillerw.menu.network.client;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import dmillerw.menu.data.ActionSessionData;
+import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.handler.LogHandler;
 import io.netty.buffer.ByteBuf;
 

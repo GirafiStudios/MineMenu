@@ -1,5 +1,6 @@
-package dmillerw.menu.data;
+package dmillerw.menu.data.session;
 
+import dmillerw.menu.data.click.ClickAction;
 import dmillerw.menu.handler.LogHandler;
 
 import java.util.EnumSet;

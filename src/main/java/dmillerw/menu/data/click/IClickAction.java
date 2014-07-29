@@ -1,7 +1,5 @@
 package dmillerw.menu.data.click;
 
-import dmillerw.menu.data.ClickAction;
-
 /**
  * @author dmillerw
  */

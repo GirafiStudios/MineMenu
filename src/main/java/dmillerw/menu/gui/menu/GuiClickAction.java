@@ -1,8 +1,8 @@
 package dmillerw.menu.gui.menu;
 
 import cpw.mods.fml.client.config.GuiButtonExt;
-import dmillerw.menu.data.ClickAction;
-import dmillerw.menu.data.EditSessionData;
+import dmillerw.menu.data.click.ClickAction;
+import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.data.click.CommandClickAction;
 import dmillerw.menu.data.click.ItemClickAction;
 import dmillerw.menu.data.click.KeyClickAction;
@@ -26,7 +26,7 @@ import java.util.Arrays;
  */
 public class GuiClickAction extends GuiScreen {
 
-    public static int useStackSlot = 36;
+    public static ItemStack item;
 
     public static KeyBinding keyBinding;
 
@@ -57,6 +57,8 @@ public class GuiClickAction extends GuiScreen {
     public void initGui() {
         if (GuiClickAction.keyBinding != null) {
             mode = ClickAction.KEYBIND.ordinal();
+        } else if (GuiClickAction.item != null) {
+            mode = ClickAction.ITEM_USE.ordinal();
         } else {
             mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
         }
@@ -81,11 +83,11 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString));
 
         String itemString = "";
-        if (GuiClickAction.useStackSlot >= 0) {
-            itemString = "Slot: " + Integer.toString(useStackSlot);
+        if (GuiClickAction.item != null) {
+            itemString = "Item: " + item.getDisplayName();
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = "Slot: " + Integer.toString(((ItemClickAction) EditSessionData.clickAction).slot);
+                itemString = "Item: " + ((ItemClickAction) EditSessionData.clickAction).item.getDisplayName();
             } else {
                 itemString = "Select a Slot";
             }
@@ -108,9 +110,6 @@ public class GuiClickAction extends GuiScreen {
         textCommand.setVisible(mode == 0);
         keybindButton.visible = mode == 1;
         selectItemButton.visible = mode == 2;
-
-        // TEMP
-        this.modeUseItem.enabled = false;
     }
 
     @Override
@@ -128,19 +127,19 @@ public class GuiClickAction extends GuiScreen {
         if (button.enabled) {
             if (button.id == 6) {
                 // Select item
-                /* mode = 2;
+                mode = 2;
 				modeUseItem.enabled = false;
 				modeKeybinding.enabled = true;
 				modeCommand.enabled = true;
 
 				selectItemButton.visible = true;
 				textCommand.setVisible(false);
-				keybindButton.visible = false; */
+				keybindButton.visible = false;
             } else if (button.id == 5) {
                 // Keybinding
                 mode = 1;
 
-//              modeUseItem.enabled = true;
+                modeUseItem.enabled = true;
                 modeKeybinding.enabled = false;
                 modeCommand.enabled = true;
 
@@ -151,7 +150,7 @@ public class GuiClickAction extends GuiScreen {
                 // Command
                 mode = 0;
 
-//              modeUseItem.enabled = true;
+                modeUseItem.enabled = true;
                 modeKeybinding.enabled = true;
                 modeCommand.enabled = false;
 
@@ -159,7 +158,7 @@ public class GuiClickAction extends GuiScreen {
                 textCommand.setVisible(true);
                 keybindButton.visible = false;
             } else if (button.id == 3) {
-                // Select item
+                GuiStack.push(new GuiPickItem());
             } else if (button.id == 2) {
                 GuiStack.push(new GuiPickKey());
             } else if (button.id == 1) {
@@ -169,8 +168,8 @@ public class GuiClickAction extends GuiScreen {
                     EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new CommandClickAction(textCommand.getText().trim()) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
                     EditSessionData.clickAction = new KeyClickAction(keyBinding.getKeyDescription());
-                } else if (mode == 2 && GuiClickAction.useStackSlot >= 0) {
-                    EditSessionData.clickAction = new ItemClickAction(useStackSlot);
+                } else if (mode == 2 && GuiClickAction.item != null) {
+                    EditSessionData.clickAction = new ItemClickAction(item);
                 }
                 GuiStack.pop();
             }
