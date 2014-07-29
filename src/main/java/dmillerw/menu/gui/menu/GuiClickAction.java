@@ -140,7 +140,7 @@ public class GuiClickAction extends GuiScreen {
                 // Keybinding
                 mode = 1;
 
-//                modeUseItem.enabled = true;
+//              modeUseItem.enabled = true;
                 modeKeybinding.enabled = false;
                 modeCommand.enabled = true;
 
@@ -151,7 +151,7 @@ public class GuiClickAction extends GuiScreen {
                 // Command
                 mode = 0;
 
-//                modeUseItem.enabled = true;
+//              modeUseItem.enabled = true;
                 modeKeybinding.enabled = true;
                 modeCommand.enabled = false;
 
@@ -200,7 +200,13 @@ public class GuiClickAction extends GuiScreen {
         this.drawDefaultBackground();
         this.textCommand.drawTextBox();
         super.drawScreen(mouseX, mouseY, partial);
-        GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, mode == 1 ? "Select a Key:" : "Enter a Command:");
+        String header = "";
+        switch (mode) {
+            case 0: header = "Select a Key"; break;
+            case 1: header = "Enter a Command"; break;
+            case 2: header = "Pick an Item"; break;
+        }
+        GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
         if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
             this.func_146283_a(Arrays.asList("Click Action: Command"), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {
