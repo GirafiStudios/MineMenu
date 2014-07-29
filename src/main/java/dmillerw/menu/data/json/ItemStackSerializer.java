@@ -42,6 +42,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             }
         }
 
-        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(name), damage);
+        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(name), 1, damage);
     }
 }
