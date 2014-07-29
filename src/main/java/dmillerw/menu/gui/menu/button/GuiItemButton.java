@@ -23,15 +23,6 @@ public class GuiItemButton extends GuiButtonExt {
             int k = this.getHoverState(this.field_146123_n);
             GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             this.mouseDragged(mc, mouseX, mouseY);
-            int color = 14737632;
-
-            if (packedFGColour != 0) {
-                color = packedFGColour;
-            } else if (!this.enabled) {
-                color = 10526880;
-            } else if (this.field_146123_n) {
-                color = 16777120;
-            }
 
             GL11.glPushMatrix();
             ItemRenderHelper.renderItem(this.xPosition + this.width / 2, this.yPosition + this.height / 2, this.zLevel, icon);
