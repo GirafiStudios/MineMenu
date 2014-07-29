@@ -55,7 +55,11 @@ public class GuiClickAction extends GuiScreen {
 
     @Override
     public void initGui() {
-        mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
+        if (GuiClickAction.keyBinding != null) {
+            mode = ClickAction.KEYBIND.ordinal();
+        } else {
+            mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
+        }
 
         Keyboard.enableRepeatEvents(true);
 
@@ -104,6 +108,9 @@ public class GuiClickAction extends GuiScreen {
         textCommand.setVisible(mode == 0);
         keybindButton.visible = mode == 1;
         selectItemButton.visible = mode == 2;
+
+        // TEMP
+        this.modeUseItem.enabled = false;
     }
 
     @Override
@@ -133,7 +140,7 @@ public class GuiClickAction extends GuiScreen {
                 // Keybinding
                 mode = 1;
 
-                modeUseItem.enabled = true;
+//                modeUseItem.enabled = true;
                 modeKeybinding.enabled = false;
                 modeCommand.enabled = true;
 
@@ -144,7 +151,7 @@ public class GuiClickAction extends GuiScreen {
                 // Command
                 mode = 0;
 
-                modeUseItem.enabled = true;
+//                modeUseItem.enabled = true;
                 modeKeybinding.enabled = true;
                 modeCommand.enabled = false;
 
