@@ -10,27 +10,27 @@ import java.util.Map;
 /**
  * @author dmillerw
  */
-public class ClickActionSerializer implements JsonSerializer<IClickAction>, JsonDeserializer<IClickAction> {
+public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickAction>, JsonDeserializer<ClickAction.IClickAction> {
 
     @Override
-    public JsonElement serialize(IClickAction src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(ClickAction.IClickAction src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        if (src instanceof CommandClickAction) {
-            object.add("command", new JsonPrimitive(((CommandClickAction) src).command));
-        } else if (src instanceof KeyClickAction) {
-            object.add("key", new JsonPrimitive(((KeyClickAction) src).key));
-        } else if (src instanceof ItemClickAction) {
-            object.add("item", context.serialize(((ItemClickAction) src).item));
-        } else if (src instanceof CategoryClickAction) {
-            object.add("category", new JsonPrimitive(((CategoryClickAction) src).category));
+        if (src instanceof ClickActionCommand) {
+            object.add("command", new JsonPrimitive(((ClickActionCommand) src).command));
+        } else if (src instanceof ClickActionKey) {
+            object.add("key", new JsonPrimitive(((ClickActionKey) src).key));
+        } else if (src instanceof ClickActionUseItem) {
+            object.add("item", context.serialize(((ClickActionUseItem) src).item));
+        } else if (src instanceof ClickActionCategory) {
+            object.add("category", new JsonPrimitive(((ClickActionCategory) src).category));
         }
 
         return object;
     }
 
     @Override
-    public IClickAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public ClickAction.IClickAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (!json.isJsonObject()) {
             return null;
         }
@@ -40,13 +40,13 @@ public class ClickActionSerializer implements JsonSerializer<IClickAction>, Json
             JsonElement element = entry.getValue();
 
             if (key.equals("command")) {
-                return new CommandClickAction(element.getAsString());
+                return new ClickActionCommand(element.getAsString());
             } else if (key.equals("key")) {
-                return new KeyClickAction(element.getAsString());
+                return new ClickActionKey(element.getAsString());
             } else if (key.equals("item")) {
-                return new ItemClickAction((ItemStack) context.deserialize(element, ItemStack.class));
+                return new ClickActionUseItem((ItemStack) context.deserialize(element, ItemStack.class));
             } else if (key.equals("category")) {
-                return new CategoryClickAction(element.getAsString());
+                return new ClickActionCategory(element.getAsString());
             }
         }
 

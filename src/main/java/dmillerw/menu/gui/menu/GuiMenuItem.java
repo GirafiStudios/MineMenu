@@ -1,10 +1,10 @@
 package dmillerw.menu.gui.menu;
 
+import dmillerw.menu.data.click.ClickActionCommand;
+import dmillerw.menu.data.click.ClickActionKey;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.data.session.EditSessionData;
-import dmillerw.menu.data.click.CommandClickAction;
-import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.button.GuiItemButton;
@@ -57,9 +57,9 @@ public class GuiMenuItem extends GuiScreen {
         this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.stone)));
         String string = "Action";
         if (EditSessionData.clickAction != null) {
-            if (EditSessionData.clickAction instanceof CommandClickAction) {
+            if (EditSessionData.clickAction instanceof ClickActionCommand) {
                 string = "Command";
-            } else if (EditSessionData.clickAction instanceof KeyClickAction) {
+            } else if (EditSessionData.clickAction instanceof ClickActionKey) {
                 string = "Keybind";
             }
         }

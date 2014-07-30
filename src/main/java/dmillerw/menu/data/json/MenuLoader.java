@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dmillerw.menu.MineMenu;
-import dmillerw.menu.data.click.CommandClickAction;
-import dmillerw.menu.data.click.IClickAction;
-import dmillerw.menu.data.click.KeyClickAction;
+import dmillerw.menu.data.click.ClickAction;
+import dmillerw.menu.data.click.ClickActionCommand;
+import dmillerw.menu.data.click.ClickActionKey;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.handler.LogHandler;
@@ -28,7 +28,7 @@ public class MenuLoader {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer());
-        builder.registerTypeAdapter(IClickAction.class, new ClickActionSerializer());
+        builder.registerTypeAdapter(ClickAction.IClickAction.class, new ClickActionSerializer());
         gson = builder.create();
     }
 
@@ -71,10 +71,10 @@ public class MenuLoader {
                                 LogHandler.error(String.format("Menu item in slot %s is missing a click action. It will be reset!", String.valueOf(id)));
                                 array[id] = null;
                             } else {
-                                if ((item.clickAction instanceof CommandClickAction && ((CommandClickAction) item.clickAction).command.isEmpty())) {
+                                if ((item.clickAction instanceof ClickActionCommand && ((ClickActionCommand) item.clickAction).command.isEmpty())) {
                                     LogHandler.warn(String.format("Menu item in slot %s is defined as a command action, but is missing a command. It will be reset!", String.valueOf(id)));
                                     array[id] = null;
-                                } else if (item.clickAction instanceof KeyClickAction && ((KeyClickAction) item.clickAction).getKeyBinding() == null) {
+                                } else if (item.clickAction instanceof ClickActionKey && ((ClickActionKey) item.clickAction).getKeyBinding() == null) {
                                     LogHandler.warn(String.format("Menu item in slot %s is defined as a key action, but is missing a keybinding. It will be reset!", String.valueOf(id)));
                                     array[id] = null;
                                 }

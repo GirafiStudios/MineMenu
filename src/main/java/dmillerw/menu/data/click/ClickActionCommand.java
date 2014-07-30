@@ -5,11 +5,11 @@ import net.minecraft.client.Minecraft;
 /**
  * @author dmillerw
  */
-public class CommandClickAction implements IClickAction {
+public class ClickActionCommand implements ClickAction.IClickAction {
 
     public final String command;
 
-    public CommandClickAction(String command) {
+    public ClickActionCommand(String command) {
         this.command = command;
     }
 

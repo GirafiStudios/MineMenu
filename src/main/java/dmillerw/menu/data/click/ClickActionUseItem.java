@@ -9,11 +9,11 @@ import net.minecraft.item.ItemStack;
 /**
  * @author dmillerw
  */
-public class ItemClickAction implements IClickAction {
+public class ClickActionUseItem implements ClickAction.IClickAction {
 
     public final ItemStack item;
 
-    public ItemClickAction(ItemStack item) {
+    public ClickActionUseItem(ItemStack item) {
         this.item = item;
     }
 

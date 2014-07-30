@@ -5,11 +5,11 @@ import dmillerw.menu.data.menu.RadialMenu;
 /**
  * @author dmillerw
  */
-public class CategoryClickAction implements IClickAction {
+public class ClickActionCategory implements ClickAction.IClickAction {
 
     public final String category;
 
-    public CategoryClickAction(String category) {
+    public ClickActionCategory(String category) {
         this.category = category;
     }
 

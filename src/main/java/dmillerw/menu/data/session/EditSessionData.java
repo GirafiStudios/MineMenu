@@ -1,7 +1,7 @@
 package dmillerw.menu.data.session;
 
+import dmillerw.menu.data.click.ClickAction;
 import dmillerw.menu.data.menu.MenuItem;
-import dmillerw.menu.data.click.IClickAction;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +14,7 @@ public class EditSessionData {
 
     public static ItemStack icon;
 
-    public static IClickAction clickAction;
+    public static ClickAction.IClickAction clickAction;
 
     public static void clear() {
         title = "";

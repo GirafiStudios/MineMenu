@@ -42,4 +42,9 @@ public enum ClickAction {
         }
         return Arrays.asList(values);
     }
+
+    public static interface IClickAction {
+        public ClickAction getClickAction();
+        public boolean onClicked();
+    }
 }

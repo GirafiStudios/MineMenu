@@ -75,8 +75,8 @@ public class GuiClickAction extends GuiScreen {
         if (GuiClickAction.keyBinding != null) {
             keyString = I18n.format(keyBinding.getKeyDescription());
         } else {
-            if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof KeyClickAction) {
-                keyString = I18n.format(((KeyClickAction) EditSessionData.clickAction).key);
+            if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
+                keyString = I18n.format(((ClickActionKey) EditSessionData.clickAction).key);
             } else {
                 keyString = "Select a key";
             }
@@ -88,7 +88,7 @@ public class GuiClickAction extends GuiScreen {
             itemString = "Item: " + item.getDisplayName();
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = "Item: " + ((ItemClickAction) EditSessionData.clickAction).item.getDisplayName();
+                itemString = "Item: " + ((ClickActionUseItem) EditSessionData.clickAction).item.getDisplayName();
             } else {
                 itemString = "Select a Slot";
             }
@@ -103,12 +103,12 @@ public class GuiClickAction extends GuiScreen {
         this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
-        this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof CommandClickAction) ? ((CommandClickAction) EditSessionData.clickAction).command : "");
+        this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
         this.textCategory = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCategory.setMaxStringLength(32767);
         this.textCategory.setFocused(true);
-        this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof CategoryClickAction) ? ((CategoryClickAction) EditSessionData.clickAction).category : "");
+        this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
 
         this.modeCommand.enabled = mode != 0;
         this.modeKeybinding.enabled = mode != 1;
@@ -194,13 +194,13 @@ public class GuiClickAction extends GuiScreen {
                 GuiStack.pop();
             } else if (button.id == 0) {
                 if (mode == 0) {
-                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new CommandClickAction(textCommand.getText().trim()) : null;
+                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim()) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
-                    EditSessionData.clickAction = new KeyClickAction(keyBinding.getKeyDescription());
+                    EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription());
                 } else if (mode == 2 && GuiClickAction.item != null) {
-                    EditSessionData.clickAction = new ItemClickAction(item);
+                    EditSessionData.clickAction = new ClickActionUseItem(item);
                 } else if (mode == 3) {
-                    EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new CategoryClickAction(textCategory.getText().trim()) : null;
+                    EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new ClickActionCategory(textCategory.getText().trim()) : null;
                 }
                 GuiStack.pop();
             }

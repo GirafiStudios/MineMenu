@@ -9,11 +9,11 @@ import net.minecraft.client.settings.KeyBinding;
 /**
  * @author dmillerw
  */
-public class KeyClickAction implements IClickAction {
+public class ClickActionKey implements ClickAction.IClickAction {
 
     public final String key;
 
-    public KeyClickAction(String key) {
+    public ClickActionKey(String key) {
         this.key = key;
     }
 
