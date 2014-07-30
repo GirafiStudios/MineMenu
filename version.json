@@ -2,12 +2,12 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.0.6",
+			"modVersion":"1.1.0",
 			"changeLog": [
-				"Fixed menu items sometimes not being saved",
-				"Made it more obvious that item use actions aren't available yet"
+				"Added support for item usage",
+				"Added support for categories"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2209986/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2210031/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
