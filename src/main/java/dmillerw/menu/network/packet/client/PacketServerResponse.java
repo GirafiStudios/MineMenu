@@ -1,4 +1,4 @@
-package dmillerw.menu.network.client;
+package dmillerw.menu.network.packet.client;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
