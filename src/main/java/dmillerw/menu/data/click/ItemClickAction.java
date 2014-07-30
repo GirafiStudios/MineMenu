@@ -23,7 +23,7 @@ public class ItemClickAction implements IClickAction {
     }
 
     @Override
-    public void onClicked() {
+    public boolean onClicked() {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
         for (int i=0; i<player.inventory.getSizeInventory(); i++) {
@@ -34,5 +34,7 @@ public class ItemClickAction implements IClickAction {
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }
+
+        return false;
     }
 }

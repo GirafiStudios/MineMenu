@@ -1,11 +1,8 @@
 package dmillerw.menu.gui.menu;
 
 import cpw.mods.fml.client.config.GuiButtonExt;
-import dmillerw.menu.data.click.ClickAction;
+import dmillerw.menu.data.click.*;
 import dmillerw.menu.data.session.EditSessionData;
-import dmillerw.menu.data.click.CommandClickAction;
-import dmillerw.menu.data.click.ItemClickAction;
-import dmillerw.menu.data.click.KeyClickAction;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.button.GuiItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
@@ -31,10 +28,12 @@ public class GuiClickAction extends GuiScreen {
     public static KeyBinding keyBinding;
 
     private GuiTextField textCommand;
+    private GuiTextField textCategory;
 
     private GuiButtonExt modeCommand;
     private GuiButtonExt modeKeybinding;
     private GuiButtonExt modeUseItem;
+    private GuiButtonExt modeCategory;
 
     private GuiButton keybindButton;
     private GuiButton selectItemButton;
@@ -46,11 +45,13 @@ public class GuiClickAction extends GuiScreen {
 
     public GuiClickAction() {
         GuiClickAction.keyBinding = null;
+        GuiClickAction.item = null;
     }
 
     @Override
     public void updateScreen() {
         this.textCommand.updateCursorCounter();
+        this.textCategory.updateCursorCounter();
     }
 
     @Override
@@ -94,22 +95,30 @@ public class GuiClickAction extends GuiScreen {
         }
         this.buttonList.add(this.selectItemButton = new GuiButton(3, this.width / 2 - 75, 50, 150, 20, itemString));
 
-        this.buttonList.add(this.modeCommand = new GuiItemButton(4, this.width / 2 - 40, this.height - 90, 20, 20, new ItemStack(Items.paper)));
-        this.buttonList.add(this.modeKeybinding = new GuiItemButton(5, this.width / 2 - 10, this.height - 90, 20, 20, new ItemStack(Blocks.wooden_button)));
-        this.buttonList.add(this.modeUseItem = new GuiItemButton(6, this.width / 2 + 20, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
+        this.buttonList.add(this.modeCommand = new GuiItemButton(4, this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.paper)));
+        this.buttonList.add(this.modeKeybinding = new GuiItemButton(5, this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.wooden_button)));
+        this.buttonList.add(this.modeUseItem = new GuiItemButton(6, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
+        this.buttonList.add(this.modeCategory = new GuiItemButton(7, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.chest)));
 
         this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
         this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof CommandClickAction) ? ((CommandClickAction) EditSessionData.clickAction).command : "");
 
+        this.textCategory = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCategory.setMaxStringLength(32767);
+        this.textCategory.setFocused(true);
+        this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof CategoryClickAction) ? ((CategoryClickAction) EditSessionData.clickAction).category : "");
+
         this.modeCommand.enabled = mode != 0;
         this.modeKeybinding.enabled = mode != 1;
         this.modeUseItem.enabled = mode != 2;
+        this.modeCategory.enabled = mode != 3;
 
         textCommand.setVisible(mode == 0);
         keybindButton.visible = mode == 1;
         selectItemButton.visible = mode == 2;
+        textCategory.setVisible(mode == 3);
     }
 
     @Override
@@ -125,13 +134,29 @@ public class GuiClickAction extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.enabled) {
-            if (button.id == 6) {
+            if (button.id == 7) {
+                // Category
+                mode = 3;
+
+                modeCategory.enabled = false;
+                modeUseItem.enabled = true;
+                modeKeybinding.enabled = true;
+                modeCommand.enabled = true;
+
+                textCategory.setVisible(true);
+                selectItemButton.visible = false;
+                textCommand.setVisible(false);
+                keybindButton.visible = false;
+            } else if (button.id == 6) {
                 // Select item
                 mode = 2;
+
+                modeCategory.enabled = true;
 				modeUseItem.enabled = false;
 				modeKeybinding.enabled = true;
 				modeCommand.enabled = true;
 
+                textCategory.setVisible(false);
 				selectItemButton.visible = true;
 				textCommand.setVisible(false);
 				keybindButton.visible = false;
@@ -139,10 +164,12 @@ public class GuiClickAction extends GuiScreen {
                 // Keybinding
                 mode = 1;
 
+                modeCategory.enabled = true;
                 modeUseItem.enabled = true;
                 modeKeybinding.enabled = false;
                 modeCommand.enabled = true;
 
+                textCategory.setVisible(false);
                 selectItemButton.visible = false;
                 textCommand.setVisible(false);
                 keybindButton.visible = true;
@@ -150,10 +177,12 @@ public class GuiClickAction extends GuiScreen {
                 // Command
                 mode = 0;
 
+                modeCategory.enabled = true;
                 modeUseItem.enabled = true;
                 modeKeybinding.enabled = true;
                 modeCommand.enabled = false;
 
+                textCategory.setVisible(false);
                 selectItemButton.visible = false;
                 textCommand.setVisible(true);
                 keybindButton.visible = false;
@@ -170,6 +199,8 @@ public class GuiClickAction extends GuiScreen {
                     EditSessionData.clickAction = new KeyClickAction(keyBinding.getKeyDescription());
                 } else if (mode == 2 && GuiClickAction.item != null) {
                     EditSessionData.clickAction = new ItemClickAction(item);
+                } else if (mode == 3) {
+                    EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new CategoryClickAction(textCategory.getText().trim()) : null;
                 }
                 GuiStack.pop();
             }
@@ -179,6 +210,7 @@ public class GuiClickAction extends GuiScreen {
     @Override
     protected void keyTyped(char key, int keycode) {
         this.textCommand.textboxKeyTyped(key, keycode);
+        this.textCategory.textboxKeyTyped(key, keycode);
 
         if (keycode != 28 && keycode != 156) {
             if (keycode == 1) {
@@ -198,12 +230,14 @@ public class GuiClickAction extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partial) {
         this.drawDefaultBackground();
         this.textCommand.drawTextBox();
+        this.textCategory.drawTextBox();
         super.drawScreen(mouseX, mouseY, partial);
         String header = "";
         switch (mode) {
             case 0: header = "Select a Key"; break;
             case 1: header = "Enter a Command"; break;
             case 2: header = "Pick an Item"; break;
+            case 3: header = "Enter a Category"; break;
         }
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
         if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
@@ -212,6 +246,8 @@ public class GuiClickAction extends GuiScreen {
             this.func_146283_a(Arrays.asList("Click Action: KeyBinding"), mouseX, mouseY);
         } else if (mouseX > modeUseItem.xPosition && mouseX < modeUseItem.xPosition + modeUseItem.width && mouseY > modeUseItem.yPosition && mouseY < modeUseItem.yPosition + modeUseItem.width) {
             this.func_146283_a(Arrays.asList("Click Action: Use Item"), mouseX, mouseY);
+        } else if (mouseX > modeCategory.xPosition && mouseX < modeCategory.xPosition + modeCategory.width && mouseY > modeCategory.yPosition && mouseY < modeCategory.yPosition + modeCategory.width) {
+            this.func_146283_a(Arrays.asList("Click Action: Category"), mouseX, mouseY);
         }
     }
 }

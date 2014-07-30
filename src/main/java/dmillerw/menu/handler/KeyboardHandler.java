@@ -4,6 +4,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -57,6 +58,7 @@ public class KeyboardHandler {
             MouseHandler.showMenu = showMenu;
             if (showMenu) {
                 Minecraft.getMinecraft().setIngameNotInFocus();
+                RadialMenu.resetCategory();
             } else {
                 if (Minecraft.getMinecraft().currentScreen == null) {
                     Minecraft.getMinecraft().setIngameFocus();

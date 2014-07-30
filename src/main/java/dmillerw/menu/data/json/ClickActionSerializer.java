@@ -1,10 +1,7 @@
 package dmillerw.menu.data.json;
 
 import com.google.gson.*;
-import dmillerw.menu.data.click.CommandClickAction;
-import dmillerw.menu.data.click.IClickAction;
-import dmillerw.menu.data.click.ItemClickAction;
-import dmillerw.menu.data.click.KeyClickAction;
+import dmillerw.menu.data.click.*;
 import net.minecraft.item.ItemStack;
 
 import java.lang.reflect.Type;
@@ -25,6 +22,8 @@ public class ClickActionSerializer implements JsonSerializer<IClickAction>, Json
             object.add("key", new JsonPrimitive(((KeyClickAction) src).key));
         } else if (src instanceof ItemClickAction) {
             object.add("item", context.serialize(((ItemClickAction) src).item));
+        } else if (src instanceof CategoryClickAction) {
+            object.add("category", new JsonPrimitive(((CategoryClickAction) src).category));
         }
 
         return object;
@@ -46,6 +45,8 @@ public class ClickActionSerializer implements JsonSerializer<IClickAction>, Json
                 return new KeyClickAction(element.getAsString());
             } else if (key.equals("item")) {
                 return new ItemClickAction((ItemStack) context.deserialize(element, ItemStack.class));
+            } else if (key.equals("category")) {
+                return new CategoryClickAction(element.getAsString());
             }
         }
 

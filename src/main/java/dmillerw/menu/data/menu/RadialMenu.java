@@ -3,6 +3,7 @@ package dmillerw.menu.data.menu;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author dmillerw
@@ -13,7 +14,21 @@ public class RadialMenu {
 
     public static final String MAIN_TAG = "main";
 
-    public static Map<String, MenuItem[]> menuMap = Maps.newHashMap();
+    private static Map<String, MenuItem[]> menuMap = Maps.newHashMap();
+
+    public static String currentCategory = MAIN_TAG;
+
+    public static Set<String> getCategories() {
+        return menuMap.keySet();
+    }
+
+    public static void resetCategory() {
+        currentCategory = MAIN_TAG;
+    }
+
+    public static MenuItem[] getActiveArray() {
+        return getArray(currentCategory);
+    }
 
     public static MenuItem[] getArray(String tag) {
         if (!menuMap.containsKey(tag)) {

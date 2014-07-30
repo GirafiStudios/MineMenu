@@ -7,5 +7,5 @@ public interface IClickAction {
 
     public ClickAction getClickAction();
 
-    public void onClicked();
+    public boolean onClicked();
 }

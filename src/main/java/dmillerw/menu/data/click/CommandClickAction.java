@@ -19,7 +19,8 @@ public class CommandClickAction implements IClickAction {
     }
 
     @Override
-    public void onClicked() {
+    public boolean onClicked() {
         Minecraft.getMinecraft().thePlayer.sendChatMessage(command);
+        return false;
     }
 }

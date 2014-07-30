@@ -93,14 +93,14 @@ public class GuiMenuItem extends GuiScreen {
             } else if (button.id == 3) {
                 GuiStack.push(new GuiPickIcon());
             } else if (button.id == 2) {
-                RadialMenu.getArray(RadialMenu.MAIN_TAG)[slot] = null;
+                RadialMenu.getActiveArray()[slot] = null;
                 MenuLoader.save();
                 Minecraft.getMinecraft().displayGuiScreen(null);
             } else if (button.id == 1) {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             } else if (button.id == 0) {
                 if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
-                    RadialMenu.getArray(RadialMenu.MAIN_TAG)[slot] = EditSessionData.toMenuItem();
+                    RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
                 }
 
                 MenuLoader.save();

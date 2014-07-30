@@ -11,7 +11,8 @@ public enum ClickAction {
 
     COMMAND(false),
     KEYBIND(false),
-    ITEM_USE(true);
+    ITEM_USE(true),
+    CATEGORY(false);
 
     public final boolean requiresServer;
 

@@ -32,11 +32,12 @@ public class KeyClickAction implements IClickAction {
     }
 
     @Override
-    public void onClicked() {
+    public boolean onClicked() {
         KeyBinding binding = getKeyBinding();
         if (binding != null) {
             KeyboardHandler.INSTANCE.fireKey(binding);
             FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
         }
+        return true;
     }
 }

@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
@@ -112,7 +113,7 @@ public class ClientTickHandler {
         mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+            MenuItem item = RadialMenu.getActiveArray()[i];
             boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
             double currAngle = ANGLE_PER_ITEM * i;
             double nextAngle = currAngle + ANGLE_PER_ITEM;
@@ -166,7 +167,7 @@ public class ClientTickHandler {
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+            MenuItem item = RadialMenu.getActiveArray()[i];
             ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
 
             switch (stack.getItemSpriteNumber()) {
@@ -214,9 +215,41 @@ public class ClientTickHandler {
             boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
             if (mouseIn) {
-                MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+                MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                fontRenderer.drawStringWithShadow(string, resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2, resolution.getScaledHeight() / 2, 0xFFFFFF);
+                if (mc.thePlayer.isSneaking() && item != null) {
+                    string = EnumChatFormatting.RED + "EDIT: " + EnumChatFormatting.WHITE + string;
+                }
+
+                int drawX = resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
+                int drawY = resolution.getScaledHeight() / 2;
+
+                int drawWidth = mc.fontRenderer.getStringWidth(string);
+                int drawHeight = mc.fontRenderer.FONT_HEIGHT;
+
+                float padding = 5F;
+
+                // Background
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                Tessellator tessellator = Tessellator.instance;
+                tessellator.startDrawingQuads();
+
+                tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+
+                tessellator.addVertex(drawX - padding,             drawY + drawHeight + padding, 0);
+                tessellator.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0);
+                tessellator.addVertex(drawX + drawWidth + padding, drawY - padding, 0);
+                tessellator.addVertex(drawX - padding,             drawY - padding, 0);
+
+                tessellator.draw();
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GL11.glDisable(GL11.GL_BLEND);
+
+                // Text
+                fontRenderer.drawStringWithShadow(string, drawX, drawY, 0xFFFFFF);
             }
         }
     }

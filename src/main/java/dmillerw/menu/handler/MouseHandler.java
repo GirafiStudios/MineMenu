@@ -62,7 +62,7 @@ public class MouseHandler {
                             boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
                             if (mouseIn) {
-                                MenuItem item = RadialMenu.getArray(RadialMenu.MAIN_TAG)[i];
+                                MenuItem item = RadialMenu.getActiveArray()[i];
                                 boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
 
                                 if (item != null && item.clickAction != null) {
@@ -72,10 +72,11 @@ public class MouseHandler {
                                         return;
                                     } else {
                                         if (!disabled) {
-                                            showMenu = false;
-                                            item.clickAction.onClicked();
-                                            ignoreNextTick = true;
-                                            return;
+                                            if (item.clickAction.onClicked()) {
+                                                showMenu = false;
+                                                ignoreNextTick = true;
+                                                return;
+                                            }
                                         }
                                     }
                                 } else {
