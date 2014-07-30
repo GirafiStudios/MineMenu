@@ -51,8 +51,11 @@ public class GuiPickItem extends GuiScreen {
                 this.drawSlot(slot, false);
             }
         }
-        if (mousedOver != null) {
+        if (mousedOver != null && mousedOver.getStack() != null) {
+            GL11.glPushMatrix();
             drawSlot(mousedOver, true);
+            GL11.glPopMatrix();
+            renderToolTip(mousedOver.getStack(), par1, par2);
         }
         GL11.glPopMatrix();
     }
