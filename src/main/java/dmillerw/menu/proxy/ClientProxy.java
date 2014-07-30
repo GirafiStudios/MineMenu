@@ -25,6 +25,8 @@ public class ClientProxy extends CommonProxy {
     public static int selectGreen;
     public static int selectBlue;
 
+    public static boolean toggle;
+
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
@@ -70,6 +72,8 @@ public class ClientProxy extends CommonProxy {
         selectRed = verify(p_selectRed);
         selectGreen = verify(p_selectGreen);
         selectBlue = verify(p_selectBlue);
+
+        toggle = configuration.get("general", "toggle", false).getBoolean();
 
         if (configuration.hasChanged()) {
             configuration.save();

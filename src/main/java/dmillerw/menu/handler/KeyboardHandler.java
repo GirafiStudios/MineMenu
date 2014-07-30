@@ -7,6 +7,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
+import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
@@ -55,12 +56,25 @@ public class KeyboardHandler {
 
         boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
 
-        if (wheelKeyPressed != lastWheelState && wheelKeyPressed != GuiRadialMenu.active) {
-            if (wheelKeyPressed) {
-                RadialMenu.resetCategory();
-                GuiRadialMenu.activate();
+        if (wheelKeyPressed != lastWheelState) {
+            if (ClientProxy.toggle) {
+                if (wheelKeyPressed) {
+                    if (GuiRadialMenu.active) {
+                        GuiRadialMenu.deactivate();
+                    } else {
+                        RadialMenu.resetCategory();
+                        GuiRadialMenu.activate();
+                    }
+                }
             } else {
-                GuiRadialMenu.deactivate();
+                if (wheelKeyPressed != GuiRadialMenu.active) {
+                    if (wheelKeyPressed) {
+                        RadialMenu.resetCategory();
+                        GuiRadialMenu.activate();
+                    } else {
+                        GuiRadialMenu.deactivate();
+                    }
+                }
             }
         }
         lastWheelState = wheelKeyPressed;

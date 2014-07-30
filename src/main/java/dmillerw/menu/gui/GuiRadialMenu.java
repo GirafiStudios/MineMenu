@@ -19,8 +19,10 @@ public class GuiRadialMenu extends GuiScreen {
     public static boolean active = false;
 
     public static void activate() {
-        active = true;
-        Minecraft.getMinecraft().displayGuiScreen(INSTANCE);
+        if (Minecraft.getMinecraft().currentScreen == null) {
+            active = true;
+            Minecraft.getMinecraft().displayGuiScreen(INSTANCE);
+        }
     }
 
     public static void deactivate() {
