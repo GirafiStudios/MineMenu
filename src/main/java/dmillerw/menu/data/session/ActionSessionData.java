@@ -24,5 +24,6 @@ public class ActionSessionData {
 
     public static void restoreDefaults() {
         LogHandler.info("CLIENT: Disconnected from server, restoring default security settings");
+        activateAll();
     }
 }
