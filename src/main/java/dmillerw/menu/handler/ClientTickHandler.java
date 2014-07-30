@@ -3,10 +3,11 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
+import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.gui.CompatibleScaledResolution;
+import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import dmillerw.menu.proxy.ClientProxy;
@@ -21,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -45,25 +45,13 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        // Cancel out all mouse interaction (except our own) if the menu is open
-        Minecraft mc = Minecraft.getMinecraft();
-
-        if (MouseHandler.showMenu) {
-            Mouse.getDX();
-            Mouse.getDY();
-            mc.mouseHelper.deltaX = mc.mouseHelper.deltaY = 0;
-        }
-    }
-
-    @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
             double zLevel = 0.05D;
 
             if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
-                if (MouseHandler.showMenu) {
+                if (GuiRadialMenu.active) {
                     CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
                     renderGui(resolution, zLevel);
                     renderItems(resolution, zLevel);
@@ -74,7 +62,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && MouseHandler.showMenu) {
+        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && GuiRadialMenu.active) {
             event.setCanceled(true);
         }
 
@@ -83,10 +71,8 @@ public class ClientTickHandler {
         }
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
-            if (MouseHandler.showMenu) {
-                renderText(event.resolution, Z_LEVEL);
-            }
+        if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
+            renderText(event.resolution, Z_LEVEL);
         }
     }
 
@@ -217,7 +203,7 @@ public class ClientTickHandler {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (mc.thePlayer.isSneaking() && item != null) {
+                if (GuiRadialMenu.isShiftKeyDown() && item != null) {
                     string = EnumChatFormatting.RED + "EDIT: " + EnumChatFormatting.WHITE + string;
                 }
 

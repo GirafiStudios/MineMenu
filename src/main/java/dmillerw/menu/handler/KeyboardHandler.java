@@ -5,6 +5,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.menu.RadialMenu;
+import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -25,10 +26,11 @@ public class KeyboardHandler {
         ClientRegistry.registerKeyBinding(WHEEL);
     }
 
+    private static boolean lastWheelState = false;
+
     public KeyBinding lastKey;
 
     private boolean ignoreNextTick = false;
-    private boolean ignoreNextWheelTick = false;
 
     private KeyboardHandler() {
 
@@ -52,19 +54,16 @@ public class KeyboardHandler {
         }
 
         boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
-        boolean showMenu = wheelKeyPressed && Minecraft.getMinecraft().currentScreen == null;
 
-        if (showMenu != MouseHandler.showMenu) {
-            MouseHandler.showMenu = showMenu;
-            if (showMenu) {
-                Minecraft.getMinecraft().setIngameNotInFocus();
+        if (wheelKeyPressed != lastWheelState && wheelKeyPressed != GuiRadialMenu.active) {
+            if (wheelKeyPressed) {
                 RadialMenu.resetCategory();
+                GuiRadialMenu.activate();
             } else {
-                if (Minecraft.getMinecraft().currentScreen == null) {
-                    Minecraft.getMinecraft().setIngameFocus();
-                }
+                GuiRadialMenu.deactivate();
             }
         }
+        lastWheelState = wheelKeyPressed;
 
         if (lastKey != null) {
             if (ignoreNextTick) {
