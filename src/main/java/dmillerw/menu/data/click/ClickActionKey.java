@@ -1,7 +1,5 @@
 package dmillerw.menu.data.click;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.gameevent.InputEvent;
 import dmillerw.menu.handler.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -13,8 +11,11 @@ public class ClickActionKey implements ClickAction.IClickAction {
 
     public final String key;
 
-    public ClickActionKey(String key) {
+    public final boolean toggle;
+
+    public ClickActionKey(String key, boolean toggle) {
         this.key = key;
+        this.toggle = toggle;
     }
 
     public KeyBinding getKeyBinding() {
@@ -35,8 +36,11 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public boolean onClicked() {
         KeyBinding binding = getKeyBinding();
         if (binding != null) {
-            KeyboardHandler.INSTANCE.fireKey(binding);
-            FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+            if (toggle) {
+                KeyboardHandler.INSTANCE.toggleKey(binding);
+            } else {
+                KeyboardHandler.INSTANCE.fireKey(binding);
+            }
         }
         return true;
     }

@@ -27,6 +27,8 @@ public class GuiClickAction extends GuiScreen {
 
     public static KeyBinding keyBinding;
 
+    public static boolean toggle = false;
+
     private GuiTextField textCommand;
     private GuiTextField textCategory;
 
@@ -36,6 +38,7 @@ public class GuiClickAction extends GuiScreen {
     private GuiButtonExt modeCategory;
 
     private GuiButton keybindButton;
+    private GuiButton keybindToggleButton;
     private GuiButton selectItemButton;
 
     private GuiButton buttonCancel;
@@ -83,6 +86,14 @@ public class GuiClickAction extends GuiScreen {
         }
         this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString));
 
+        String keyToggleString = "";
+        if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
+            keyToggleString = ((ClickActionKey)EditSessionData.clickAction).toggle ? "Toggle" : "Press";
+        } else {
+            keyToggleString = toggle ? "Toggle" : "Press";
+        }
+        this.buttonList.add(this.keybindToggleButton = new GuiButton(3, this.width / 2 - 75, 80, 150, 20, keyToggleString));
+
         String itemString = "";
         if (GuiClickAction.item != null) {
             itemString = "Item: " + item.getDisplayName();
@@ -93,12 +104,12 @@ public class GuiClickAction extends GuiScreen {
                 itemString = "Select a Slot";
             }
         }
-        this.buttonList.add(this.selectItemButton = new GuiButton(3, this.width / 2 - 75, 50, 150, 20, itemString));
+        this.buttonList.add(this.selectItemButton = new GuiButton(4, this.width / 2 - 75, 50, 150, 20, itemString));
 
-        this.buttonList.add(this.modeCommand = new GuiItemButton(4, this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.paper)));
-        this.buttonList.add(this.modeKeybinding = new GuiItemButton(5, this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.wooden_button)));
-        this.buttonList.add(this.modeUseItem = new GuiItemButton(6, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
-        this.buttonList.add(this.modeCategory = new GuiItemButton(7, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.chest)));
+        this.buttonList.add(this.modeCommand = new GuiItemButton(5, this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.paper)));
+        this.buttonList.add(this.modeKeybinding = new GuiItemButton(6, this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.wooden_button)));
+        this.buttonList.add(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
+        this.buttonList.add(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.chest)));
 
         this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
@@ -117,6 +128,7 @@ public class GuiClickAction extends GuiScreen {
 
         textCommand.setVisible(mode == 0);
         keybindButton.visible = mode == 1;
+        keybindToggleButton.visible = mode == 1;
         selectItemButton.visible = mode == 2;
         textCategory.setVisible(mode == 3);
     }
@@ -134,7 +146,7 @@ public class GuiClickAction extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.enabled) {
-            if (button.id == 7) {
+            if (button.id == 8) {
                 // Category
                 mode = 3;
 
@@ -147,7 +159,8 @@ public class GuiClickAction extends GuiScreen {
                 selectItemButton.visible = false;
                 textCommand.setVisible(false);
                 keybindButton.visible = false;
-            } else if (button.id == 6) {
+                keybindToggleButton.visible = false;
+            } else if (button.id == 7) {
                 // Select item
                 mode = 2;
 
@@ -160,7 +173,8 @@ public class GuiClickAction extends GuiScreen {
 				selectItemButton.visible = true;
 				textCommand.setVisible(false);
 				keybindButton.visible = false;
-            } else if (button.id == 5) {
+                keybindToggleButton.visible = false;
+            } else if (button.id == 6) {
                 // Keybinding
                 mode = 1;
 
@@ -173,7 +187,8 @@ public class GuiClickAction extends GuiScreen {
                 selectItemButton.visible = false;
                 textCommand.setVisible(false);
                 keybindButton.visible = true;
-            } else if (button.id == 4) {
+                keybindToggleButton.visible = true;
+            } else if (button.id == 5) {
                 // Command
                 mode = 0;
 
@@ -186,8 +201,12 @@ public class GuiClickAction extends GuiScreen {
                 selectItemButton.visible = false;
                 textCommand.setVisible(true);
                 keybindButton.visible = false;
-            } else if (button.id == 3) {
+                keybindToggleButton.visible = false;
+            } else if (button.id == 4) {
                 GuiStack.push(new GuiPickItem());
+            } else if (button.id == 3) {
+                toggle = !toggle;
+                keybindToggleButton.displayString = toggle ? "Toggle" : "Press";
             } else if (button.id == 2) {
                 GuiStack.push(new GuiPickKey());
             } else if (button.id == 1) {
@@ -196,7 +215,7 @@ public class GuiClickAction extends GuiScreen {
                 if (mode == 0) {
                     EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim()) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
-                    EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription());
+                    EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
                 } else if (mode == 2 && GuiClickAction.item != null) {
                     EditSessionData.clickAction = new ClickActionUseItem(item);
                 } else if (mode == 3) {

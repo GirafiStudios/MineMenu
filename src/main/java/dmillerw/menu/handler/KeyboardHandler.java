@@ -13,6 +13,10 @@ import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * @author dmillerw
  */
@@ -29,7 +33,8 @@ public class KeyboardHandler {
 
     private static boolean lastWheelState = false;
 
-    public KeyBinding lastKey;
+    private List<KeyBinding> firedKeys = new ArrayList<KeyBinding>();
+    private List<KeyBinding> toggledKeys = new ArrayList<KeyBinding>();
 
     private boolean ignoreNextTick = false;
 
@@ -38,9 +43,21 @@ public class KeyboardHandler {
     }
 
     public void fireKey(KeyBinding key) {
-        lastKey = key;
+        firedKeys.add(key);
         KeyReflectionHelper.pressKey(key);
         KeyReflectionHelper.increasePressTime(key);
+        ignoreNextTick = true;
+    }
+
+    public void toggleKey(KeyBinding key) {
+        if (!toggledKeys.contains(key)) {
+            toggledKeys.add(key);
+            KeyReflectionHelper.pressKey(key);
+            KeyReflectionHelper.increasePressTime(key);
+        } else {
+            toggledKeys.remove(key);
+            KeyReflectionHelper.unpressKey(key);
+        }
         ignoreNextTick = true;
     }
 
@@ -93,15 +110,28 @@ public class KeyboardHandler {
         }
         lastWheelState = wheelKeyPressed;
 
-        if (lastKey != null) {
-            if (ignoreNextTick) {
-                ignoreNextTick = false;
-                return;
+        if (ignoreNextTick) {
+            ignoreNextTick = false;
+            return;
+        }
+
+        Iterator<KeyBinding> iterator = firedKeys.iterator();
+        while (iterator.hasNext()) {
+            KeyBinding keyBinding = iterator.next();
+            KeyReflectionHelper.unpressKey(keyBinding);
+            iterator.remove();
+        }
+
+        iterator = toggledKeys.iterator();
+        while (iterator.hasNext()) {
+            KeyBinding keyBinding = iterator.next();
+            if ((keyBinding.getKeyCode() >= 0 ? Keyboard.isKeyDown(keyBinding.getKeyCode()) : Mouse.isButtonDown(keyBinding.getKeyCode() + 100))) {
+                iterator.remove();
             }
+        }
 
-            KeyReflectionHelper.unpressKey(lastKey);
-
-            lastKey = null;
+        for (KeyBinding keyBinding : toggledKeys) {
+            KeyReflectionHelper.increasePressTime(keyBinding);
         }
     }
 }
