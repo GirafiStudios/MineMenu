@@ -50,7 +50,9 @@ public class KeyboardHandler {
             return;
         }
 
-        if (Minecraft.getMinecraft().theWorld == null) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (mc.theWorld == null) {
             return;
         }
 
@@ -60,20 +62,30 @@ public class KeyboardHandler {
             if (ClientProxy.toggle) {
                 if (wheelKeyPressed) {
                     if (GuiRadialMenu.active) {
+                        if (ClientProxy.releaseToSelect) {
+                            GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
+                        }
                         GuiRadialMenu.deactivate();
                     } else {
-                        RadialMenu.resetCategory();
-                        RadialMenu.resetTimer();
-                        GuiRadialMenu.activate();
+                        if (mc.currentScreen == null || mc.currentScreen instanceof GuiRadialMenu) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            GuiRadialMenu.activate();
+                        }
                     }
                 }
             } else {
                 if (wheelKeyPressed != GuiRadialMenu.active) {
                     if (wheelKeyPressed) {
-                        RadialMenu.resetCategory();
-                        RadialMenu.resetTimer();
-                        GuiRadialMenu.activate();
+                        if (mc.currentScreen == null || mc.currentScreen instanceof GuiRadialMenu) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            GuiRadialMenu.activate();
+                        }
                     } else {
+                        if (ClientProxy.releaseToSelect) {
+                            GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
+                        }
                         GuiRadialMenu.deactivate();
                     }
                 }

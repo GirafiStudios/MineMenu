@@ -27,6 +27,7 @@ public class ClientProxy extends CommonProxy {
 
     public static boolean toggle;
     public static boolean rightClickToEdit;
+    public static boolean releaseToSelect;
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
@@ -76,6 +77,7 @@ public class ClientProxy extends CommonProxy {
 
         toggle = configuration.get("general", "toggle", false).getBoolean();
         rightClickToEdit = configuration.get("general", "rightClickToEdit", false).getBoolean();
+        releaseToSelect = configuration.get("general", "releaseToSelect", false).getBoolean();
 
         if (configuration.hasChanged()) {
             configuration.save();

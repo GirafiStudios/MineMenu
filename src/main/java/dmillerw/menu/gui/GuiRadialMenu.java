@@ -34,7 +34,7 @@ public class GuiRadialMenu extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    public void mouseClicked(int mouseX, int mouseY, int button) {
         if (active && RadialMenu.animationTimer == 0) {
             double mouseAngle = AngleHelper.getMouseAngle();
             mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -78,6 +78,12 @@ public class GuiRadialMenu extends GuiScreen {
                 }
             }
         }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        active = false;
     }
 
     @Override
