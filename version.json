@@ -2,7 +2,7 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.1.1",
+			"modVersion":"1.1.3",
 			"changeLog": [
 				"Visual indication of radial menu opening / category change",
 				"Keybinds can now either be pressed or toggled",
