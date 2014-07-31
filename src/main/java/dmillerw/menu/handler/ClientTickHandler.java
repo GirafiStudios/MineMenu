@@ -48,6 +48,11 @@ public class ClientTickHandler {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             RadialMenu.tickTimer();
+
+            Minecraft mc = Minecraft.getMinecraft();
+            if ((mc.theWorld == null || mc.isGamePaused()) && GuiRadialMenu.active) {
+                GuiRadialMenu.deactivate();
+            }
         }
     }
 
