@@ -24,4 +24,9 @@ public class ClickActionCategory implements ClickAction.IClickAction {
         RadialMenu.resetTimer();
         return false;
     }
+
+    @Override
+    public void onRemoved() {
+
+    }
 }

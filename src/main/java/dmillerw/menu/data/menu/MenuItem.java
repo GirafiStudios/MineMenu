@@ -21,4 +21,10 @@ public class MenuItem {
         this.icon = icon;
         this.clickAction = clickAction;
     }
+
+    public void onRemoved() {
+        if (clickAction != null) {
+            clickAction.onRemoved();
+        }
+    }
 }

@@ -23,4 +23,9 @@ public class ClickActionCommand implements ClickAction.IClickAction {
         Minecraft.getMinecraft().thePlayer.sendChatMessage(command);
         return false;
     }
+
+    @Override
+    public void onRemoved() {
+
+    }
 }

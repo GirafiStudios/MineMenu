@@ -1,6 +1,7 @@
 package dmillerw.menu.data.click;
 
 import dmillerw.menu.handler.KeyboardHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
@@ -43,5 +44,13 @@ public class ClickActionKey implements ClickAction.IClickAction {
             }
         }
         return true;
+    }
+
+    @Override
+    public void onRemoved() {
+        KeyBinding keyBinding = getKeyBinding();
+        if (keyBinding != null) {
+            KeyReflectionHelper.unpressKey(getKeyBinding());
+        }
     }
 }

@@ -37,4 +37,9 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
 
         return false;
     }
+
+    @Override
+    public void onRemoved() {
+
+    }
 }

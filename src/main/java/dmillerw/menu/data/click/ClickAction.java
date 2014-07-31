@@ -46,5 +46,6 @@ public enum ClickAction {
     public static interface IClickAction {
         public ClickAction getClickAction();
         public boolean onClicked();
+        public void onRemoved();
     }
 }

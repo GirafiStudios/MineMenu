@@ -2,10 +2,10 @@ package dmillerw.menu.gui.menu;
 
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;
+import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.data.session.EditSessionData;
-import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.button.GuiItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
@@ -93,6 +93,7 @@ public class GuiMenuItem extends GuiScreen {
             } else if (button.id == 3) {
                 GuiStack.push(new GuiPickIcon());
             } else if (button.id == 2) {
+                RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
                 MenuLoader.save();
                 Minecraft.getMinecraft().displayGuiScreen(null);
@@ -100,9 +101,9 @@ public class GuiMenuItem extends GuiScreen {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             } else if (button.id == 0) {
                 if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
+                    RadialMenu.getActiveArray()[slot].onRemoved();
                     RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
                 }
-
                 MenuLoader.save();
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
