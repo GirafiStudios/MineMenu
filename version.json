@@ -2,12 +2,12 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.1.0",
+			"modVersion":"1.1.1",
 			"changeLog": [
-				"Added support for item usage",
-				"Added support for categories"
+				"Radial menu now makes use of a GUI. Should make input more reliable",
+				"Radial menu can now be toggled (config option)"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2210031/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2210103/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
