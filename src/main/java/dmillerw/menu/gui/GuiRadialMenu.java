@@ -6,6 +6,7 @@ import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.gui.menu.GuiMenuItem;
 import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.helper.AngleHelper;
+import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -54,12 +55,12 @@ public class GuiRadialMenu extends GuiScreen {
                         boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
 
                         if (item != null && item.clickAction != null) {
-                            if (isShiftKeyDown()) {
+                            if (isShiftKeyDown() || (ClientProxy.rightClickToEdit && button == 1)) {
                                 deactivate();
                                 GuiStack.push(new GuiMenuItem(i, item));
                                 return;
                             } else {
-                                if (!disabled) {
+                                if (!disabled && button == 0) {
                                     if (item.clickAction.onClicked()) {
                                         deactivate();
                                         return;
@@ -67,9 +68,11 @@ public class GuiRadialMenu extends GuiScreen {
                                 }
                             }
                         } else {
-                            deactivate();
-                            GuiStack.push(new GuiMenuItem(i, item));
-                            return;
+                            if (button == 0) {
+                                deactivate();
+                                GuiStack.push(new GuiMenuItem(i, item));
+                                return;
+                            }
                         }
                     }
                 }
