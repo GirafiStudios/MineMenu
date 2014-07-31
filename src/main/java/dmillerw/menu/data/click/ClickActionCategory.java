@@ -21,6 +21,7 @@ public class ClickActionCategory implements ClickAction.IClickAction {
     @Override
     public boolean onClicked() {
         RadialMenu.currentCategory = category;
+        RadialMenu.resetTimer();
         return false;
     }
 }

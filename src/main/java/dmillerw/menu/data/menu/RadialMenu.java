@@ -18,12 +18,24 @@ public class RadialMenu {
 
     public static String currentCategory = MAIN_TAG;
 
+    public static int animationTimer = 20;
+
     public static Set<String> getCategories() {
         return menuMap.keySet();
     }
 
     public static void resetCategory() {
         currentCategory = MAIN_TAG;
+    }
+
+    public static void tickTimer() {
+        if (animationTimer > 0) {
+            animationTimer -= 5;
+        }
+    }
+
+    public static void resetTimer() {
+        animationTimer = 20;
     }
 
     public static MenuItem[] getActiveArray() {

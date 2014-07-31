@@ -45,6 +45,13 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            RadialMenu.tickTimer();
+        }
+    }
+
+    @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
@@ -111,8 +118,8 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
-            double outerRadius = ((OUTER_RADIUS + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
             tessellator.startDrawingQuads();
 
@@ -168,8 +175,8 @@ public class ClientTickHandler {
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant
-            double drawX = INNER_RADIUS + drawOffset;
-            double drawY = INNER_RADIUS + drawOffset;
+            double drawX = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
+            double drawY = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
 
             double length = Math.sqrt(drawX * drawX + drawY * drawY);
 

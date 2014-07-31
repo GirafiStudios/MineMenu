@@ -63,6 +63,7 @@ public class KeyboardHandler {
                         GuiRadialMenu.deactivate();
                     } else {
                         RadialMenu.resetCategory();
+                        RadialMenu.resetTimer();
                         GuiRadialMenu.activate();
                     }
                 }
@@ -70,6 +71,7 @@ public class KeyboardHandler {
                 if (wheelKeyPressed != GuiRadialMenu.active) {
                     if (wheelKeyPressed) {
                         RadialMenu.resetCategory();
+                        RadialMenu.resetTimer();
                         GuiRadialMenu.activate();
                     } else {
                         GuiRadialMenu.deactivate();
