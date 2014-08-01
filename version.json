@@ -2,16 +2,11 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.1.3",
+			"modVersion":"1.1.4",
 			"changeLog": [
-				"Visual indication of radial menu opening / category change",
-				"Keybinds can now either be pressed or toggled",
-                "(CONFIG) Right-click menu item to edit",
-                "(CONFIG) Close radial menu to select item (best with toggle disabled)",
-                "(BUGFIX) Close radial menu on game pause / world exit",
-                "(BUGFIX) Category being reset while typing"
+				"Fixed crash bug"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2210235/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2210270/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
