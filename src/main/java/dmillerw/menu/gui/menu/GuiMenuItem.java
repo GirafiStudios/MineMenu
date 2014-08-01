@@ -101,7 +101,9 @@ public class GuiMenuItem extends GuiScreen {
                 Minecraft.getMinecraft().displayGuiScreen(null);
             } else if (button.id == 0) {
                 if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
-                    RadialMenu.getActiveArray()[slot].onRemoved();
+                    if (RadialMenu.getActiveArray()[slot] != null) {
+                        RadialMenu.getActiveArray()[slot].onRemoved();
+                    }
                     RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
                 }
                 MenuLoader.save();
