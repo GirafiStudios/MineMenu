@@ -3,12 +3,14 @@ package dmillerw.menu.handler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -46,6 +48,15 @@ public class KeyboardHandler {
         firedKeys.add(key);
         KeyReflectionHelper.pressKey(key);
         KeyReflectionHelper.increasePressTime(key);
+
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        boolean old = Minecraft.getMinecraft().inGameHasFocus;
+        Minecraft.getMinecraft().currentScreen = null;
+        Minecraft.getMinecraft().inGameHasFocus = true;
+        FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        Minecraft.getMinecraft().currentScreen = screen;
+        Minecraft.getMinecraft().inGameHasFocus = old;
+
         ignoreNextTick = true;
     }
 
@@ -58,6 +69,15 @@ public class KeyboardHandler {
             toggledKeys.remove(key);
             KeyReflectionHelper.unpressKey(key);
         }
+
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        boolean old = Minecraft.getMinecraft().inGameHasFocus;
+        Minecraft.getMinecraft().currentScreen = null;
+        Minecraft.getMinecraft().inGameHasFocus = true;
+        FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        Minecraft.getMinecraft().currentScreen = screen;
+        Minecraft.getMinecraft().inGameHasFocus = old;
+
         ignoreNextTick = true;
     }
 
