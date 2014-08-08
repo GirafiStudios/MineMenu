@@ -49,13 +49,9 @@ public class KeyboardHandler {
         KeyReflectionHelper.pressKey(key);
         KeyReflectionHelper.increasePressTime(key);
 
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-        boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
-        Minecraft.getMinecraft().currentScreen = screen;
-        Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
     }
@@ -70,13 +66,9 @@ public class KeyboardHandler {
             KeyReflectionHelper.unpressKey(key);
         }
 
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-        boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
-        Minecraft.getMinecraft().currentScreen = screen;
-        Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
     }
