@@ -10,7 +10,6 @@ import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -49,9 +48,11 @@ public class KeyboardHandler {
         KeyReflectionHelper.pressKey(key);
         KeyReflectionHelper.increasePressTime(key);
 
+        boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
     }
@@ -66,9 +67,11 @@ public class KeyboardHandler {
             KeyReflectionHelper.unpressKey(key);
         }
 
+        boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
     }
