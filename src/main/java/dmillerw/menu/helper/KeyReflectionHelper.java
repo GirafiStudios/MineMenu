@@ -5,6 +5,7 @@ import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 
 import java.lang.reflect.Field;
@@ -34,9 +35,12 @@ public class KeyReflectionHelper {
     public static void unpressKey(KeyBinding keyBinding) {
         try {
             unpressKeyMethod.invoke(keyBinding);
+            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
             boolean old = Minecraft.getMinecraft().inGameHasFocus;
+            Minecraft.getMinecraft().currentScreen = null;
             Minecraft.getMinecraft().inGameHasFocus = true;
             FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+            Minecraft.getMinecraft().currentScreen = screen;
             Minecraft.getMinecraft().inGameHasFocus = old;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -50,9 +54,12 @@ public class KeyReflectionHelper {
     public static void pressKey(KeyBinding binding) {
         try {
             pressedField.set(binding, true);
+            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
             boolean old = Minecraft.getMinecraft().inGameHasFocus;
+            Minecraft.getMinecraft().currentScreen = null;
             Minecraft.getMinecraft().inGameHasFocus = true;
             FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+            Minecraft.getMinecraft().currentScreen = screen;
             Minecraft.getMinecraft().inGameHasFocus = old;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
