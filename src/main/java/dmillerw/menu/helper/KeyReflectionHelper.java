@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import dmillerw.menu.handler.LogHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 import java.lang.reflect.Field;
@@ -33,7 +34,10 @@ public class KeyReflectionHelper {
     public static void unpressKey(KeyBinding keyBinding) {
         try {
             unpressKeyMethod.invoke(keyBinding);
+            boolean old = Minecraft.getMinecraft().inGameHasFocus;
+            Minecraft.getMinecraft().inGameHasFocus = true;
             FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+            Minecraft.getMinecraft().inGameHasFocus = old;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throwReflectionError("unpressKey", KeyBinding.class);
@@ -46,7 +50,10 @@ public class KeyReflectionHelper {
     public static void pressKey(KeyBinding binding) {
         try {
             pressedField.set(binding, true);
+            boolean old = Minecraft.getMinecraft().inGameHasFocus;
+            Minecraft.getMinecraft().inGameHasFocus = true;
             FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+            Minecraft.getMinecraft().inGameHasFocus = old;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throwReflectionError("pressed", KeyBinding.class);
