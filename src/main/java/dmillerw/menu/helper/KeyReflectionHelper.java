@@ -1,5 +1,7 @@
 package dmillerw.menu.helper;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.settings.KeyBinding;
@@ -31,6 +33,7 @@ public class KeyReflectionHelper {
     public static void unpressKey(KeyBinding keyBinding) {
         try {
             unpressKeyMethod.invoke(keyBinding);
+            FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throwReflectionError("unpressKey", KeyBinding.class);
@@ -43,6 +46,7 @@ public class KeyReflectionHelper {
     public static void pressKey(KeyBinding binding) {
         try {
             pressedField.set(binding, true);
+            FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throwReflectionError("pressed", KeyBinding.class);
