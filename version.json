@@ -2,11 +2,12 @@
 	"versionList": [
 		{
 			"mcVersion":"*",
-			"modVersion":"1.1.6",
+			"modVersion":"1.1.7",
 			"changeLog": [
-				"More tweaks to key-binding handling"
+				"More tweaks to key-binding handling",
+                "Emergency bug fix"
 			],
-			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2211051/download",
+			"updateURL":"http://minecraft.curseforge.com/mc-mods/222378-minemenu/files/2211067/download",
 			"isDirectLink":"true",
 			"newFileName":""
 		}
