@@ -4,6 +4,7 @@ import cpw.mods.fml.client.config.GuiButtonExt;
 import cpw.mods.fml.client.config.GuiUtils;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +26,9 @@ public class GuiItemButton extends GuiButtonExt {
             this.mouseDragged(mc, mouseX, mouseY);
 
             GL11.glPushMatrix();
+            if (this.icon == null) {
+                this.icon = new ItemStack(Blocks.stone);
+            }
             ItemRenderHelper.renderItem(this.xPosition + this.width / 2, this.yPosition + this.height / 2, this.zLevel, icon);
             GL11.glPopMatrix();
         }
