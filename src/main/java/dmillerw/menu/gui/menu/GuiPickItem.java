@@ -98,8 +98,11 @@ public class GuiPickItem extends GuiScreen {
             for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
                 Slot slot = (Slot) this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
                 if (mouseX - guiLeft >= slot.xDisplayPosition && mouseX - guiLeft <= slot.xDisplayPosition + 16 && mouseY - guiTop >= slot.yDisplayPosition && mouseY - guiTop <= slot.yDisplayPosition + 16) {
-                    GuiClickAction.item = slot.getStack().copy();
-                    GuiStack.pop();
+                    ItemStack itemStack = slot.getStack();
+                    if (itemStack != null) {
+                        GuiClickAction.item = itemStack.copy();
+                        GuiStack.pop();
+                    }
                 }
             }
         }
