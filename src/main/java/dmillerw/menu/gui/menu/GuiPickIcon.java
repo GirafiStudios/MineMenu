@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
@@ -93,17 +94,27 @@ public class GuiPickIcon extends GuiScreen {
 
                 ArrayList<ItemStack> temp = new ArrayList<ItemStack>();
 
-                for (Object anItemRegistry : Item.itemRegistry) {
-                    Item item = (Item) anItemRegistry;
-
-                    if (item != null && item.getCreativeTab() != null) {
-                        item.getSubItems(item, null, temp);
+                if (textSearch.getText().equalsIgnoreCase(".inv")) {
+                    EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                    for (int i=0; i<player.inventory.getSizeInventory(); i++) {
+                        ItemStack stack = player.inventory.getStackInSlot(i);
+                        if (stack != null) {
+                            stacks.add(stack.copy());
+                        }
                     }
-                }
+                } else {
+                    for (Object anItemRegistry : Item.itemRegistry) {
+                        Item item = (Item) anItemRegistry;
 
-                for (ItemStack stack : temp) {
-                    if (stack != null && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
-                        stacks.add(stack);
+                        if (item != null && item.getCreativeTab() != null) {
+                            item.getSubItems(item, null, temp);
+                        }
+                    }
+
+                    for (ItemStack stack : temp) {
+                        if (stack != null && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                            stacks.add(stack);
+                        }
                     }
                 }
             } else {
