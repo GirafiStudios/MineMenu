@@ -4,12 +4,15 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import java.io.File;
 
 /**
  * @author dmillerw
@@ -50,7 +53,7 @@ public class ClientProxy extends CommonProxy {
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
 
-        MenuLoader.load();
+        MenuLoader.load(new File(MineMenu.mainFolder, "menu.json"));
     }
 
     @Override

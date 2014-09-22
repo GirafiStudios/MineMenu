@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.click.ClickAction;
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;
@@ -32,9 +31,9 @@ public class MenuLoader {
         gson = builder.create();
     }
 
-    public static void load() {
+    public static void load(File file) {
         try {
-            JsonElement element = gson.fromJson(new FileReader(new File(MineMenu.configFolder, "menu.json")), JsonElement.class);
+            JsonElement element = gson.fromJson(new FileReader(file), JsonElement.class);
 
             if (!element.isJsonObject()) {
                 LogHandler.error(String.format("Failed to load menu.json! Improperly formatted file!"));
@@ -92,9 +91,7 @@ public class MenuLoader {
         }
     }
 
-    public static void save() {
-        File file = new File(MineMenu.configFolder, "menu.json");
-
+    public static void save(File file) {
         if (file.exists()) {
             file.delete();
         }
@@ -115,7 +112,7 @@ public class MenuLoader {
         }
 
         try {
-            FileWriter writer = new FileWriter(new File(MineMenu.configFolder, "menu.json"));
+            FileWriter writer = new FileWriter(file);
             writer.append(gson.toJson(object));
             writer.close();
         } catch (IOException ex) {

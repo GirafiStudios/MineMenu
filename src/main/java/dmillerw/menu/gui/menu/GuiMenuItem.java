@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;
 import dmillerw.menu.data.json.MenuLoader;
@@ -17,6 +18,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
+
+import java.io.File;
 
 /**
  * @author dmillerw
@@ -96,7 +99,7 @@ public class GuiMenuItem extends GuiScreen {
                 if (RadialMenu.getActiveArray()[slot] != null) {
                     RadialMenu.getActiveArray()[slot].onRemoved();
                     RadialMenu.getActiveArray()[slot] = null;
-                    MenuLoader.save();
+                    MenuLoader.save(new File(MineMenu.mainFolder, "menu.json"));
                     Minecraft.getMinecraft().displayGuiScreen(null);
                 }
             } else if (button.id == 1) {
@@ -108,7 +111,7 @@ public class GuiMenuItem extends GuiScreen {
                     }
                     RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
                 }
-                MenuLoader.save();
+                MenuLoader.save(new File(MineMenu.mainFolder, "menu.json"));
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
         }

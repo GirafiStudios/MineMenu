@@ -18,7 +18,7 @@ public class NetworkEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlyerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 //			if (FMLServerHandler.instance().getServer().isDedicatedServer()) {
             LogHandler.info("SERVER: MineMenu is installed. Sending server response packet");
