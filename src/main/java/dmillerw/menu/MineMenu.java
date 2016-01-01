@@ -1,17 +1,17 @@
 package dmillerw.menu;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dmillerw.menu.handler.LogHandler;
 import dmillerw.menu.proxy.CommonProxy;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
 /**
  * @author dmillerw
  */
-@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[%FORGE_VERSION%,)", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
+@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[11.15.0,)", acceptedMinecraftVersions = "[1.8,1.8.9]", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
 public class MineMenu {
 
     @Mod.Instance("MineMenu")
@@ -73,7 +73,7 @@ public class MineMenu {
 
         proxy.syncConfig(configuration);
 
-        FMLCommonHandler.instance().bus().register(MineMenu.instance);
+        MinecraftForge.EVENT_BUS.register(MineMenu.instance);
 
         proxy.preInit(event);
     }

@@ -4,6 +4,8 @@ import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
 import net.minecraft.client.gui.GuiScreen;
 
+import java.io.IOException;
+
 /**
  * @author dmillerw
  */
@@ -29,16 +31,16 @@ public class GuiPickKey extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
-        if (button != 0 || !this.controlList.func_148179_a(mouseX, mouseY, button)) {
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        if (button != 0 || !this.controlList.mouseClicked(mouseX, mouseY, button)) {
             super.mouseClicked(mouseX, mouseY, button);
         }
     }
 
     @Override
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int button) {
-        if (button != 0 || !this.controlList.func_148181_b(mouseX, mouseY, button)) {
-            super.mouseMovedOrUp(mouseX, mouseY, button);
+    protected void mouseReleased(int mouseX, int mouseY, int button) {
+        if (button != 0 || !this.controlList.mouseReleased(mouseX, mouseY, button)) {
+            super.mouseReleased(mouseX, mouseY, button);
         }
     }
 

@@ -10,6 +10,6 @@
 !/gradlew.bat
 !/README
 !/LICENSE
-!/build.properties
+!/gradle.properties
 !/build.gradle
 !/version.json

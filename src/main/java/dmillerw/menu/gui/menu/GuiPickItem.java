@@ -5,13 +5,13 @@ import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author dmillerw
@@ -42,7 +42,7 @@ public class GuiPickItem extends GuiScreen {
         Slot mousedOver = null;
 
         // Draw inventory contents
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
             Slot slot = (Slot) this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
             if (par1 - guiLeft >= slot.xDisplayPosition && par1 - guiLeft <= slot.xDisplayPosition + 16 && par2 - guiTop >= slot.yDisplayPosition && par2 - guiTop <= slot.yDisplayPosition + 16) {
@@ -52,12 +52,12 @@ public class GuiPickItem extends GuiScreen {
             }
         }
         if (mousedOver != null && mousedOver.getStack() != null) {
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
             drawSlot(mousedOver, true);
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
             renderToolTip(mousedOver.getStack(), par1, par2);
         }
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void drawSlot(Slot slot, boolean scale) {
@@ -69,19 +69,19 @@ public class GuiPickItem extends GuiScreen {
         itemRender.zLevel = 100.0F;
 
         if (itemstack == null) {
-            IIcon iicon = slot.getBackgroundIconIndex();
+            TextureAtlasSprite sprite = slot.getBackgroundSprite();
 
-            if (iicon != null) {
-                GL11.glDisable(GL11.GL_LIGHTING);
-                this.mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-                this.drawTexturedModelRectFromIcon(this.guiLeft + i, this.guiTop + j, iicon, 16, 16);
-                GL11.glEnable(GL11.GL_LIGHTING);
+            if (sprite != null) {
+                GlStateManager.disableLighting();
+                this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_MISSING_TEXTURE); //TODO, was locationItemsTexture
+                this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
+                GlStateManager.enableLighting();
             }
         }
 
         if (itemstack != null) {
             if (scale) {
-                GL11.glScaled(2, 2, 2);
+                GlStateManager.scale(2, 2, 2);
                 ItemRenderHelper.renderItem((this.guiLeft + i + 8) / 2, (this.guiTop + j + 8) / 2, 100F, itemstack);
             } else {
                 ItemRenderHelper.renderItem(this.guiLeft + i + 8, this.guiTop + j + 8, 100F, itemstack);

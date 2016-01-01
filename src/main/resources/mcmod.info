@@ -3,11 +3,21 @@
   "modid": "MineMenu",
   "name": "MineMenu",
   "description": "MineMenu supports key bindings, commands, and creative functions to make your life easier.",
-  "version": "${mod_version}",
-  "mcversion": "${minecraft_version}",
-  "authors": [ "dmillerw" ],
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://minecraft.curseforge.com/projects/minemenu",
+  "updateUrl": "",
+  "authorList": [
+    "dmillerw",
+    "Girafi"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
   "dependencies": [
-     "mod_MinecraftForge"
+    "mod_MinecraftForge"
   ]
 }
 ]

@@ -1,7 +1,7 @@
 package dmillerw.menu.data.click;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 
 /**
  * @author dmillerw
@@ -20,9 +20,9 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() {
-        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-        String parsedCommand = command.replace("@p", player.getCommandSenderName());
+    public boolean onClicked() { //TODO Check if EntityPlayerSP works instead of EntityClientPlayerMP
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        String parsedCommand = command.replace("@p", player.getName());
         player.sendChatMessage(parsedCommand);
         return false;
     }

@@ -1,8 +1,5 @@
 package dmillerw.menu.handler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.data.session.ActionSessionData;
@@ -14,14 +11,19 @@ import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -39,9 +41,7 @@ public class ClientTickHandler {
     private static final float Z_LEVEL = 0.05F;
 
     public static void register() {
-        ClientTickHandler clientTickHandler = new ClientTickHandler();
-        FMLCommonHandler.instance().bus().register(clientTickHandler);
-        MinecraftForge.EVENT_BUS.register(clientTickHandler);
+        MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
     }
 
     @SubscribeEvent
@@ -89,22 +89,23 @@ public class ClientTickHandler {
     }
 
     private void renderGui(CompatibleScaledResolution resolution, double zLevel) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GlStateManager.disableTexture2D();
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glPushMatrix();
-        GL11.glLoadIdentity();
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.pushMatrix();
+        GlStateManager.loadIdentity();
 
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glPushMatrix();
-        GL11.glLoadIdentity();
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+        GlStateManager.pushMatrix();
+        GlStateManager.loadIdentity();
 
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= 270; // I DON'T KNOW WHERE THIS 270 EVEN COMES FROM!!! :(
@@ -126,35 +127,35 @@ public class ClientTickHandler {
             double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
             double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-            tessellator.startDrawingQuads();
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
             if (mouseIn) {
                 if (disabled) {
-                    tessellator.setColorRGBA_F((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                    GlStateManager.color((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
                 } else {
-                    tessellator.setColorRGBA_F((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                    GlStateManager.color((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
                 }
             } else {
-                tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+                GlStateManager.color((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
             }
 
-            tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
-            tessellator.addVertex(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0);
-            tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0);
-            tessellator.addVertex(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0);
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0);
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0);
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0);
 
             tessellator.draw();
         }
 
-        GL11.glPopMatrix();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.popMatrix();
 
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableBlend();
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
@@ -168,7 +169,7 @@ public class ClientTickHandler {
             MenuItem item = RadialMenu.getActiveArray()[i];
             ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
 
-            switch (stack.getItemSpriteNumber()) {
+            /*switch (stack.getItemSpriteNumber()) {
                 case 1:
                     Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationItemsTexture);
                     break;
@@ -176,7 +177,7 @@ public class ClientTickHandler {
                 default:
                     Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
                     break;
-            }
+            }*/
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant
@@ -198,7 +199,7 @@ public class ClientTickHandler {
 
     private void renderText(ScaledResolution resolution, double zLevel) {
         Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = mc.fontRendererObj;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
         mouseAngle = 360 - mouseAngle;
@@ -222,29 +223,30 @@ public class ClientTickHandler {
                 int drawX = resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
                 int drawY = resolution.getScaledHeight() / 2;
 
-                int drawWidth = mc.fontRenderer.getStringWidth(string);
-                int drawHeight = mc.fontRenderer.FONT_HEIGHT;
+                int drawWidth = mc.fontRendererObj.getStringWidth(string);
+                int drawHeight = mc.fontRendererObj.FONT_HEIGHT;
 
                 float padding = 5F;
 
                 // Background
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                Tessellator tessellator = Tessellator.instance;
-                tessellator.startDrawingQuads();
+                GlStateManager.disableTexture2D();
+                Tessellator tessellator = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);;
 
-                tessellator.setColorRGBA_F((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+                GlStateManager.color(((float) ClientProxy.menuRed / (float) 255), (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
 
-                tessellator.addVertex(drawX - padding,             drawY + drawHeight + padding, 0);
-                tessellator.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0);
-                tessellator.addVertex(drawX + drawWidth + padding, drawY - padding, 0);
-                tessellator.addVertex(drawX - padding,             drawY - padding, 0);
+                worldrenderer.pos(drawX - padding,             drawY + drawHeight + padding, 0).endVertex();
+                worldrenderer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).endVertex();
+                worldrenderer.pos(drawX + drawWidth + padding, drawY - padding, 0).endVertex();
+                worldrenderer.pos(drawX - padding,             drawY - padding, 0).endVertex();
 
                 tessellator.draw();
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                GL11.glDisable(GL11.GL_BLEND);
+                GlStateManager.enableTexture2D();
+                GlStateManager.disableBlend();
 
                 // Text
                 fontRenderer.drawStringWithShadow(string, drawX, drawY, 0xFFFFFF);

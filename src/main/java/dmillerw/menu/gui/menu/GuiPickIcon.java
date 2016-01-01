@@ -16,6 +16,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +61,7 @@ public class GuiPickIcon extends GuiScreen {
 
         this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")));
 
-        this.textSearch = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
+        this.textSearch = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/,this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
         this.textSearch.setMaxStringLength(32767);
         this.textSearch.setFocused(true);
     }
@@ -138,7 +139,7 @@ public class GuiPickIcon extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
 
         ItemStack clicked = getClickedStack(this.width / 2, this.height / 2 - 40, mouseX, mouseY);

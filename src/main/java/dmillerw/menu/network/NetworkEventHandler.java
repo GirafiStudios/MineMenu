@@ -1,12 +1,13 @@
 package dmillerw.menu.network;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.relauncher.Side;
 import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.handler.LogHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * @author dmillerw
@@ -14,7 +15,7 @@ import dmillerw.menu.handler.LogHandler;
 public class NetworkEventHandler {
 
     public static void register() {
-        FMLCommonHandler.instance().bus().register(new NetworkEventHandler());
+        MinecraftForge.EVENT_BUS.register(new NetworkEventHandler());
     }
 
     @SubscribeEvent

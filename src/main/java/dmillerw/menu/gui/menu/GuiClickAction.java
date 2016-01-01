@@ -1,6 +1,5 @@
 package dmillerw.menu.gui.menu;
 
-import cpw.mods.fml.client.config.GuiButtonExt;
 import dmillerw.menu.data.click.*;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.GuiStack;
@@ -14,8 +13,10 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -111,12 +112,12 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
         this.buttonList.add(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.chest)));
 
-        this.textCommand = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCommand = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
         this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
-        this.textCategory = new GuiTextField(this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCategory = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCategory.setMaxStringLength(32767);
         this.textCategory.setFocused(true);
         this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
@@ -239,7 +240,7 @@ public class GuiClickAction extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mx, int my, int button) {
+    protected void mouseClicked(int mx, int my, int button) throws IOException {
         super.mouseClicked(mx, my, button);
 
         this.textCommand.mouseClicked(mx, my, button);
@@ -260,13 +261,13 @@ public class GuiClickAction extends GuiScreen {
         }
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
         if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
-            this.func_146283_a(Arrays.asList("Click Action: Command"), mouseX, mouseY);
+            this.drawHoveringText(Arrays.asList("Click Action: Command"), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {
-            this.func_146283_a(Arrays.asList("Click Action: KeyBinding"), mouseX, mouseY);
+            this.drawHoveringText(Arrays.asList("Click Action: KeyBinding"), mouseX, mouseY);
         } else if (mouseX > modeUseItem.xPosition && mouseX < modeUseItem.xPosition + modeUseItem.width && mouseY > modeUseItem.yPosition && mouseY < modeUseItem.yPosition + modeUseItem.width) {
-            this.func_146283_a(Arrays.asList("Click Action: Use Item"), mouseX, mouseY);
+            this.drawHoveringText(Arrays.asList("Click Action: Use Item"), mouseX, mouseY);
         } else if (mouseX > modeCategory.xPosition && mouseX < modeCategory.xPosition + modeCategory.width && mouseY > modeCategory.yPosition && mouseY < modeCategory.yPosition + modeCategory.width) {
-            this.func_146283_a(Arrays.asList("Click Action: Category"), mouseX, mouseY);
+            this.drawHoveringText(Arrays.asList("Click Action: Category"), mouseX, mouseY);
         }
     }
 }

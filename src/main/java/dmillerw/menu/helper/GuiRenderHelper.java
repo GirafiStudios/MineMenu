@@ -2,8 +2,11 @@ package dmillerw.menu.helper;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,35 +27,36 @@ public class GuiRenderHelper {
         GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
         // HEADER - SHADOW
-        tessellator.startDrawingQuads();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
-        tessellator.setColorRGBA_I(0, 0);
+        GlStateManager.color(0 >> 16 & 255, 0 >> 8 & 255, 0 & 255, 0);
 
-        tessellator.addVertexWithUV(0, headerHeight + shadowDepth, 0.0D, 0.0D, 1.0D);
-        tessellator.addVertexWithUV(base.width, headerHeight + shadowDepth, 0.0D, 1.0D, 1.0D);
+        worldrenderer.pos(0, headerHeight + shadowDepth, 0.0D).tex(0.0D, 1.0D).endVertex();
+        worldrenderer.pos(base.width, headerHeight + shadowDepth, 0.0D).tex(1.0D, 1.0D).endVertex();
 
-        tessellator.setColorRGBA_I(0, 255);
+        GlStateManager.color(0 >> 16 & 255, 0 >> 8 & 255, 0 & 255, 255);
 
-        tessellator.addVertexWithUV(base.width, headerHeight, 0.0D, 1.0D, 0.0D);
-        tessellator.addVertexWithUV(0, headerHeight, 0.0D, 0.0D, 0.0D);
+        worldrenderer.pos(base.width, headerHeight, 0.0D).tex(1.0D, 0.0D).endVertex();
+        worldrenderer.pos(0, headerHeight, 0.0D).tex(0.0D, 0.0D).endVertex();
 
         tessellator.draw();
 
         // FOOTER - SHADOW
-        tessellator.startDrawingQuads();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
-        tessellator.setColorRGBA_I(0, 255);
+        GlStateManager.color(0 >> 16 & 255, 0 >> 8 & 255, 0 & 255, 255);
 
-        tessellator.addVertexWithUV(0, base.height - footerHeight, 0.0D, 0.0D, 1.0D);
-        tessellator.addVertexWithUV(base.width, base.height - footerHeight, 0.0D, 1.0D, 1.0D);
+        worldrenderer.pos(0, base.height - footerHeight, 0.0D).tex(0.0D, 1.0D).endVertex();
+        worldrenderer.pos(base.width, base.height - footerHeight, 0.0D).tex(1.0D, 1.0D).endVertex();
 
-        tessellator.setColorRGBA_I(0, 0);
+        GlStateManager.color(0 >> 16 & 255, 0 >> 8 & 255, 0 & 255, 0);
 
-        tessellator.addVertexWithUV(base.width, base.height - footerHeight - shadowDepth, 0.0D, 1.0D, 0.0D);
-        tessellator.addVertexWithUV(0, base.height - footerHeight - shadowDepth, 0.0D, 0.0D, 0.0D);
+        worldrenderer.pos(base.width, base.height - footerHeight - shadowDepth, 0.0D).tex(1.0D, 0.0D).endVertex();
+        worldrenderer.pos(0, base.height - footerHeight - shadowDepth, 0.0D).tex(0.0D, 0.0D).endVertex();
 
         tessellator.draw();
 
@@ -68,41 +72,41 @@ public class GuiRenderHelper {
 
         base.mc.getTextureManager().bindTexture(Gui.optionsBackground);
 
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32F;
 
         // HEADER
-        tessellator.startDrawingQuads();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
-        tessellator.setColorRGBA_I(4210752, 255);
+        GlStateManager.color(4210752 >> 16 & 255, 4210752 >> 8 & 255, 4210752 & 255, 255);
 
-        tessellator.addVertexWithUV((double) 0, (double) headerHeight, 0.0D, 0.0D, (double) ((float) headerHeight / f));
-        tessellator.addVertexWithUV((double) 0 + base.width, (double) headerHeight, 0.0D, (double) ((float) base.width / f), (double) ((float) headerHeight / f));
+        worldrenderer.pos((double) 0, (double) headerHeight, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).endVertex();
+        worldrenderer.pos((double) 0 + base.width, (double) headerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).endVertex();
 
-        tessellator.setColorRGBA_I(4210752, 255);
+        GlStateManager.color(4210752 >> 16 & 255, 4210752 >> 8 & 255, 4210752 & 255, 255);
 
-        tessellator.addVertexWithUV((double) 0 + base.width, (double) 0, 0.0D, (double) ((float) base.width / f), (double) ((float) 0 / f));
-        tessellator.addVertexWithUV((double) 0, (double) 0, 0.0D, 0.0D, (double) ((float) 0 / f));
+        worldrenderer.pos((double) 0 + base.width, (double) 0, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).endVertex();
+        worldrenderer.pos((double) 0, (double) 0, 0.0D).tex(0.0D, (double) ((float) 0 / f)).endVertex();
 
         tessellator.draw();
 
         // FOOTER
-        tessellator.startDrawingQuads();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
-        tessellator.setColorRGBA_I(4210752, 255);
+        GlStateManager.color(4210752 >> 16 & 255, 4210752 >> 8 & 255, 4210752 & 255, 255);
 
-        tessellator.addVertexWithUV((double) 0, (double) base.height, 0.0D, 0.0D, (double) ((float) headerHeight / f));
-        tessellator.addVertexWithUV((double) 0 + base.width, (double) base.height, 0.0D, (double) ((float) base.width / f), (double) ((float) headerHeight / f));
+        worldrenderer.pos((double) 0, (double) base.height, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).endVertex();
+        worldrenderer.pos((double) 0 + base.width, (double) base.height, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).endVertex();
 
-        tessellator.setColorRGBA_I(4210752, 255);
+        GlStateManager.color(4210752 >> 16 & 255, 4210752 >> 8 & 255, 4210752 & 255, 255);
 
-        tessellator.addVertexWithUV((double) 0 + base.width, (double) base.height - footerHeight, 0.0D, (double) ((float) base.width / f), (double) ((float) 0 / f));
-        tessellator.addVertexWithUV((double) 0, (double) base.height - footerHeight, 0.0D, 0.0D, (double) ((float) 0 / f));
+        worldrenderer.pos((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).endVertex();
+        worldrenderer.pos((double) 0, (double) base.height - footerHeight, 0.0D).tex(0.0D, (double) ((float) 0 / f)).endVertex();
 
         tessellator.draw();
 
         GL11.glPopMatrix();
 
-        base.drawCenteredString(base.mc.fontRenderer, headerText, base.width / 2, 8, 16777215);
+        base.drawCenteredString(base.mc.fontRendererObj, headerText, base.width / 2, 8, 16777215);
     }
 }

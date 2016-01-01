@@ -1,16 +1,16 @@
 package dmillerw.menu.handler;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -28,7 +28,7 @@ public class KeyboardHandler {
     public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.gameplay");
 
     public static void register() {
-        FMLCommonHandler.instance().bus().register(KeyboardHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(KeyboardHandler.INSTANCE);
         ClientRegistry.registerKeyBinding(WHEEL);
     }
 
@@ -51,7 +51,7 @@ public class KeyboardHandler {
         boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
-        FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
         Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
@@ -70,7 +70,7 @@ public class KeyboardHandler {
         boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
-        FMLCommonHandler.instance().bus().post(new InputEvent.KeyInputEvent());
+        MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
         Minecraft.getMinecraft().inGameHasFocus = old;
 
         ignoreNextTick = true;
