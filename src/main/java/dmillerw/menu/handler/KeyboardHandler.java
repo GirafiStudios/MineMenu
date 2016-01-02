@@ -25,7 +25,7 @@ public class KeyboardHandler {
 
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
 
-    public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.gameplay");
+    public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(KeyboardHandler.INSTANCE);
