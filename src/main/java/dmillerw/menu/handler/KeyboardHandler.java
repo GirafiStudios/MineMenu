@@ -49,7 +49,6 @@ public class KeyboardHandler {
         KeyReflectionHelper.increasePressTime(key);
 
         boolean old = Minecraft.getMinecraft().inGameHasFocus;
-        Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
         Minecraft.getMinecraft().inGameHasFocus = old;
@@ -68,7 +67,6 @@ public class KeyboardHandler {
         }
 
         boolean old = Minecraft.getMinecraft().inGameHasFocus;
-        Minecraft.getMinecraft().currentScreen = null;
         Minecraft.getMinecraft().inGameHasFocus = true;
         MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
         Minecraft.getMinecraft().inGameHasFocus = old;

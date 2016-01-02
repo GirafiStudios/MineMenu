@@ -43,6 +43,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             }
         }
 
-        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(new ResourceLocation(name)), 1, damage); //TODO Test if resourcelocation works
+        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(new ResourceLocation(name)), 1, damage);
     }
 }

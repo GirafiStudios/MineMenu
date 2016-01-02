@@ -20,7 +20,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() { //TODO Check if EntityPlayerSP works instead of EntityClientPlayerMP
+    public boolean onClicked() {
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         String parsedCommand = command.replace("@p", player.getName());
         player.sendChatMessage(parsedCommand);
