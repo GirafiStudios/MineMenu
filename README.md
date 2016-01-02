@@ -1,4 +1,7 @@
-MainGradle
+Mine Menu
 ==========
 
-Where I host my primary Gradle script
+MineMenu supports key bindings, commands, and creative functions to make your life easier.
+
+
+Download at: http://minecraft.curseforge.com/projects/minemenu

@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * @author dmillerw
  */
+@SideOnly(Side.CLIENT)
 public class GuiControlList extends GuiListExtended {
 
     private final Minecraft mc;

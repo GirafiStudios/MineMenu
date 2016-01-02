@@ -19,6 +19,12 @@ public class GuiPickKey extends GuiScreen {
     }
 
     @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        this.controlList.handleMouseInput();
+    }
+
+    @Override
     public boolean doesGuiPauseGame() {
         return false;
     }
@@ -31,24 +37,24 @@ public class GuiPickKey extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
-        if (button != 0 || !this.controlList.mouseClicked(mouseX, mouseY, button)) {
-            super.mouseClicked(mouseX, mouseY, button);
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (mouseButton != 0 || !this.controlList.mouseClicked(mouseX, mouseY, mouseButton)) {
+            super.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int button) {
-        if (button != 0 || !this.controlList.mouseReleased(mouseX, mouseY, button)) {
-            super.mouseReleased(mouseX, mouseY, button);
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        if (state != 0 || !this.controlList.mouseReleased(mouseX, mouseY, state)) {
+            super.mouseReleased(mouseX, mouseY, state);
         }
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partial) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        this.controlList.drawScreen(mouseX, mouseY, partial);
+        this.controlList.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, "Select a Key:", this.width / 2, 8, 16777215);
-        super.drawScreen(mouseX, mouseY, partial);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }
