@@ -8,13 +8,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class GuiPickIcon extends GuiScreen {
 
         this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")));
 
-        this.textSearch = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/,this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
+        this.textSearch = new GuiTextField(0,this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
         this.textSearch.setMaxStringLength(32767);
         this.textSearch.setFocused(true);
     }
@@ -197,7 +197,7 @@ public class GuiPickIcon extends GuiScreen {
             int drawY = i / MAX_COLUMN;
 
             if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
-                GL11.glPushMatrix();
+                GlStateManager.pushMatrix();
 
                 boolean scaled = false;
                 float actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
@@ -212,20 +212,20 @@ public class GuiPickIcon extends GuiScreen {
                 }
 
                 if (!scaled) {
-                    ItemRenderHelper.renderItem(actualDrawX, actualDrawY, gui.zLevel, stacks.get(i));
+                    ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
             } else {
                 break;
             }
         }
 
         if (highlighted != null) {
-            GL11.glPushMatrix();
-            GL11.glScaled(2, 2, 2);
-            ItemRenderHelper.renderItem(highlightedX, highlightedY, gui.zLevel, highlighted);
-            GL11.glPopMatrix();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(2, 2, 2);
+            ItemRenderHelper.renderItem(highlightedX, highlightedY, highlighted);
+            GlStateManager.popMatrix();
         }
     }
 

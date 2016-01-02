@@ -112,12 +112,12 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.diamond_sword)));
         this.buttonList.add(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.chest)));
 
-        this.textCommand = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCommand = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
         this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
-        this.textCategory = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCategory = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textCategory.setMaxStringLength(32767);
         this.textCategory.setFocused(true);
         this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");

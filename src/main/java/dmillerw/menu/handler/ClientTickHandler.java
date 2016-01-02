@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -127,7 +126,7 @@ public class ClientTickHandler {
             double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
             double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION);
 
             if (mouseIn) {
                 if (disabled) {
@@ -139,10 +138,10 @@ public class ClientTickHandler {
                 GlStateManager.color((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
             }
 
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0);
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0);
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0);
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0);
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).endVertex();
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).endVertex();
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).endVertex();
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).endVertex();
 
             tessellator.draw();
         }
@@ -159,25 +158,15 @@ public class ClientTickHandler {
     }
 
     private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
-        GL11.glTranslated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
+        GlStateManager.translate(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
 
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
             ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
-
-            /*switch (stack.getItemSpriteNumber()) {
-                case 1:
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationItemsTexture);
-                    break;
-                case 0:
-                default:
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-                    break;
-            }*/
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant
@@ -189,12 +178,12 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(StrictMath.toRadians(angle)));
             drawY = (length * Math.sin(StrictMath.toRadians(angle)));
 
-            ItemRenderHelper.renderItem((float) drawX, (float) drawY, 0.05F, stack);
+            ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
         }
 
         RenderHelper.disableStandardItemLighting();
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void renderText(ScaledResolution resolution, double zLevel) {
@@ -235,9 +224,9 @@ public class ClientTickHandler {
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
                 WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);;
+                worldrenderer.begin(7, DefaultVertexFormats.POSITION);
 
-                GlStateManager.color(((float) ClientProxy.menuRed / (float) 255), (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+                GlStateManager.color((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
 
                 worldrenderer.pos(drawX - padding,             drawY + drawHeight + padding, 0).endVertex();
                 worldrenderer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).endVertex();

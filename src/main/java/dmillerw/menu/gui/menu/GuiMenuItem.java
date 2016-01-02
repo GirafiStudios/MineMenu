@@ -69,7 +69,7 @@ public class GuiMenuItem extends GuiScreen {
         }
         this.buttonList.add(this.buttonClickAction = new GuiButton(4, this.width / 2 - 20, this.height / 2, 100, 20, string));
 
-        this.textTitle = new GuiTextField(0/*TODO Was not a thing in 1.7.10*/, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textTitle = new GuiTextField(9, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
         this.textTitle.setMaxStringLength(32767);
         this.textTitle.setFocused(false);
         this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");

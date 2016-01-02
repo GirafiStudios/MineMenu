@@ -73,7 +73,7 @@ public class GuiPickItem extends GuiScreen {
 
             if (sprite != null) {
                 GlStateManager.disableLighting();
-                this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_MISSING_TEXTURE); //TODO, was locationItemsTexture
+                this.mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
                 this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
                 GlStateManager.enableLighting();
             }
@@ -82,9 +82,9 @@ public class GuiPickItem extends GuiScreen {
         if (itemstack != null) {
             if (scale) {
                 GlStateManager.scale(2, 2, 2);
-                ItemRenderHelper.renderItem((this.guiLeft + i + 8) / 2, (this.guiTop + j + 8) / 2, 100F, itemstack);
+                ItemRenderHelper.renderItem((this.guiLeft + i + 8) / 2, (this.guiTop + j + 8) / 2, itemstack);
             } else {
-                ItemRenderHelper.renderItem(this.guiLeft + i + 8, this.guiTop + j + 8, 100F, itemstack);
+                ItemRenderHelper.renderItem(this.guiLeft + i + 8, this.guiTop + j + 8, itemstack);
             }
         }
 
