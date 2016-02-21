@@ -211,7 +211,7 @@ public class GuiPickIcon extends GuiScreen {
                     highlightedY = actualDrawY / 2;
                 }
 
-                if (!scaled) {
+                if (!scaled && stacks.get(i) != null) {
                     ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 

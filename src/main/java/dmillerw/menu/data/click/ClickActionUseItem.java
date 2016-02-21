@@ -26,7 +26,7 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
     public boolean onClicked() {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-        for (int i=0; i<player.inventory.getSizeInventory(); i++) {
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && this.item.isItemEqual(stack)) {

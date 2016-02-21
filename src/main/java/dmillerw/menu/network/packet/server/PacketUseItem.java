@@ -11,11 +11,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * @author dmillerw
  */
 public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, IMessage> {
-
     public int slot;
 
     public PacketUseItem() {
-
     }
 
     public PacketUseItem(int slot) {
@@ -47,13 +45,13 @@ public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, I
                 ItemStack current = player.inventory.getCurrentItem();
                 if (current != null) {
                     current = current.copy();
+
+                    player.inventory.setInventorySlotContents(message.slot, current);
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
+
+                    // Send updated inventory
+                    player.sendContainerToPlayer(player.inventoryContainer);
                 }
-
-                player.inventory.setInventorySlotContents(message.slot, current);
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
-
-                // Send updated inventory
-                player.sendContainerToPlayer(player.inventoryContainer);
             }
         }
         return null;

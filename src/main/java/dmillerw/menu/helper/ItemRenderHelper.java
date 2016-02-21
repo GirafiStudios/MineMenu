@@ -17,7 +17,9 @@ public class ItemRenderHelper {
         x -= 8;
         y -= 8;
 
-        Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, (int) x, (int) y);
+        if (stack != null) {
+            Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, (int) x, (int) y);
+        }
 
         GlStateManager.popMatrix();
     }

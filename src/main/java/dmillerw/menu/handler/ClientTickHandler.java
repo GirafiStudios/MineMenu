@@ -37,8 +37,6 @@ public class ClientTickHandler {
     private static final double OUTER_RADIUS = 80;
     private static final double INNER_RADIUS = 60;
 
-    private static final float Z_LEVEL = 0.05F;
-
     public static void register() {
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
     }
@@ -59,13 +57,12 @@ public class ClientTickHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
-            double zLevel = 0.05D;
 
             if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
                 if (GuiRadialMenu.active) {
                     CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-                    renderGui(resolution, zLevel);
-                    renderItems(resolution, zLevel);
+                    renderGui(resolution);
+                    renderItems(resolution);
                 }
             }
         }
@@ -83,11 +80,11 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
-            renderText(event.resolution, Z_LEVEL);
+            renderText(event.resolution);
         }
     }
 
-    private void renderGui(CompatibleScaledResolution resolution, double zLevel) {
+    private void renderGui(CompatibleScaledResolution resolution) {
         GlStateManager.pushMatrix();
 
         GlStateManager.disableTexture2D();
@@ -126,22 +123,33 @@ public class ClientTickHandler {
             double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
             double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-            worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+
+            float r, g, b, alpha;
 
             if (mouseIn) {
                 if (disabled) {
-                    GlStateManager.color((float) 200 / (float) 255, (float) 200 / (float) 255, (float) 200 / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                    r = (float) 200 / (float) 255;
+                    g = (float) 200 / (float) 255;
+                    b = (float) 200 / (float) 255;
+                    alpha = (float) ClientProxy.selectAlpha / (float) 255;
                 } else {
-                    GlStateManager.color((float) ClientProxy.selectRed / (float) 255, (float) ClientProxy.selectGreen / (float) 255, (float) ClientProxy.selectBlue / (float) 255, (float) ClientProxy.selectAlpha / (float) 255);
+                    r = (float) ClientProxy.selectRed / (float) 255;
+                    g = (float) ClientProxy.selectGreen / (float) 255;
+                    b = (float) ClientProxy.selectBlue / (float) 255;
+                    alpha = (float) ClientProxy.selectAlpha / (float) 255;
                 }
             } else {
-                GlStateManager.color((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+                r = (float) ClientProxy.menuRed / (float) 255;
+                g = (float) ClientProxy.menuGreen / (float) 255;
+                b = (float) ClientProxy.menuBlue / (float) 255;
+                alpha = (float) ClientProxy.menuAlpha / (float) 255;
             }
 
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).endVertex();
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).endVertex();
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).endVertex();
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).endVertex();
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
@@ -151,17 +159,14 @@ public class ClientTickHandler {
         GlStateManager.popMatrix();
 
         GlStateManager.disableBlend();
-
         GlStateManager.enableTexture2D();
 
         GlStateManager.popMatrix();
     }
 
-    private void renderItems(CompatibleScaledResolution resolution, double zLevel) {
+    private void renderItems(CompatibleScaledResolution resolution) {
         GlStateManager.pushMatrix();
-
         GlStateManager.translate(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
-
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
@@ -178,15 +183,16 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(StrictMath.toRadians(angle)));
             drawY = (length * Math.sin(StrictMath.toRadians(angle)));
 
-            ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
+            if (stack != null) {
+                ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
+            }
         }
 
         RenderHelper.disableStandardItemLighting();
-
         GlStateManager.popMatrix();
     }
 
-    private void renderText(ScaledResolution resolution, double zLevel) {
+    private void renderText(ScaledResolution resolution) {
         Minecraft mc = Minecraft.getMinecraft();
         FontRenderer fontRenderer = mc.fontRendererObj;
         double mouseAngle = AngleHelper.getMouseAngle();
@@ -224,14 +230,17 @@ public class ClientTickHandler {
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
                 WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+                worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
-                GlStateManager.color((float) ClientProxy.menuRed / (float) 255, (float) ClientProxy.menuGreen / (float) 255, (float) ClientProxy.menuBlue / (float) 255, (float) ClientProxy.menuAlpha / (float) 255);
+                float r = (float) ClientProxy.menuRed / (float) 255;
+                float g = (float) ClientProxy.menuGreen / (float) 255;
+                float b = (float) ClientProxy.menuBlue / (float) 255;
+                float alpha = (float) ClientProxy.menuAlpha / (float) 255;
 
-                worldrenderer.pos(drawX - padding,             drawY + drawHeight + padding, 0).endVertex();
-                worldrenderer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).endVertex();
-                worldrenderer.pos(drawX + drawWidth + padding, drawY - padding, 0).endVertex();
-                worldrenderer.pos(drawX - padding,             drawY - padding, 0).endVertex();
+                worldrenderer.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                worldrenderer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                worldrenderer.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                worldrenderer.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
                 GlStateManager.enableTexture2D();
