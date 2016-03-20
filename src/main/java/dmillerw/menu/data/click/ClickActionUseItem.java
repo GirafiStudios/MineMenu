@@ -5,12 +5,12 @@ import dmillerw.menu.network.packet.server.PacketUseItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 /**
  * @author dmillerw
  */
 public class ClickActionUseItem implements ClickAction.IClickAction {
-
     public final ItemStack item;
 
     public ClickActionUseItem(ItemStack item) {
@@ -30,16 +30,15 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && this.item.isItemEqual(stack)) {
-                stack.useItemRightClick(player.worldObj, player);
+                stack.useItemRightClick(player.worldObj, player, EnumHand.MAIN_HAND);
+                System.out.println("Test, should be on client");
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }
-
         return false;
     }
 
     @Override
     public void onRemoved() {
-
     }
 }

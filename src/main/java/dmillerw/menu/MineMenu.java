@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
 /**
  * @author dmillerw
  */
-@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[11.15.0,)", acceptedMinecraftVersions = "[1.8.8,1.8.9]", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
+@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[12.16.0,)", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
 public class MineMenu {
 
     @Mod.Instance("MineMenu")

@@ -4,7 +4,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 /**
@@ -22,27 +22,27 @@ public class GuiRenderHelper {
         GlStateManager.disableTexture2D();
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
 
         // HEADER - SHADOW
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        worldrenderer.pos(0, headerHeight + shadowDepth, 0.0D).tex(0.0D, 1.0D).color(0, 0, 0, 0).endVertex();
-        worldrenderer.pos(base.width, headerHeight + shadowDepth, 0.0D).tex(1.0D, 1.0D).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos(0, headerHeight + shadowDepth, 0.0D).tex(0.0D, 1.0D).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos(base.width, headerHeight + shadowDepth, 0.0D).tex(1.0D, 1.0D).color(0, 0, 0, 0).endVertex();
 
-        worldrenderer.pos(base.width, headerHeight, 0.0D).tex(1.0D, 0.0D).color(0, 0, 0, 255).endVertex();
-        worldrenderer.pos(0, headerHeight, 0.0D).tex(0.0D, 0.0D).color(0, 0, 0, 255).endVertex();
+        vertexbuffer.pos(base.width, headerHeight, 0.0D).tex(1.0D, 0.0D).color(0, 0, 0, 255).endVertex();
+        vertexbuffer.pos(0, headerHeight, 0.0D).tex(0.0D, 0.0D).color(0, 0, 0, 255).endVertex();
 
         tessellator.draw();
 
         // FOOTER - SHADOW
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        worldrenderer.pos(0, base.height - footerHeight, 0.0D).tex(0.0D, 1.0D).color(0, 0, 0, 255).endVertex();
-        worldrenderer.pos(base.width, base.height - footerHeight, 0.0D).tex(1.0D, 1.0D).color(0, 0, 0, 255).endVertex();
+        vertexbuffer.pos(0, base.height - footerHeight, 0.0D).tex(0.0D, 1.0D).color(0, 0, 0, 255).endVertex();
+        vertexbuffer.pos(base.width, base.height - footerHeight, 0.0D).tex(1.0D, 1.0D).color(0, 0, 0, 255).endVertex();
 
-        worldrenderer.pos(base.width, base.height - footerHeight - shadowDepth, 0.0D).tex(1.0D, 0.0D).color(0, 0, 0, 0).endVertex();
-        worldrenderer.pos(0, base.height - footerHeight - shadowDepth, 0.0D).tex(0.0D, 0.0D).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos(base.width, base.height - footerHeight - shadowDepth, 0.0D).tex(1.0D, 0.0D).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos(0, base.height - footerHeight - shadowDepth, 0.0D).tex(0.0D, 0.0D).color(0, 0, 0, 0).endVertex();
 
         tessellator.draw();
 
@@ -61,24 +61,24 @@ public class GuiRenderHelper {
         float f = 32F;
 
         // HEADER
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        worldrenderer.pos((double) 0, (double) headerHeight, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        worldrenderer.pos((double) 0 + base.width, (double) headerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0, (double) headerHeight, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0 + base.width, (double) headerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        worldrenderer.pos((double) 0 + base.width, (double) 0, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        worldrenderer.pos((double) 0, (double) 0, 0.0D).tex(0.0D, (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0 + base.width, (double) 0, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0, (double) 0, 0.0D).tex(0.0D, (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
         tessellator.draw();
 
         // FOOTER
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        worldrenderer.pos((double) 0, (double) base.height, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        worldrenderer.pos((double) 0 + base.width, (double) base.height, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0, (double) base.height, 0.0D).tex(0.0D, (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0 + base.width, (double) base.height, 0.0D).tex((double) ((float) base.width / f), (double) ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        worldrenderer.pos((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        worldrenderer.pos((double) 0, (double) base.height - footerHeight, 0.0D).tex(0.0D, (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).tex((double) ((float) base.width / f), (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        vertexbuffer.pos((double) 0, (double) base.height - footerHeight, 0.0D).tex(0.0D, (double) ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
         tessellator.draw();
 

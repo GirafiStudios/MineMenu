@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * @author dmillerw
  */
 public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, IMessage> {
-    public int slot;
+    private int slot;
 
     public PacketUseItem() {
     }
@@ -40,18 +40,15 @@ public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, I
                 backup = backup.copy();
             }
 
-            if (player.theItemInWorldManager.tryUseItem(player, player.worldObj, stack)) {
-                // tryUseItem is hardcoded to set the CURRENT slot to the resulting item, so we reverse that
-                ItemStack current = player.inventory.getCurrentItem();
-                if (current != null) {
-                    current = current.copy();
+            ItemStack current = player.inventory.getCurrentItem();
+            if (current != null) {
+                current = current.copy();
 
-                    player.inventory.setInventorySlotContents(message.slot, current);
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
+                player.inventory.setInventorySlotContents(message.slot, current);
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
 
-                    // Send updated inventory
-                    player.sendContainerToPlayer(player.inventoryContainer);
-                }
+                // Send updated inventory
+                player.sendContainerToPlayer(player.inventoryContainer);
             }
         }
         return null;

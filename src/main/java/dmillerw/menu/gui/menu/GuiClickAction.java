@@ -28,7 +28,7 @@ public class GuiClickAction extends GuiScreen {
 
     public static KeyBinding keyBinding;
 
-    public static boolean toggle = false;
+    private static boolean toggle = false;
 
     private GuiTextField textCommand;
     private GuiTextField textCategory;

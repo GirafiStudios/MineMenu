@@ -14,11 +14,11 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -101,7 +101,7 @@ public class ClientTickHandler {
         GlStateManager.loadIdentity();
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= 270; // I DON'T KNOW WHERE THIS 270 EVEN COMES FROM!!! :(
@@ -123,7 +123,7 @@ public class ClientTickHandler {
             double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
             double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-            worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
             float r, g, b, alpha;
 
@@ -146,10 +146,10 @@ public class ClientTickHandler {
                 alpha = (float) ClientProxy.menuAlpha / (float) 255;
             }
 
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            worldrenderer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            worldrenderer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            vertexbuffer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            vertexbuffer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            vertexbuffer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            vertexbuffer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
@@ -212,7 +212,7 @@ public class ClientTickHandler {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
                 if (GuiRadialMenu.isShiftKeyDown() && item != null) {
-                    string = EnumChatFormatting.RED + "EDIT: " + EnumChatFormatting.WHITE + string;
+                    string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
                 }
 
                 int drawX = resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
@@ -229,18 +229,18 @@ public class ClientTickHandler {
 
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
                 float r = (float) ClientProxy.menuRed / (float) 255;
                 float g = (float) ClientProxy.menuGreen / (float) 255;
                 float b = (float) ClientProxy.menuBlue / (float) 255;
                 float alpha = (float) ClientProxy.menuAlpha / (float) 255;
 
-                worldrenderer.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                worldrenderer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                worldrenderer.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
-                worldrenderer.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                vertexbuffer.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                vertexbuffer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                vertexbuffer.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                vertexbuffer.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
                 GlStateManager.enableTexture2D();

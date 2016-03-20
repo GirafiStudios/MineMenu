@@ -10,25 +10,30 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = mod_version
-group = mod_group
-archivesBaseName = mod_archive_name
+ext.buildnumber=""
+if (System.getenv().BUILD_NUMBER) {
+    ext.buildnumber="" + System.getenv().BUILD_NUMBER
+}
+
+version = "${mod_version}"
+group = "${mod_group}"
+archivesBaseName = "${mod_archive_name}"
 
 minecraft {
     runDir = "run"
-	mappings = "${mappings_version}"
-    version = minecraft_version + "-" + forge_version
-    replaceIn mod_info_path
-    replace "%MOD_VERSION%", mod_version
-    replace "%FORGE_VERSION%", forge_version
+    mappings = "${mappings_version}"
+    version = "${minecraft_version}-${forge_version}"
+    replaceIn "${mod_info_path}"
+    replace "%MOD_VERSION%", "${mod_version}"
+    replace "%FORGE_VERSION%", "${forge_version}"
 }
 
-version = "${minecraft_version}-${mod_version}.B${build_number}"
+display_version = "${display_version}" ?: "${minecraft_version}"
+version = "${display_version}-${mod_version}.B${buildnumber}"
 
-processResources {
+processResources{
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
