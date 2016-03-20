@@ -14,14 +14,14 @@ public enum ClickAction {
     ITEM_USE(true),
     CATEGORY(false);
 
-    public final boolean requiresServer;
+    private final boolean requiresServer;
 
-    private ClickAction(boolean requiresServer) {
+    ClickAction(boolean requiresServer) {
         this.requiresServer = requiresServer;
     }
 
-    public static ClickAction[] clientValues;
-    public static ClickAction[] values;
+    private static ClickAction[] clientValues;
+    private static ClickAction[] values;
 
     public static List<ClickAction> getClientValues() {
         if (clientValues == null) {
@@ -43,9 +43,9 @@ public enum ClickAction {
         return Arrays.asList(values);
     }
 
-    public static interface IClickAction {
-        public ClickAction getClickAction();
-        public boolean onClicked();
-        public void onRemoved();
+    public interface IClickAction {
+        ClickAction getClickAction();
+        boolean onClicked();
+        void onRemoved();
     }
 }

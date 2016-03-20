@@ -32,7 +32,7 @@ public class ClientTickHandler {
 
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
 
-    public static final int ITEM_RENDER_ANGLE_OFFSET = -2;
+    private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
 
     private static final double OUTER_RADIUS = 80;
     private static final double INNER_RADIUS = 60;
@@ -183,9 +183,7 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(StrictMath.toRadians(angle)));
             drawY = (length * Math.sin(StrictMath.toRadians(angle)));
 
-            if (stack != null) {
-                ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
-            }
+            ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
         }
 
         RenderHelper.disableStandardItemLighting();

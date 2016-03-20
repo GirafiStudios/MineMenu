@@ -156,7 +156,7 @@ public class GuiPickIcon extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partial) {
-        onWheelScrolled(mouseX, mouseY, Mouse.getDWheel());
+        onWheelScrolled(Mouse.getDWheel());
 
         this.drawDefaultBackground();
 
@@ -166,10 +166,10 @@ public class GuiPickIcon extends GuiScreen {
 
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this, this.width / 2, this.height / 2 - 40, mouseX, mouseY);
+        drawList(this.width / 2, this.height / 2 - 40, mouseX, mouseY);
     }
 
-    public void onWheelScrolled(int x, int y, int wheel) {
+    private void onWheelScrolled(int wheel) {
         wheel = -wheel;
 
         if (wheel < 0) {
@@ -187,7 +187,7 @@ public class GuiPickIcon extends GuiScreen {
         }
     }
 
-    private void drawList(GuiPickIcon gui, int x, int y, int mx, int my) {
+    private void drawList(int x, int y, int mx, int my) {
         ItemStack highlighted = null;
         float highlightedX = 0;
         float highlightedY = 0;

@@ -22,10 +22,9 @@ import java.util.List;
  * @author dmillerw
  */
 public class KeyboardHandler {
-
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
 
-    public static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
+    private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(KeyboardHandler.INSTANCE);
@@ -34,8 +33,8 @@ public class KeyboardHandler {
 
     private static boolean lastWheelState = false;
 
-    private List<KeyBinding> firedKeys = new ArrayList<KeyBinding>();
-    private List<KeyBinding> toggledKeys = new ArrayList<KeyBinding>();
+    private final List<KeyBinding> firedKeys = new ArrayList<KeyBinding>();
+    private final List<KeyBinding> toggledKeys = new ArrayList<KeyBinding>();
 
     private boolean ignoreNextTick = false;
 

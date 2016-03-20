@@ -75,7 +75,7 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 150, 20, I18n.format("gui.done")));
         this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")));
 
-        String keyString = "";
+        String keyString;
         if (GuiClickAction.keyBinding != null) {
             keyString = I18n.format(keyBinding.getKeyDescription());
         } else {
@@ -87,7 +87,7 @@ public class GuiClickAction extends GuiScreen {
         }
         this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString));
 
-        String keyToggleString = "";
+        String keyToggleString;
         if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
             keyToggleString = ((ClickActionKey)EditSessionData.clickAction).toggle ? "Toggle" : "Press";
         } else {
@@ -95,7 +95,7 @@ public class GuiClickAction extends GuiScreen {
         }
         this.buttonList.add(this.keybindToggleButton = new GuiButton(3, this.width / 2 - 75, 80, 150, 20, keyToggleString));
 
-        String itemString = "";
+        String itemString;
         if (GuiClickAction.item != null) {
             itemString = "Item: " + item.getDisplayName();
         } else {

@@ -12,9 +12,9 @@ public class RadialMenu {
 
     public static final int MAX_ITEMS = 10;
 
-    public static final String MAIN_TAG = "main";
+    private static final String MAIN_TAG = "main";
 
-    private static Map<String, MenuItem[]> menuMap = Maps.newHashMap();
+    private static final Map<String, MenuItem[]> menuMap = Maps.newHashMap();
 
     public static String currentCategory = MAIN_TAG;
 

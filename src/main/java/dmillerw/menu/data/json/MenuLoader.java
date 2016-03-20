@@ -20,8 +20,7 @@ import java.util.Map;
  * @author dmillerw
  */
 public class MenuLoader {
-
-    private static Gson gson;
+    private static final Gson gson;
 
     static {
         GsonBuilder builder = new GsonBuilder();

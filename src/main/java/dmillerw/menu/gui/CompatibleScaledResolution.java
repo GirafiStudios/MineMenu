@@ -12,8 +12,8 @@ public class CompatibleScaledResolution {
     private int scaledHeight;
     private int scaleFactor;
 
-    private double scaledWidthD;
-    private double scaledHeightD;
+    private final double scaledWidthD;
+    private final double scaledHeightD;
 
     public CompatibleScaledResolution(Minecraft minecraft, int width, int height) {
         this.scaledWidth = width;

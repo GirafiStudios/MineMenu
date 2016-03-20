@@ -9,8 +9,7 @@ import java.util.EnumSet;
  * @author dmillerw
  */
 public class ActionSessionData {
-
-    public static EnumSet<ClickAction> availableActions = EnumSet.noneOf(ClickAction.class);
+    public static final EnumSet<ClickAction> availableActions = EnumSet.noneOf(ClickAction.class);
 
     public static void activateAll() {
         availableActions.clear();

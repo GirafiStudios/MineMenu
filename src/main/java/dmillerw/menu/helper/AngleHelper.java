@@ -12,7 +12,7 @@ public class AngleHelper {
         return getRelativeAngle(Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2, Mouse.getX(), Mouse.getY());
     }
 
-    public static double getRelativeAngle(double originX, double originY, double x, double y) {
+    private static double getRelativeAngle(double originX, double originY, double x, double y) {
         double angle = Math.toDegrees(Math.atan2(y - originY, x - originX));
 
         // Remove 90 from the angle to make 0 and 180 at the top and bottom of the screen

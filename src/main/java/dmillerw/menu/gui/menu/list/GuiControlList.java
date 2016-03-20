@@ -75,13 +75,7 @@ public class GuiControlList extends GuiListExtended {
     }
 
     @Override
-    public int getListWidth() {
-        return super.getListWidth();
-    }
-
-    @Override
     protected void drawContainerBackground(Tessellator tessellator) {
-
     }
 
     @SideOnly(Side.CLIENT)

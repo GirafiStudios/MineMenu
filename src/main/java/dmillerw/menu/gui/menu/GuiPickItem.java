@@ -44,7 +44,7 @@ public class GuiPickItem extends GuiScreen {
         // Draw inventory contents
         GlStateManager.pushMatrix();
         for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
-            Slot slot = (Slot) this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
+            Slot slot = this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
             if (par1 - guiLeft >= slot.xDisplayPosition && par1 - guiLeft <= slot.xDisplayPosition + 16 && par2 - guiTop >= slot.yDisplayPosition && par2 - guiTop <= slot.yDisplayPosition + 16) {
                 mousedOver = slot;
             } else {
@@ -96,7 +96,7 @@ public class GuiPickItem extends GuiScreen {
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (button == 0) {
             for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
-                Slot slot = (Slot) this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
+                Slot slot = this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
                 if (mouseX - guiLeft >= slot.xDisplayPosition && mouseX - guiLeft <= slot.xDisplayPosition + 16 && mouseY - guiTop >= slot.yDisplayPosition && mouseY - guiTop <= slot.yDisplayPosition + 16) {
                     ItemStack itemStack = slot.getStack();
                     if (itemStack != null) {

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Level;
 
 public class LogHandler {
 
-    public static void log(Level logLevel, Object object) {
+    private static void log(Level logLevel, Object object) {
         FMLLog.log("MineMenu", logLevel, String.valueOf(object));
     }
 

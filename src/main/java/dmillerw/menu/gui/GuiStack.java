@@ -10,8 +10,7 @@ import java.util.List;
  * @author dmillerw
  */
 public class GuiStack {
-
-    public static List<GuiScreen> guiList = new ArrayList<GuiScreen>();
+    private static final List<GuiScreen> guiList = new ArrayList<GuiScreen>();
 
     public static void push(GuiScreen screen) {
         guiList.add(0, screen);

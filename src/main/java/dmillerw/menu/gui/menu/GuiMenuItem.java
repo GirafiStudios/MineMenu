@@ -26,8 +26,7 @@ import java.io.IOException;
  * @author dmillerw
  */
 public class GuiMenuItem extends GuiScreen {
-
-    public int slot;
+    private final int slot;
 
     private GuiTextField textTitle;
 
