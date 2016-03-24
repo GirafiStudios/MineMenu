@@ -30,7 +30,7 @@ public class NetworkEventHandler {
 
     @SubscribeEvent
     public void onClientConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) {
-        if (!event.isLocal) {
+        if (!event.isLocal()) {
             // Disable server specific options, which will be re-enabled if the server replies
             LogHandler.info("CLIENT: Connected to server. Disabling server-side click actions until server replies");
             ActionSessionData.activateClientValues();

@@ -70,17 +70,17 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && GuiRadialMenu.active) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && GuiRadialMenu.active) {
             event.setCanceled(true);
         }
 
-        if (!(event instanceof RenderGameOverlayEvent.Post) || event.type != RenderGameOverlayEvent.ElementType.ALL) {
+        if (!(event instanceof RenderGameOverlayEvent.Post) || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
 
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
-            renderText(event.resolution);
+            renderText(event.getResolution());
         }
     }
 

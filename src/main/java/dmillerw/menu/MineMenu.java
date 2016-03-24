@@ -90,7 +90,7 @@ public class MineMenu {
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.PostConfigChangedEvent event) {
-        if (event.modID.equals("MineMenu")) {
+        if (event.getModID().equals("MineMenu")) {
             proxy.syncConfig(configuration);
         }
     }
