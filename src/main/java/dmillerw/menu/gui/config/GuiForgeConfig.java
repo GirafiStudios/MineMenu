@@ -1,6 +1,7 @@
 package dmillerw.menu.gui.config;
 
 import dmillerw.menu.MineMenu;
+import dmillerw.menu.reference.Reference;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
@@ -22,13 +23,6 @@ public class GuiForgeConfig extends GuiConfig {
     }
 
     public GuiForgeConfig(GuiScreen parent) {
-        super(
-                parent,
-                getElements(),
-                "MineMenu",
-                false,
-                false,
-                GuiConfig.getAbridgedConfigPath(MineMenu.configuration.toString())
-        );
+        super(parent, getElements(), Reference.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath(MineMenu.configuration.toString()));
     }
 }

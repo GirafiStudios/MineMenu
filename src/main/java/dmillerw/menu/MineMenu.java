@@ -2,6 +2,7 @@ package dmillerw.menu;
 
 import dmillerw.menu.handler.LogHandler;
 import dmillerw.menu.proxy.CommonProxy;
+import dmillerw.menu.reference.Reference;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -23,13 +24,13 @@ import java.lang.reflect.Field;
 /**
  * @author dmillerw
  */
-@Mod(modid = "MineMenu", name = "MineMenu", version = "%MOD_VERSION%", dependencies = "required-after:Forge@[12.16.0,)", guiFactory = "dmillerw.menu.gui.config.MineMenuGuiFactory")
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.DEPENDENCIES, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class MineMenu {
 
-    @Mod.Instance("MineMenu")
+    @Mod.Instance(Reference.MOD_ID)
     public static MineMenu instance;
 
-    @SidedProxy(serverSide = "dmillerw.menu.proxy.CommonProxy", clientSide = "dmillerw.menu.proxy.ClientProxy")
+    @SidedProxy(serverSide = Reference.SERVER_PROXY_ClASS, clientSide = Reference.CLIENT_PROXY_CLASS)
     public static CommonProxy proxy;
 
     public static Configuration configuration;
@@ -48,10 +49,10 @@ public class MineMenu {
             throw new RuntimeException("Failed to acquire the main Minecraft directory!");
         }
 
-        mainFolder = new File(minecraftDir, "MineMenu");
+        mainFolder = new File(minecraftDir, Reference.MOD_ID);
         mainFolder.mkdir();
 
-        File oldFile = new File(event.getModConfigurationDirectory(), "MineMenu/menu.json");
+        File oldFile = new File(event.getModConfigurationDirectory(), Reference.MOD_ID + "/menu.json");
         File newFile = new File(mainFolder, "menu.json");
 
         if (oldFile.exists() && !newFile.exists()) {
@@ -65,7 +66,7 @@ public class MineMenu {
             }
         }
 
-        configuration = new Configuration(new File(event.getModConfigurationDirectory(), "MineMenu/MineMenu.cfg"));
+        configuration = new Configuration(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + "/" + Reference.MOD_ID + ".cfg"));
         configuration.load();
 
         configuration.setCategoryComment("server", "All these values control security when a client connects to a MineMenu capable server");
@@ -90,7 +91,7 @@ public class MineMenu {
 
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.PostConfigChangedEvent event) {
-        if (event.getModID().equals("MineMenu")) {
+        if (event.getModID().equals(Reference.MOD_ID)) {
             proxy.syncConfig(configuration);
         }
     }
