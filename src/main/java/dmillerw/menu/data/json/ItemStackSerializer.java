@@ -1,9 +1,9 @@
 package dmillerw.menu.data.json;
 
 import com.google.gson.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        object.add("name", new JsonPrimitive(String.valueOf(GameData.getItemRegistry().getNameForObject(src.getItem()))));
+        object.add("name", new JsonPrimitive(String.valueOf(Item.itemRegistry.getNameForObject(src.getItem()))));
         object.add("damage", new JsonPrimitive(src.getItemDamage()));
 
         return object;
@@ -43,6 +43,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             }
         }
 
-        return name.isEmpty() ? null : new ItemStack(GameData.getItemRegistry().getObject(new ResourceLocation(name)), 1, damage);
+        return name.isEmpty() ? null : new ItemStack(Item.itemRegistry.getObject(new ResourceLocation(name)), 1, damage);
     }
 }
