@@ -59,9 +59,9 @@ public class MenuLoader {
 
                             MenuItem item = array[id];
 
-                            if (item.icon == null || item.icon.getItem() == null) {
+                            if (item.icon == null) {
                                 LogHandler.warn(String.format("Menu item in slot %s is looking for an item that no longer exists", String.valueOf(id)));
-                                MenuItem newItem = new MenuItem(item.title, new ItemStack(Blocks.stone), item.clickAction);
+                                MenuItem newItem = new MenuItem(item.title, new ItemStack(Blocks.STONE), item.clickAction);
                                 array[id] = newItem;
                             }
 
@@ -79,7 +79,7 @@ public class MenuLoader {
                             }
                         }
                     } catch (NumberFormatException ex) {
-                        LogHandler.warn(String.format("Menu item found with invalid key. Ignoring."));
+                        LogHandler.warn("Menu item found with invalid key. Ignoring.");
                     }
                 }
 

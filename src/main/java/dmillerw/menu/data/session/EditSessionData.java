@@ -18,13 +18,13 @@ public class EditSessionData {
 
     public static void clear() {
         title = "";
-        icon = new ItemStack(Blocks.stone);
+        icon = new ItemStack(Blocks.STONE);
         clickAction = null;
     }
 
     public static void fromMenuItem(MenuItem item) {
         title = item != null && item.title != null ? item.title : "";
-        icon = item != null && item.icon != null ? item.icon : new ItemStack(Blocks.stone);
+        icon = item != null && item.icon != null ? item.icon : new ItemStack(Blocks.STONE);
         clickAction = item != null && item.clickAction != null ? item.clickAction : null;
     }
 

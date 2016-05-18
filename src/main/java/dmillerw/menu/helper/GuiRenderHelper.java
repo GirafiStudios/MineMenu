@@ -55,7 +55,7 @@ public class GuiRenderHelper {
 
         GlStateManager.pushMatrix();
 
-        base.mc.getTextureManager().bindTexture(Gui.optionsBackground);
+        base.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32F;

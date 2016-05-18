@@ -48,7 +48,7 @@ public class GuiPickIcon extends GuiScreen {
 
         stacks = new ArrayList<ItemStack>();
 
-        Iterator iterator = Item.itemRegistry.iterator();
+        Iterator iterator = Item.REGISTRY.iterator();
         while (iterator.hasNext()) {
             Item item = (Item) iterator.next();
 
@@ -104,7 +104,7 @@ public class GuiPickIcon extends GuiScreen {
                         }
                     }
                 } else {
-                    for (Object anItemRegistry : Item.itemRegistry) {
+                    for (Object anItemRegistry : Item.REGISTRY) {
                         Item item = (Item) anItemRegistry;
 
                         if (item != null && item.getCreativeTab() != null) {
@@ -121,7 +121,7 @@ public class GuiPickIcon extends GuiScreen {
             } else {
                 stacks.clear();
 
-                for (Object anItemRegistry : Item.itemRegistry) {
+                for (Object anItemRegistry : Item.REGISTRY) {
                     Item item = (Item) anItemRegistry;
 
                     if (item != null && item.getCreativeTab() != null) {

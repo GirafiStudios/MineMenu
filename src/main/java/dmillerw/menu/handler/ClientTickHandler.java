@@ -171,7 +171,7 @@ public class ClientTickHandler {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.stone);
+            ItemStack stack = (item != null && item.icon != null) ? item.icon : new ItemStack(Blocks.STONE);
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant

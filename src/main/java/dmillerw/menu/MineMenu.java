@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 /**
  * @author dmillerw
  */
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.DEPENDENCIES, guiFactory = Reference.GUI_FACTORY_CLASS)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.9,1.9.4)", dependencies = Reference.DEPENDENCIES, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class MineMenu {
 
     @Mod.Instance(Reference.MOD_ID)
@@ -66,7 +66,7 @@ public class MineMenu {
             }
         }
 
-        configuration = new Configuration(new File(event.getModConfigurationDirectory(), Reference.MOD_ID + "/" + Reference.MOD_ID + ".cfg"));
+        configuration = new Configuration(new File(event.getModConfigurationDirectory(), Reference.MOD_NAME + ".cfg"));
         configuration.load();
 
         configuration.setCategoryComment("server", "All these values control security when a client connects to a MineMenu capable server");

@@ -57,7 +57,7 @@ public class GuiMenuItem extends GuiScreen {
         this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel")));
         this.buttonList.add(this.buttonDelete = new GuiButton(2, this.width / 2 - 50, this.height - 60, 100, 20, "Delete"));
 
-        this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.stone)));
+        this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE)));
         String string = "Action";
         if (EditSessionData.clickAction != null) {
             if (EditSessionData.clickAction instanceof ClickActionCommand) {

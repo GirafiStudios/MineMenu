@@ -73,7 +73,7 @@ public class GuiPickItem extends GuiScreen {
 
             if (sprite != null) {
                 GlStateManager.disableLighting();
-                this.mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+                this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                 this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
                 GlStateManager.enableLighting();
             }

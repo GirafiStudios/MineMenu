@@ -1,6 +1,6 @@
 [
 {
-  "modid": "MineMenu",
+  "modid": "minemenu",
   "name": "MineMenu",
   "description": "MineMenu supports key bindings, commands, and creative functions to make your life easier.",
   "version": "${version}",
