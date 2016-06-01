@@ -7,7 +7,6 @@ import dmillerw.menu.gui.CompatibleScaledResolution;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
-import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -132,18 +131,18 @@ public class ClientTickHandler {
                     r = (float) 200 / (float) 255;
                     g = (float) 200 / (float) 255;
                     b = (float) 200 / (float) 255;
-                    alpha = (float) ClientProxy.selectAlpha / (float) 255;
+                    alpha = (float) ConfigHandler.selectAlpha / (float) 255;
                 } else {
-                    r = (float) ClientProxy.selectRed / (float) 255;
-                    g = (float) ClientProxy.selectGreen / (float) 255;
-                    b = (float) ClientProxy.selectBlue / (float) 255;
-                    alpha = (float) ClientProxy.selectAlpha / (float) 255;
+                    r = (float) ConfigHandler.selectRed / (float) 255;
+                    g = (float) ConfigHandler.selectGreen / (float) 255;
+                    b = (float) ConfigHandler.selectBlue / (float) 255;
+                    alpha = (float) ConfigHandler.selectAlpha / (float) 255;
                 }
             } else {
-                r = (float) ClientProxy.menuRed / (float) 255;
-                g = (float) ClientProxy.menuGreen / (float) 255;
-                b = (float) ClientProxy.menuBlue / (float) 255;
-                alpha = (float) ClientProxy.menuAlpha / (float) 255;
+                r = (float) ConfigHandler.menuRed / (float) 255;
+                g = (float) ConfigHandler.menuGreen / (float) 255;
+                b = (float) ConfigHandler.menuBlue / (float) 255;
+                alpha = (float) ConfigHandler.menuAlpha / (float) 255;
             }
 
             vertexbuffer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
@@ -230,10 +229,10 @@ public class ClientTickHandler {
                 VertexBuffer vertexbuffer = tessellator.getBuffer();
                 vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
-                float r = (float) ClientProxy.menuRed / (float) 255;
-                float g = (float) ClientProxy.menuGreen / (float) 255;
-                float b = (float) ClientProxy.menuBlue / (float) 255;
-                float alpha = (float) ClientProxy.menuAlpha / (float) 255;
+                float r = (float) ConfigHandler.menuRed / (float) 255;
+                float g = (float) ConfigHandler.menuGreen / (float) 255;
+                float b = (float) ConfigHandler.menuBlue / (float) 255;
+                float alpha = (float) ConfigHandler.menuAlpha / (float) 255;
 
                 vertexbuffer.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
                 vertexbuffer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();

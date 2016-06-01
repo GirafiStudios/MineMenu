@@ -5,8 +5,8 @@ import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.gui.menu.GuiMenuItem;
 import dmillerw.menu.handler.ClientTickHandler;
+import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.helper.AngleHelper;
-import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -55,7 +55,7 @@ public class GuiRadialMenu extends GuiScreen {
                         boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
 
                         if (item != null) {
-                            if (isShiftKeyDown() || (ClientProxy.rightClickToEdit && button == 1)) {
+                            if (isShiftKeyDown() || (ConfigHandler.rightClickToEdit && button == 1)) {
                                 deactivate();
                                 GuiStack.push(new GuiMenuItem(i, item));
                                 return;

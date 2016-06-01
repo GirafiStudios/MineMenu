@@ -19,7 +19,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -99,7 +98,7 @@ public class GuiMenuItem extends GuiScreen {
                 if (RadialMenu.getActiveArray()[slot] != null) {
                     RadialMenu.getActiveArray()[slot].onRemoved();
                     RadialMenu.getActiveArray()[slot] = null;
-                    MenuLoader.save(new File(MineMenu.mainFolder, "menu.json"));
+                    MenuLoader.save(MineMenu.menuFile);
                     Minecraft.getMinecraft().displayGuiScreen(null);
                 }
             } else if (button.id == 1) {
@@ -111,7 +110,7 @@ public class GuiMenuItem extends GuiScreen {
                     }
                     RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
                 }
-                MenuLoader.save(new File(MineMenu.mainFolder, "menu.json"));
+                MenuLoader.save(MineMenu.menuFile);
                 Minecraft.getMinecraft().displayGuiScreen(null);
             }
         }

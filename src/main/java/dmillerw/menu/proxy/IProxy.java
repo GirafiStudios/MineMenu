@@ -1,6 +1,5 @@
 package dmillerw.menu.proxy;
 
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -15,6 +14,4 @@ interface IProxy {
     void init(FMLInitializationEvent event);
 
     void postInit(FMLPostInitializationEvent event);
-
-    void syncConfig(Configuration configuration);
 }

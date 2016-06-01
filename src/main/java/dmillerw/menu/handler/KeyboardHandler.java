@@ -3,7 +3,6 @@ package dmillerw.menu.handler;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
-import dmillerw.menu.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -88,10 +87,10 @@ public class KeyboardHandler {
         boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
 
         if (wheelKeyPressed != lastWheelState) {
-            if (ClientProxy.toggle) {
+            if (ConfigHandler.toggle) {
                 if (wheelKeyPressed) {
                     if (GuiRadialMenu.active) {
-                        if (ClientProxy.releaseToSelect) {
+                        if (ConfigHandler.releaseToSelect) {
                             GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
                         }
                         GuiRadialMenu.deactivate();
@@ -112,7 +111,7 @@ public class KeyboardHandler {
                             GuiRadialMenu.activate();
                         }
                     } else {
-                        if (ClientProxy.releaseToSelect) {
+                        if (ConfigHandler.releaseToSelect) {
                             GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
                         }
                         GuiRadialMenu.deactivate();
