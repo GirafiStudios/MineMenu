@@ -23,6 +23,7 @@ public class ConfigHandler {
     public static boolean toggle;
     public static boolean rightClickToEdit;
     public static boolean releaseToSelect;
+    public static boolean removeStoneOnMenuButton;
 
     public static void init(File configFile) {
         if (config == null) {
@@ -56,6 +57,7 @@ public class ConfigHandler {
         toggle = config.get(Configuration.CATEGORY_GENERAL, "toggle", false).getBoolean();
         rightClickToEdit = config.get(Configuration.CATEGORY_GENERAL, "rightClickToEdit", false).getBoolean();
         releaseToSelect = config.get(Configuration.CATEGORY_GENERAL, "releaseToSelect", false).getBoolean();
+        removeStoneOnMenuButton = config.get(Configuration.CATEGORY_GENERAL, "removeStoneOnMenuButton", false).getBoolean();
 
         if (config.hasChanged()) {
             config.save();
