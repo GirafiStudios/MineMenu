@@ -32,7 +32,7 @@ public class ConfigHandler {
         }
     }
 
-    public static void loadConfig() {
+    private static void loadConfig() {
         config.setCategoryComment(CATEGORY_SERVER, "All these values control security when a client connects to a MineMenu capable server");
         config.setCategoryComment(CATEGORY_VISUAL, "All values here correspond to the RGBA standard, and must be whole numbers between 0 and 255");
 

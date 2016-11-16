@@ -35,7 +35,7 @@ public class MenuLoader {
             JsonElement element = gson.fromJson(new FileReader(file), JsonElement.class);
 
             if (!element.isJsonObject()) {
-                LogHandler.error(String.format("Failed to load menu.json! Improperly formatted file!"));
+                LogHandler.error("Failed to load menu.json! Improperly formatted file!");
                 return;
             }
 

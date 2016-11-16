@@ -24,7 +24,7 @@ public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickA
             object1.add("toggle", new JsonPrimitive(((ClickActionKey) src).toggle));
             object.add("key", object1);
         } else if (src instanceof ClickActionUseItem) {
-            object.add("item", context.serialize(((ClickActionUseItem) src).item));
+            object.add("item", context.serialize(((ClickActionUseItem) src).stack));
         } else if (src instanceof ClickActionCategory) {
             object.add("category", new JsonPrimitive(((ClickActionCategory) src).category));
         }

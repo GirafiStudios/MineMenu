@@ -13,13 +13,11 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author dmillerw
@@ -33,7 +31,7 @@ public class GuiPickIcon extends GuiScreen {
 
     private GuiButton buttonCancel;
 
-    private List<ItemStack> stacks;
+    private NonNullList<ItemStack> stacks;
 
     private int listScrollIndex = 0;
 
@@ -46,12 +44,9 @@ public class GuiPickIcon extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
 
-        stacks = new ArrayList<ItemStack>();
+        stacks = NonNullList.func_191196_a();
 
-        Iterator iterator = Item.REGISTRY.iterator();
-        while (iterator.hasNext()) {
-            Item item = (Item) iterator.next();
-
+        for (Item item : Item.REGISTRY) {
             if (item != null && item.getCreativeTab() != null) {
                 item.getSubItems(item, null, stacks);
             }
@@ -61,7 +56,7 @@ public class GuiPickIcon extends GuiScreen {
 
         this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")));
 
-        this.textSearch = new GuiTextField(0,this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
+        this.textSearch = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
         this.textSearch.setMaxStringLength(32767);
         this.textSearch.setFocused(true);
     }
@@ -93,20 +88,16 @@ public class GuiPickIcon extends GuiScreen {
             if (!textSearch.getText().trim().isEmpty()) {
                 stacks.clear();
 
-                ArrayList<ItemStack> temp = new ArrayList<ItemStack>();
+                NonNullList<ItemStack> temp = NonNullList.func_191196_a();
 
                 if (textSearch.getText().equalsIgnoreCase(".inv")) {
                     EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-                    for (int i=0; i<player.inventory.getSizeInventory(); i++) {
+                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                         ItemStack stack = player.inventory.getStackInSlot(i);
-                        if (stack != null) {
-                            stacks.add(stack.copy());
-                        }
+                        stacks.add(stack.copy());
                     }
                 } else {
-                    for (Object anItemRegistry : Item.REGISTRY) {
-                        Item item = (Item) anItemRegistry;
-
+                    for (Item item : Item.REGISTRY) {
                         if (item != null && item.getCreativeTab() != null) {
                             item.getSubItems(item, null, temp);
                         }
@@ -211,7 +202,7 @@ public class GuiPickIcon extends GuiScreen {
                     highlightedY = actualDrawY / 2;
                 }
 
-                if (!scaled && stacks.get(i) != null) {
+                if (!scaled) {
                     ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 
@@ -244,7 +235,6 @@ public class GuiPickIcon extends GuiScreen {
                 }
             }
         }
-
         return null;
     }
 }

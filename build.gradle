@@ -1,10 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
@@ -14,24 +11,22 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext.buildnumber=""
 if (System.getenv().BUILD_NUMBER) {
-    ext.buildnumber="" + System.getenv().BUILD_NUMBER
+    ext.buildnumber = ".B" + System.getenv().BUILD_NUMBER
 }
 
-version = "${mod_version}"
-group = "${mod_group}"
-archivesBaseName = "${mod_archive_name}"
+version = "${minecraft_version}-${mod_version}${buildnumber}"
+group = "dmillerw.menu"
+archivesBaseName = "MineMenu"
 
 minecraft {
     runDir = "run"
     mappings = "${mappings_version}"
     version = "${minecraft_version}-${forge_version}"
-    replaceIn "${mod_info_path}"
+	
+    replaceIn "Reference.java"
     replace "%MOD_VERSION%", "${mod_version}"
     replace "%FORGE_VERSION%", "${forge_version}"
 }
-
-display_version = "${display_version}" ?: "${minecraft_version}"
-version = "${display_version}-${mod_version}.B${buildnumber}"
 
 processResources{
     inputs.property "version", project.version

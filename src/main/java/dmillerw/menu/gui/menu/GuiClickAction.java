@@ -17,7 +17,7 @@ import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author dmillerw
@@ -100,7 +100,7 @@ public class GuiClickAction extends GuiScreen {
             itemString = "Item: " + item.getDisplayName();
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = "Item: " + ((ClickActionUseItem) EditSessionData.clickAction).item.getDisplayName();
+                itemString = "Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getDisplayName();
             } else {
                 itemString = "Select a Slot";
             }
@@ -261,13 +261,13 @@ public class GuiClickAction extends GuiScreen {
         }
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
         if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
-            this.drawHoveringText(Arrays.asList("Click Action: Command"), mouseX, mouseY);
+            this.drawHoveringText(Collections.singletonList("Click Action: Command"), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {
-            this.drawHoveringText(Arrays.asList("Click Action: KeyBinding"), mouseX, mouseY);
+            this.drawHoveringText(Collections.singletonList("Click Action: KeyBinding"), mouseX, mouseY);
         } else if (mouseX > modeUseItem.xPosition && mouseX < modeUseItem.xPosition + modeUseItem.width && mouseY > modeUseItem.yPosition && mouseY < modeUseItem.yPosition + modeUseItem.width) {
-            this.drawHoveringText(Arrays.asList("Click Action: Use Item"), mouseX, mouseY);
+            this.drawHoveringText(Collections.singletonList("Click Action: Use Item"), mouseX, mouseY);
         } else if (mouseX > modeCategory.xPosition && mouseX < modeCategory.xPosition + modeCategory.width && mouseY > modeCategory.yPosition && mouseY < modeCategory.yPosition + modeCategory.width) {
-            this.drawHoveringText(Arrays.asList("Click Action: Category"), mouseX, mouseY);
+            this.drawHoveringText(Collections.singletonList("Click Action: Category"), mouseX, mouseY);
         }
     }
 }

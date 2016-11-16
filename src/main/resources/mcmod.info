@@ -17,7 +17,6 @@
   ],
   "parent":"",
   "dependencies": [
-    "mod_MinecraftForge"
   ]
 }
 ]

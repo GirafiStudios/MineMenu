@@ -13,6 +13,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +66,7 @@ public class GuiControlList extends GuiListExtended {
     }
 
     @Override
+    @Nonnull
     public GuiListExtended.IGuiListEntry getListEntry(int index) {
         return list.get(index);
     }
@@ -85,7 +87,7 @@ public class GuiControlList extends GuiListExtended {
 
         private final int width;
 
-        public CategoryEntry(String category) {
+        CategoryEntry(String category) {
             this.category = I18n.format(category);
             this.width = GuiControlList.this.mc.fontRendererObj.getStringWidth(this.category);
         }
@@ -96,7 +98,9 @@ public class GuiControlList extends GuiListExtended {
 
         @Override
         public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-            GuiControlList.this.mc.fontRendererObj.drawString(this.category, GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2, z + slotHeight - GuiControlList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+            if (GuiControlList.this.mc.currentScreen != null) {
+                GuiControlList.this.mc.fontRendererObj.drawString(this.category, GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2, z + slotHeight - GuiControlList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+            }
         }
 
         @Override

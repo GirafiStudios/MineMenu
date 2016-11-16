@@ -1,56 +1,55 @@
 package dmillerw.menu.network.packet.server;
 
-import io.netty.buffer.ByteBuf;
+import dmillerw.menu.network.packet.Packet;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumHand;
+
+import java.io.IOException;
 
 /**
  * @author dmillerw
  */
-public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, IMessage> {
+public class PacketUseItem extends Packet<PacketUseItem> {
     private int slot;
+    private ItemStack stack;
 
     public PacketUseItem() {
     }
 
-    public PacketUseItem(int slot) {
+    public PacketUseItem(int slot, ItemStack stack) {
         this.slot = slot;
+        this.stack = stack;
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(slot);
+    protected void handleClientSide(EntityPlayer player) {
     }
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        slot = buf.readInt();
-    }
+    protected void handleServerSide(EntityPlayer player) {
+        ItemStack stack = player.inventory.getStackInSlot(slot);
 
-    @Override
-    public IMessage onMessage(PacketUseItem message, MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-        ItemStack stack = player.inventory.getStackInSlot(message.slot);
-        if (stack != null) {
-            ItemStack backup = player.inventory.getCurrentItem();
-            if (backup != null) {
-                backup = backup.copy();
-            }
-
-            ItemStack current = player.inventory.getCurrentItem();
-            if (current != null) {
-                current = current.copy();
-
-                player.inventory.setInventorySlotContents(message.slot, current);
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
-
-                // Send updated inventory
-                player.sendContainerToPlayer(player.inventoryContainer);
-            }
+        for (EnumHand hand : EnumHand.values()) {
+            stack.useItemRightClick(player.worldObj, player, hand);
         }
-        return null;
+
+        if (!player.isHandActive()) {
+            ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+        }
+    }
+
+    @Override
+    public void toBytes(PacketBuffer buffer) {
+        buffer.writeInt(slot);
+        buffer.writeItemStackToBuffer(stack);
+    }
+
+    @Override
+    public void fromBytes(PacketBuffer buffer) throws IOException {
+        slot = buffer.readInt();
+        stack = buffer.readItemStackFromBuffer();
     }
 }

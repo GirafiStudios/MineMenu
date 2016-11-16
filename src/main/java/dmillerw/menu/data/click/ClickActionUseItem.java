@@ -11,10 +11,10 @@ import net.minecraft.util.EnumHand;
  * @author dmillerw
  */
 public class ClickActionUseItem implements ClickAction.IClickAction {
-    public final ItemStack item;
+    public final ItemStack stack;
 
     public ClickActionUseItem(ItemStack item) {
-        this.item = item;
+        this.stack = item;
     }
 
     @Override
@@ -24,15 +24,17 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
 
     @Override
     public boolean onClicked() {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.thePlayer;
 
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
-            if (stack != null && this.item.isItemEqual(stack)) {
-                stack.useItemRightClick(player.worldObj, player, EnumHand.MAIN_HAND);
-                System.out.println("Test, should be on client");
-                PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
+            if (this.stack.isItemEqual(stack)) {
+                for (EnumHand hand : EnumHand.values()) {
+                    stack.useItemRightClick(player.worldObj, player, hand);
+                }
+                PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i, stack));
             }
         }
         return false;

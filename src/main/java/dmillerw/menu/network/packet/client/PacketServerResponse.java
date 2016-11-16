@@ -2,30 +2,33 @@ package dmillerw.menu.network.packet.client;
 
 import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.handler.LogHandler;
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import dmillerw.menu.network.packet.Packet;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
+
+import java.io.IOException;
 
 /**
  * @author dmillerw
  */
-public class PacketServerResponse implements IMessage, IMessageHandler<PacketServerResponse, IMessage> {
+public class PacketServerResponse extends Packet<PacketServerResponse> {
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeBoolean(true);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-
-    }
-
-    @Override
-    public IMessage onMessage(PacketServerResponse message, MessageContext ctx) {
+    protected void handleClientSide(EntityPlayer player) {
         LogHandler.info("CLIENT: Received response from server, activating server-side click actions");
         ActionSessionData.activateAll();
-        return null;
+    }
+
+    @Override
+    protected void handleServerSide(EntityPlayer player) {
+    }
+
+    @Override
+    protected void toBytes(PacketBuffer buffer) {
+        buffer.writeBoolean(true);
+    }
+
+    @Override
+    protected void fromBytes(PacketBuffer buffer) throws IOException {
     }
 }
