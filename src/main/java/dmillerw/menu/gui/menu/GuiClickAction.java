@@ -254,10 +254,10 @@ public class GuiClickAction extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partial);
         String header = "";
         switch (mode) {
-            case 0: header = "Select a Key"; break;
-            case 1: header = "Enter a Command"; break;
-            case 2: header = "Pick an Item"; break;
-            case 3: header = "Enter a Category"; break;
+            case 0: header = "Enter a command"; break;
+            case 1: header = "Select a key"; break;
+            case 2: header = "Pick an item"; break;
+            case 3: header = "Enter a category"; break;
         }
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
         if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {

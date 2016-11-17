@@ -9,10 +9,8 @@ import net.minecraft.client.settings.KeyBinding;
  * @author dmillerw
  */
 public class ClickActionKey implements ClickAction.IClickAction {
-
     public final String key;
-
-    public final boolean toggle;
+    public boolean toggle;
 
     public ClickActionKey(String key, boolean toggle) {
         this.key = key;
@@ -52,5 +50,6 @@ public class ClickActionKey implements ClickAction.IClickAction {
         if (keyBinding != null) {
             KeyReflectionHelper.unpressKey(getKeyBinding());
         }
+        toggle = !toggle;
     }
 }
