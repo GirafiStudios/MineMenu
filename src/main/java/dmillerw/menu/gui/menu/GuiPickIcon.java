@@ -17,6 +17,7 @@ import net.minecraft.util.NonNullList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -44,7 +45,7 @@ public class GuiPickIcon extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
 
-        stacks = NonNullList.func_191196_a();
+        stacks = NonNullList.create();
 
         for (Item item : Item.REGISTRY) {
             if (item != null && item.getCreativeTab() != null) {
@@ -88,10 +89,10 @@ public class GuiPickIcon extends GuiScreen {
             if (!textSearch.getText().trim().isEmpty()) {
                 stacks.clear();
 
-                NonNullList<ItemStack> temp = NonNullList.func_191196_a();
+                NonNullList<ItemStack> temp = NonNullList.create();
 
                 if (textSearch.getText().equalsIgnoreCase(".inv")) {
-                    EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                    EntityPlayer player = Minecraft.getMinecraft().player;
                     for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                         ItemStack stack = player.inventory.getStackInSlot(i);
                         stacks.add(stack.copy());
@@ -135,13 +136,13 @@ public class GuiPickIcon extends GuiScreen {
 
         ItemStack clicked = getClickedStack(this.width / 2, this.height / 2 - 40, mouseX, mouseY);
 
-        if (clicked != null) {
+        if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
             GuiStack.pop();
         }
 
         if (buttonCancel.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-            EditSessionData.icon = null;
+            EditSessionData.icon = ItemStack.EMPTY;
         }
     }
 
@@ -179,7 +180,7 @@ public class GuiPickIcon extends GuiScreen {
     }
 
     private void drawList(int x, int y, int mx, int my) {
-        ItemStack highlighted = null;
+        ItemStack highlighted = ItemStack.EMPTY;
         float highlightedX = 0;
         float highlightedY = 0;
 
@@ -212,7 +213,7 @@ public class GuiPickIcon extends GuiScreen {
             }
         }
 
-        if (highlighted != null) {
+        if (!highlighted.isEmpty()) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(2, 2, 2);
             ItemRenderHelper.renderItem(highlightedX, highlightedY, highlighted);
@@ -220,6 +221,7 @@ public class GuiPickIcon extends GuiScreen {
         }
     }
 
+    @Nonnull
     private ItemStack getClickedStack(int x, int y, int mx, int my) {
         for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
             int drawX = i % MAX_COLUMN;
@@ -235,6 +237,6 @@ public class GuiPickIcon extends GuiScreen {
                 }
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 }

@@ -59,7 +59,7 @@ public class MenuLoader {
 
                             MenuItem item = array[id];
 
-                            if (item.icon == null) {
+                            if (item.icon.isEmpty()) {
                                 LogHandler.warn(String.format("Menu item in slot %s is looking for an item that no longer exists", String.valueOf(id)));
                                 MenuItem newItem = new MenuItem(item.title, new ItemStack(Blocks.STONE), item.clickAction);
                                 array[id] = newItem;

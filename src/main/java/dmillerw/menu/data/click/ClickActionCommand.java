@@ -22,7 +22,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
 
     @Override
     public boolean onClicked() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         String parsedCommand = command.replace("@p", player.getName());
 
         if (ClientCommandHandler.instance.executeCommand(player, parsedCommand) == 0) {

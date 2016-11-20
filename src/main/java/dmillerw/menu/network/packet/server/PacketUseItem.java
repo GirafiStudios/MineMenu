@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -19,7 +20,7 @@ public class PacketUseItem extends Packet<PacketUseItem> {
     public PacketUseItem() {
     }
 
-    public PacketUseItem(int slot, ItemStack stack) {
+    public PacketUseItem(int slot, @Nonnull ItemStack stack) {
         this.slot = slot;
         this.stack = stack;
     }
@@ -33,7 +34,7 @@ public class PacketUseItem extends Packet<PacketUseItem> {
         ItemStack stack = player.inventory.getStackInSlot(slot);
 
         for (EnumHand hand : EnumHand.values()) {
-            stack.useItemRightClick(player.worldObj, player, hand);
+            stack.useItemRightClick(player.world, player, hand);
         }
 
         if (!player.isHandActive()) {
@@ -44,12 +45,12 @@ public class PacketUseItem extends Packet<PacketUseItem> {
     @Override
     public void toBytes(PacketBuffer buffer) {
         buffer.writeInt(slot);
-        buffer.writeItemStackToBuffer(stack);
+        buffer.writeItemStack(stack);
     }
 
     @Override
     public void fromBytes(PacketBuffer buffer) throws IOException {
         slot = buffer.readInt();
-        stack = buffer.readItemStackFromBuffer();
+        stack = buffer.readItemStack();
     }
 }

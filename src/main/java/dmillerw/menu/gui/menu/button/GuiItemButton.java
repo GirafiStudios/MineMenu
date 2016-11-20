@@ -8,11 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
-public class GuiItemButton extends GuiButtonExt {
+import javax.annotation.Nonnull;
 
+public class GuiItemButton extends GuiButtonExt {
+    @Nonnull
     public ItemStack icon;
 
-    public GuiItemButton(int id, int xPos, int yPos, int width, int height, ItemStack icon) {
+    public GuiItemButton(int id, int xPos, int yPos, int width, int height, @Nonnull ItemStack icon) {
         super(id, xPos, yPos, width, height, "");
         this.icon = icon;
     }
@@ -26,7 +28,7 @@ public class GuiItemButton extends GuiButtonExt {
             this.mouseDragged(mc, mouseX, mouseY);
 
             GlStateManager.pushMatrix();
-            if (this.icon == null) {
+            if (this.icon.isEmpty()) {
                 this.icon = new ItemStack(Blocks.STONE);
             }
             ItemRenderHelper.renderItem(this.xPosition + this.width / 2, this.yPosition + this.height / 2, icon);

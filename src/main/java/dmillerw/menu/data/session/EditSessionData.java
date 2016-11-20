@@ -5,13 +5,14 @@ import dmillerw.menu.data.menu.MenuItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author dmillerw
  */
 public class EditSessionData {
-
     public static String title;
-
+    @Nonnull
     public static ItemStack icon;
 
     public static ClickAction.IClickAction clickAction;
@@ -24,7 +25,7 @@ public class EditSessionData {
 
     public static void fromMenuItem(MenuItem item) {
         title = item != null && item.title != null ? item.title : "";
-        icon = item != null && item.icon != null ? item.icon : new ItemStack(Blocks.STONE);
+        icon = item != null && !item.icon.isEmpty() ? item.icon : new ItemStack(Blocks.STONE);
         clickAction = item != null && item.clickAction != null ? item.clickAction : null;
     }
 

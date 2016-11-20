@@ -45,7 +45,7 @@ public abstract class Packet <REQ extends Packet<REQ>> implements IMessage, IMes
 
     @SideOnly(Side.CLIENT)
     protected EntityPlayer getPlayerClient() {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override

@@ -51,17 +51,17 @@ public class GuiRadialMenu extends GuiScreen {
                     boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
 
                     if (mouseIn) {
-                        MenuItem item = RadialMenu.getActiveArray()[i];
-                        boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
+                        MenuItem menuItem = RadialMenu.getActiveArray()[i];
+                        boolean disabled = menuItem != null && !ActionSessionData.availableActions.contains(menuItem.clickAction.getClickAction());
 
-                        if (item != null) {
+                        if (menuItem != null) {
                             if (isShiftKeyDown() || (ConfigHandler.rightClickToEdit && button == 1)) {
                                 deactivate();
-                                GuiStack.push(new GuiMenuItem(i, item));
+                                GuiStack.push(new GuiMenuItem(i, menuItem));
                                 return;
                             } else {
                                 if (!disabled && button == 0) {
-                                    if (item.clickAction.onClicked()) {
+                                    if (menuItem.clickAction.onClicked()) {
                                         deactivate();
                                         return;
                                     }
@@ -70,7 +70,7 @@ public class GuiRadialMenu extends GuiScreen {
                         } else {
                             if (button == 0) {
                                 deactivate();
-                                GuiStack.push(new GuiMenuItem(i, item));
+                                GuiStack.push(new GuiMenuItem(i, menuItem));
                                 return;
                             }
                         }

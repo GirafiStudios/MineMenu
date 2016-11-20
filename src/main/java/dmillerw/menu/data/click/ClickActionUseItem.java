@@ -7,13 +7,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author dmillerw
  */
 public class ClickActionUseItem implements ClickAction.IClickAction {
+    @Nonnull
     public final ItemStack stack;
 
-    public ClickActionUseItem(ItemStack item) {
+    public ClickActionUseItem(@Nonnull ItemStack item) {
         this.stack = item;
     }
 
@@ -25,14 +28,14 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
     @Override
     public boolean onClicked() {
         Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.thePlayer;
+        EntityPlayer player = mc.player;
 
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (this.stack.isItemEqual(stack)) {
                 for (EnumHand hand : EnumHand.values()) {
-                    stack.useItemRightClick(player.worldObj, player, hand);
+                    stack.useItemRightClick(player.world, player, hand);
                 }
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i, stack));
             }

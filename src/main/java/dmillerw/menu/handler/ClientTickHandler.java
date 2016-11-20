@@ -46,7 +46,7 @@ public class ClientTickHandler {
             RadialMenu.tickTimer();
 
             Minecraft mc = Minecraft.getMinecraft();
-            if ((mc.theWorld == null || mc.isGamePaused()) && GuiRadialMenu.active) {
+            if ((mc.world == null || mc.isGamePaused()) && GuiRadialMenu.active) {
                 GuiRadialMenu.deactivate();
             }
         }
@@ -57,7 +57,7 @@ public class ClientTickHandler {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
 
-            if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
+            if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
                 if (GuiRadialMenu.active) {
                     CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
                     renderGui(resolution);
@@ -78,7 +78,7 @@ public class ClientTickHandler {
         }
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
+        if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
             renderText(event.getResolution());
         }
     }
@@ -170,7 +170,7 @@ public class ClientTickHandler {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            ItemStack stack = (item != null && item.icon != null) ? item.icon : ( ConfigHandler.removeStoneOnMenuButton ? new ItemStack(Blocks.AIR) : new ItemStack(Blocks.STONE));
+            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : ( ConfigHandler.removeStoneOnMenuButton ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant

@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 
@@ -23,7 +24,7 @@ import java.util.Collections;
  * @author dmillerw
  */
 public class GuiClickAction extends GuiScreen {
-
+    @Nonnull
     public static ItemStack item;
 
     public static KeyBinding keyBinding;
@@ -49,7 +50,7 @@ public class GuiClickAction extends GuiScreen {
 
     public GuiClickAction() {
         GuiClickAction.keyBinding = null;
-        GuiClickAction.item = null;
+        GuiClickAction.item = ItemStack.EMPTY;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class GuiClickAction extends GuiScreen {
     public void initGui() {
         if (GuiClickAction.keyBinding != null) {
             mode = ClickAction.KEYBIND.ordinal();
-        } else if (GuiClickAction.item != null) {
+        } else if (!GuiClickAction.item.isEmpty()) {
             mode = ClickAction.ITEM_USE.ordinal();
         } else {
             mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
@@ -96,7 +97,7 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.keybindToggleButton = new GuiButton(3, this.width / 2 - 75, 80, 150, 20, keyToggleString));
 
         String itemString;
-        if (GuiClickAction.item != null) {
+        if (!GuiClickAction.item.isEmpty()) {
             itemString = "Item: " + item.getDisplayName();
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
@@ -217,7 +218,7 @@ public class GuiClickAction extends GuiScreen {
                     EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim()) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
                     EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
-                } else if (mode == 2 && GuiClickAction.item != null) {
+                } else if (mode == 2 && !GuiClickAction.item.isEmpty()) {
                     EditSessionData.clickAction = new ClickActionUseItem(item);
                 } else if (mode == 3) {
                     EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new ClickActionCategory(textCategory.getText().trim()) : null;

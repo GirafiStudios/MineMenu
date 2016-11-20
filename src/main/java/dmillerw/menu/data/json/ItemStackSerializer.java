@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -24,9 +25,10 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     }
 
     @Override
+    @Nonnull
     public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (!json.isJsonObject()) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         String name = "";
@@ -43,6 +45,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             }
         }
 
-        return name.isEmpty() ? null : new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(name)), 1, damage);
+        return name.isEmpty() ? ItemStack.EMPTY : new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(name)), 1, damage);
     }
 }
