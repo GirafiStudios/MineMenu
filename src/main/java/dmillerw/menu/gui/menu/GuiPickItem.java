@@ -71,10 +71,12 @@ public class GuiPickItem extends GuiScreen {
         if (stack.isEmpty()) {
             TextureAtlasSprite sprite = slot.getBackgroundSprite();
 
-            GlStateManager.disableLighting();
-            this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
-            GlStateManager.enableLighting();
+            if (sprite != null) {
+                GlStateManager.disableLighting();
+                this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
+                GlStateManager.enableLighting();
+            }
         }
 
         if (!stack.isEmpty()) {
