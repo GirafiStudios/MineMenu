@@ -14,7 +14,6 @@ public class EditSessionData {
     public static String title;
     @Nonnull
     public static ItemStack icon;
-
     public static ClickAction.IClickAction clickAction;
 
     public static void clear() {

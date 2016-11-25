@@ -17,18 +17,20 @@ public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickA
         JsonObject object = new JsonObject();
 
         if (src instanceof ClickActionCommand) {
-            object.add("command", new JsonPrimitive(((ClickActionCommand) src).command));
+            JsonObject commandObject = new JsonObject();
+            commandObject.add("command", new JsonPrimitive(((ClickActionCommand) src).command));
+            commandObject.add("clipboard", new JsonPrimitive(((ClickActionCommand) src).clipboard));
+            object.add("command", commandObject);
         } else if (src instanceof ClickActionKey) {
-            JsonObject object1 = new JsonObject();
-            object1.add("key", new JsonPrimitive(((ClickActionKey) src).key));
-            object1.add("toggle", new JsonPrimitive(((ClickActionKey) src).toggle));
-            object.add("key", object1);
+            JsonObject keyObject = new JsonObject();
+            keyObject.add("key", new JsonPrimitive(((ClickActionKey) src).key));
+            keyObject.add("toggle", new JsonPrimitive(((ClickActionKey) src).toggle));
+            object.add("key", keyObject);
         } else if (src instanceof ClickActionUseItem) {
             object.add("item", context.serialize(((ClickActionUseItem) src).stack));
         } else if (src instanceof ClickActionCategory) {
             object.add("category", new JsonPrimitive(((ClickActionCategory) src).category));
         }
-
         return object;
     }
 
@@ -43,7 +45,21 @@ public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickA
             JsonElement element = entry.getValue();
 
             if (key.equals("command")) {
-                return new ClickActionCommand(element.getAsString());
+                if (element.isJsonPrimitive()) {
+                    return new ClickActionCommand(element.getAsString(), false);
+                } else {
+                    String command = "";
+                    boolean clipboard = false;
+
+                    for (Map.Entry<String, JsonElement> entry1 : element.getAsJsonObject().entrySet()) {
+                        if (entry1.getKey().equals("command")) {
+                            command = entry1.getValue().getAsString();
+                        } else if (entry1.getKey().equals("clipboard")) {
+                            clipboard = entry1.getValue().getAsBoolean();
+                        }
+                    }
+                    return new ClickActionCommand(command, clipboard);
+                }
             } else if (key.equals("key")) {
                 if (element.isJsonPrimitive()) {
                     return new ClickActionKey(element.getAsString(), false);
@@ -67,7 +83,6 @@ public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickA
                 return new ClickActionCategory(element.getAsString());
             }
         }
-
         return null;
     }
 }

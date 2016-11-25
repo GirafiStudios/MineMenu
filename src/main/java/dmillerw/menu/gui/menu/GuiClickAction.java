@@ -28,8 +28,9 @@ public class GuiClickAction extends GuiScreen {
     public static ItemStack item;
 
     public static KeyBinding keyBinding;
-
     private static boolean toggle = false;
+
+    private static boolean clipboard = false;
 
     private GuiTextField textCommand;
     private GuiTextField textCategory;
@@ -39,6 +40,7 @@ public class GuiClickAction extends GuiScreen {
     private GuiButtonExt modeUseItem;
     private GuiButtonExt modeCategory;
 
+    private GuiButton commandClipboardButton;
     private GuiButton keybindButton;
     private GuiButton keybindToggleButton;
     private GuiButton selectItemButton;
@@ -76,6 +78,14 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 150, 20, I18n.format("gui.done")));
         this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")));
 
+        String commandString;
+        if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) {
+            commandString = ((ClickActionCommand) EditSessionData.clickAction).clipboard ? "Clipboard" : "Send";
+        } else {
+            commandString = clipboard ? "Clipboard" : "Send";
+        }
+        this.buttonList.add(this.commandClipboardButton = new GuiButton(9, this.width / 2 - 75, 80, 150, 20, commandString));
+
         String keyString;
         if (GuiClickAction.keyBinding != null) {
             keyString = I18n.format(keyBinding.getKeyDescription());
@@ -90,7 +100,7 @@ public class GuiClickAction extends GuiScreen {
 
         String keyToggleString;
         if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
-            keyToggleString = ((ClickActionKey)EditSessionData.clickAction).toggle ? "Toggle" : "Press";
+            keyToggleString = ((ClickActionKey) EditSessionData.clickAction).toggle ? "Toggle" : "Press";
         } else {
             keyToggleString = toggle ? "Toggle" : "Press";
         }
@@ -129,6 +139,7 @@ public class GuiClickAction extends GuiScreen {
         this.modeCategory.enabled = mode != 3;
 
         textCommand.setVisible(mode == 0);
+        commandClipboardButton.visible = mode == 0;
         keybindButton.visible = mode == 1;
         keybindToggleButton.visible = mode == 1;
         selectItemButton.visible = mode == 2;
@@ -160,6 +171,7 @@ public class GuiClickAction extends GuiScreen {
                 textCategory.setVisible(true);
                 selectItemButton.visible = false;
                 textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
                 keybindButton.visible = false;
                 keybindToggleButton.visible = false;
             } else if (button.id == 7) {
@@ -167,14 +179,15 @@ public class GuiClickAction extends GuiScreen {
                 mode = 2;
 
                 modeCategory.enabled = true;
-				modeUseItem.enabled = false;
-				modeKeybinding.enabled = true;
-				modeCommand.enabled = true;
+                modeUseItem.enabled = false;
+                modeKeybinding.enabled = true;
+                modeCommand.enabled = true;
 
                 textCategory.setVisible(false);
-				selectItemButton.visible = true;
-				textCommand.setVisible(false);
-				keybindButton.visible = false;
+                selectItemButton.visible = true;
+                textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
+                keybindButton.visible = false;
                 keybindToggleButton.visible = false;
             } else if (button.id == 6) {
                 // Keybinding
@@ -188,6 +201,7 @@ public class GuiClickAction extends GuiScreen {
                 textCategory.setVisible(false);
                 selectItemButton.visible = false;
                 textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
                 keybindButton.visible = true;
                 keybindToggleButton.visible = true;
             } else if (button.id == 5) {
@@ -202,8 +216,12 @@ public class GuiClickAction extends GuiScreen {
                 textCategory.setVisible(false);
                 selectItemButton.visible = false;
                 textCommand.setVisible(true);
+                commandClipboardButton.visible = true;
                 keybindButton.visible = false;
                 keybindToggleButton.visible = false;
+            } else if (button.id == 9) {
+                clipboard = !clipboard;
+                commandClipboardButton.displayString = clipboard ? "Clipboard" : "Send";
             } else if (button.id == 4) {
                 GuiStack.push(new GuiPickItem());
             } else if (button.id == 3) {
@@ -215,7 +233,7 @@ public class GuiClickAction extends GuiScreen {
                 GuiStack.pop();
             } else if (button.id == 0) {
                 if (mode == 0) {
-                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim()) : null;
+                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
                     EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
                 } else if (mode == 2 && !GuiClickAction.item.isEmpty()) {
