@@ -96,7 +96,7 @@ public class GuiPickIcon extends GuiScreen {
                 ArrayList<ItemStack> temp = new ArrayList<ItemStack>();
 
                 if (textSearch.getText().equalsIgnoreCase(".inv")) {
-                    EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+                    EntityPlayer player = Minecraft.getMinecraft().player;
                     for (int i=0; i<player.inventory.getSizeInventory(); i++) {
                         ItemStack stack = player.inventory.getStackInSlot(i);
                         if (stack != null) {

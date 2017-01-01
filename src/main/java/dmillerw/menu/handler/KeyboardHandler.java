@@ -80,7 +80,7 @@ public class KeyboardHandler {
 
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (mc.theWorld == null) {
+        if (mc.world == null) {
             return;
         }
 

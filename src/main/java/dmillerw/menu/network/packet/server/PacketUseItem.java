@@ -47,7 +47,7 @@ public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, I
         player.setItemStackToSlot(slot, slotStack);
         ItemStack heldItem = player.getHeldItem(hand);
         if (heldItem != null) {
-            heldItem.useItemRightClick(player.worldObj, player, hand).getResult();
+            heldItem.useItemRightClick(player.world, player, hand).getResult();
         }
         if (held != null && held.stackSize <= 0) {
             held = null;

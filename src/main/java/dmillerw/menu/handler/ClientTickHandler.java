@@ -46,7 +46,7 @@ public class ClientTickHandler {
             RadialMenu.tickTimer();
 
             Minecraft mc = Minecraft.getMinecraft();
-            if ((mc.theWorld == null || mc.isGamePaused()) && GuiRadialMenu.active) {
+            if ((mc.world == null || mc.isGamePaused()) && GuiRadialMenu.active) {
                 GuiRadialMenu.deactivate();
             }
         }
@@ -57,7 +57,7 @@ public class ClientTickHandler {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
 
-            if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
+            if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
                 if (GuiRadialMenu.active) {
                     CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
                     renderGui(resolution);
@@ -78,7 +78,7 @@ public class ClientTickHandler {
         }
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
+        if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
             renderText(event.getResolution());
         }
     }

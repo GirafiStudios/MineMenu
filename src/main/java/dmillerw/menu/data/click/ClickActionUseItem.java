@@ -24,13 +24,13 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
 
     @Override
     public boolean onClicked() {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
 
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && this.item.isItemEqual(stack)) {
-                stack.useItemRightClick(player.worldObj, player, EnumHand.MAIN_HAND);
+                stack.useItemRightClick(player.world, player, EnumHand.MAIN_HAND);
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }

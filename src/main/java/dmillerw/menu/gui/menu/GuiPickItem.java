@@ -43,9 +43,9 @@ public class GuiPickItem extends GuiScreen {
 
         // Draw inventory contents
         GlStateManager.pushMatrix();
-        for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
-            Slot slot = this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
-            if (par1 - guiLeft >= slot.xDisplayPosition && par1 - guiLeft <= slot.xDisplayPosition + 16 && par2 - guiTop >= slot.yDisplayPosition && par2 - guiTop <= slot.yDisplayPosition + 16) {
+        for (int i1 = 0; i1 < this.mc.player.inventoryContainer.inventorySlots.size(); ++i1) {
+            Slot slot = this.mc.player.inventoryContainer.inventorySlots.get(i1);
+            if (par1 - guiLeft >= slot.xPos && par1 - guiLeft <= slot.xPos + 16 && par2 - guiTop >= slot.yPos && par2 - guiTop <= slot.yPos + 16) {
                 mousedOver = slot;
             } else {
                 this.drawSlot(slot, false);
@@ -61,8 +61,8 @@ public class GuiPickItem extends GuiScreen {
     }
 
     private void drawSlot(Slot slot, boolean scale) {
-        int i = slot.xDisplayPosition;
-        int j = slot.yDisplayPosition;
+        int i = slot.xPos;
+        int j = slot.yPos;
         ItemStack itemstack = slot.getStack();
 
         this.zLevel = 100.0F;
@@ -95,9 +95,9 @@ public class GuiPickItem extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (button == 0) {
-            for (int i1 = 0; i1 < this.mc.thePlayer.inventoryContainer.inventorySlots.size(); ++i1) {
-                Slot slot = this.mc.thePlayer.inventoryContainer.inventorySlots.get(i1);
-                if (mouseX - guiLeft >= slot.xDisplayPosition && mouseX - guiLeft <= slot.xDisplayPosition + 16 && mouseY - guiTop >= slot.yDisplayPosition && mouseY - guiTop <= slot.yDisplayPosition + 16) {
+            for (int i1 = 0; i1 < this.mc.player.inventoryContainer.inventorySlots.size(); ++i1) {
+                Slot slot = this.mc.player.inventoryContainer.inventorySlots.get(i1);
+                if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
                     ItemStack itemStack = slot.getStack();
                     if (itemStack != null) {
                         GuiClickAction.item = itemStack.copy();
