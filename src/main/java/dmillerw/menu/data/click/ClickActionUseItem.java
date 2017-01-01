@@ -31,7 +31,6 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
 
             if (stack != null && this.item.isItemEqual(stack)) {
                 stack.useItemRightClick(player.worldObj, player, EnumHand.MAIN_HAND);
-                System.out.println("Test, should be on client");
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }

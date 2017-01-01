@@ -1,8 +1,11 @@
 package dmillerw.menu.network.packet.server;
 
+import dmillerw.menu.helper.HeldHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -33,24 +36,24 @@ public class PacketUseItem implements IMessage, IMessageHandler<PacketUseItem, I
     @Override
     public IMessage onMessage(PacketUseItem message, MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-        ItemStack stack = player.inventory.getStackInSlot(message.slot);
-        if (stack != null) {
-            ItemStack backup = player.inventory.getCurrentItem();
-            if (backup != null) {
-                backup = backup.copy();
-            }
+        ItemStack slotStack = player.inventory.getStackInSlot(message.slot);
 
-            ItemStack current = player.inventory.getCurrentItem();
-            if (current != null) {
-                current = current.copy();
-
-                player.inventory.setInventorySlotContents(message.slot, current);
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, backup);
-
-                // Send updated inventory
-                player.sendContainerToPlayer(player.inventoryContainer);
-            }
+        ItemStack held = null;
+        EnumHand hand = EnumHand.MAIN_HAND;
+        EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
+        if (HeldHelper.getStackFromHand(player, hand) != null) {
+            held = HeldHelper.getStackFromHand(player, hand);
         }
+        player.setItemStackToSlot(slot, slotStack);
+        ItemStack heldItem = player.getHeldItem(hand);
+        if (heldItem != null) {
+            heldItem.useItemRightClick(player.worldObj, player, hand).getResult();
+        }
+        if (held != null && held.stackSize <= 0) {
+            held = null;
+        }
+        player.setItemStackToSlot(slot, held);
+
         return null;
     }
 }
