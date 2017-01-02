@@ -33,11 +33,9 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
-            if (this.stack.isItemEqual(stack)) {
-                for (EnumHand hand : EnumHand.values()) {
-                    stack.useItemRightClick(player.world, player, hand);
-                }
-                PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i, stack));
+            if (!stack.isEmpty() && this.stack.isItemEqual(stack)) {
+                stack.useItemRightClick(player.world, player, EnumHand.MAIN_HAND);
+                PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }
         return false;

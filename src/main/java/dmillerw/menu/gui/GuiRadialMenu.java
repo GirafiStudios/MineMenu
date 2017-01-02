@@ -52,7 +52,7 @@ public class GuiRadialMenu extends GuiScreen {
 
                     if (mouseIn) {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
-                        boolean disabled = menuItem != null && !ActionSessionData.availableActions.contains(menuItem.clickAction.getClickAction());
+                        boolean disabled = menuItem != null && !ActionSessionData.AVAILABLE_ACTIONS.contains(menuItem.clickAction.getClickAction());
 
                         if (menuItem != null) {
                             if (isShiftKeyDown() || (ConfigHandler.rightClickToEdit && button == 1)) {

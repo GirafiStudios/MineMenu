@@ -103,12 +103,12 @@ public class ClientTickHandler {
         VertexBuffer vertexbuffer = tessellator.getBuffer();
 
         double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle -= 270; // I DON'T KNOW WHERE THIS 270 EVEN COMES FROM!!! :(
+        mouseAngle -= 270;
         mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            boolean disabled = item != null && !ActionSessionData.availableActions.contains(item.clickAction.getClickAction());
+            boolean disabled = item != null && !ActionSessionData.AVAILABLE_ACTIONS.contains(item.clickAction.getClickAction());
             double currAngle = ANGLE_PER_ITEM * i;
             double nextAngle = currAngle + ANGLE_PER_ITEM;
             currAngle = AngleHelper.correctAngle(currAngle);

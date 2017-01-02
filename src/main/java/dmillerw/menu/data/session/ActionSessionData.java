@@ -9,16 +9,16 @@ import java.util.EnumSet;
  * @author dmillerw
  */
 public class ActionSessionData {
-    public static final EnumSet<ClickAction> availableActions = EnumSet.noneOf(ClickAction.class);
+    public static final EnumSet<ClickAction> AVAILABLE_ACTIONS = EnumSet.noneOf(ClickAction.class);
 
     public static void activateAll() {
-        availableActions.clear();
-        availableActions.addAll(ClickAction.getValues());
+        AVAILABLE_ACTIONS.clear();
+        AVAILABLE_ACTIONS.addAll(ClickAction.getValues());
     }
 
     public static void activateClientValues() {
-        availableActions.clear();
-        availableActions.addAll(ClickAction.getClientValues());
+        AVAILABLE_ACTIONS.clear();
+        AVAILABLE_ACTIONS.addAll(ClickAction.getClientValues());
     }
 
     public static void restoreDefaults() {

@@ -20,19 +20,19 @@ import java.util.Map;
  * @author dmillerw
  */
 public class MenuLoader {
-    private static final Gson gson;
+    private static final Gson GSON;
 
     static {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
         builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer());
         builder.registerTypeAdapter(ClickAction.IClickAction.class, new ClickActionSerializer());
-        gson = builder.create();
+        GSON = builder.create();
     }
 
     public static void load(File file) {
         try {
-            JsonElement element = gson.fromJson(new FileReader(file), JsonElement.class);
+            JsonElement element = GSON.fromJson(new FileReader(file), JsonElement.class);
 
             if (!element.isJsonObject()) {
                 LogHandler.error("Failed to load menu.json! Improperly formatted file!");
@@ -55,7 +55,7 @@ public class MenuLoader {
                         int id = Integer.valueOf(key);
 
                         if (id < RadialMenu.MAX_ITEMS) {
-                            array[id] = gson.fromJson(data, MenuItem.class);
+                            array[id] = GSON.fromJson(data, MenuItem.class);
 
                             MenuItem item = array[id];
 
@@ -103,7 +103,7 @@ public class MenuLoader {
 
             for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
                 if (array[i] != null) {
-                    object1.add(String.valueOf(i), gson.toJsonTree(array[i]));
+                    object1.add(String.valueOf(i), GSON.toJsonTree(array[i]));
                 }
             }
 
@@ -112,7 +112,7 @@ public class MenuLoader {
 
         try {
             FileWriter writer = new FileWriter(file);
-            writer.append(gson.toJson(object));
+            writer.append(GSON.toJson(object));
             writer.close();
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -1,13 +1,14 @@
 package dmillerw.menu.network.packet.server;
 
+import dmillerw.menu.helper.HeldHelper;
 import dmillerw.menu.network.packet.Packet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -15,14 +16,12 @@ import java.io.IOException;
  */
 public class PacketUseItem extends Packet<PacketUseItem> {
     private int slot;
-    private ItemStack stack;
 
     public PacketUseItem() {
     }
 
-    public PacketUseItem(int slot, @Nonnull ItemStack stack) {
+    public PacketUseItem(int slot) {
         this.slot = slot;
-        this.stack = stack;
     }
 
     @Override
@@ -31,26 +30,28 @@ public class PacketUseItem extends Packet<PacketUseItem> {
 
     @Override
     protected void handleServerSide(EntityPlayer player) {
-        ItemStack stack = player.inventory.getStackInSlot(slot);
+        ItemStack slotStack = player.inventory.getStackInSlot(slot);
+        ItemStack held = player.getHeldItemMainhand();
+        EnumHand hand = EnumHand.MAIN_HAND;
+        EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
 
-        for (EnumHand hand : EnumHand.values()) {
-            stack.useItemRightClick(player.world, player, hand);
+        player.setItemStackToSlot(slot, slotStack);
+        ItemStack heldItem = player.getHeldItem(hand);
+        if (!heldItem.isEmpty()) {
+            heldItem.useItemRightClick(player.world, player, hand).getResult();
         }
+        player.setItemStackToSlot(slot, held);
 
-        if (!player.isHandActive()) {
-            ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
-        }
+        ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
     }
 
     @Override
     public void toBytes(PacketBuffer buffer) {
         buffer.writeInt(slot);
-        buffer.writeItemStack(stack);
     }
 
     @Override
     public void fromBytes(PacketBuffer buffer) throws IOException {
         slot = buffer.readInt();
-        stack = buffer.readItemStack();
     }
 }

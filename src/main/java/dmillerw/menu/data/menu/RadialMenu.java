@@ -14,14 +14,14 @@ public class RadialMenu {
 
     private static final String MAIN_TAG = "main";
 
-    private static final Map<String, MenuItem[]> menuMap = Maps.newHashMap();
+    private static final Map<String, MenuItem[]> MENU_MAP = Maps.newHashMap();
 
     public static String currentCategory = MAIN_TAG;
 
     public static int animationTimer = 20;
 
     public static Set<String> getCategories() {
-        return menuMap.keySet();
+        return MENU_MAP.keySet();
     }
 
     public static void resetCategory() {
@@ -43,16 +43,16 @@ public class RadialMenu {
     }
 
     public static MenuItem[] getArray(String tag) {
-        if (!menuMap.containsKey(tag)) {
-            menuMap.put(tag, new MenuItem[MAX_ITEMS]);
+        if (!MENU_MAP.containsKey(tag)) {
+            MENU_MAP.put(tag, new MenuItem[MAX_ITEMS]);
         }
-        return menuMap.get(tag);
+        return MENU_MAP.get(tag);
     }
 
     public static void replaceArray(String tag, MenuItem[] array) {
         if (array.length != MAX_ITEMS) {
             throw new RuntimeException();
         }
-        menuMap.put(tag, array);
+        MENU_MAP.put(tag, array);
     }
 }
