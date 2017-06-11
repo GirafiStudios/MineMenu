@@ -11,9 +11,6 @@ import net.minecraft.util.EnumHand;
 
 import java.io.IOException;
 
-/**
- * @author dmillerw
- */
 public class PacketUseItem extends Packet<PacketUseItem> {
     private int slot;
 

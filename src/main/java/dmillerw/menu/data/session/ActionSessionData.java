@@ -5,9 +5,6 @@ import dmillerw.menu.handler.LogHandler;
 
 import java.util.EnumSet;
 
-/**
- * @author dmillerw
- */
 public class ActionSessionData {
     public static final EnumSet<ClickAction> AVAILABLE_ACTIONS = EnumSet.noneOf(ClickAction.class);
 

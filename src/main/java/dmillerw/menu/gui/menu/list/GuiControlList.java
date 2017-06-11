@@ -18,22 +18,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author dmillerw
- */
 @SideOnly(Side.CLIENT)
 public class GuiControlList extends GuiListExtended {
-
     private final Minecraft mc;
-
     private final List<IGuiListEntry> list;
-
     private int maxWidth = 0;
 
     public GuiControlList(GuiScreen parent, Minecraft mc) {
         super(mc, parent.width, parent.height, 25, parent.height - 20, 20);
         this.mc = mc;
-        this.list = new ArrayList<IGuiListEntry>();
+        this.list = new ArrayList<>();
 
         KeyBinding[] keyBindings = Minecraft.getMinecraft().gameSettings.keyBindings;
         Arrays.sort(keyBindings);
@@ -49,7 +43,7 @@ public class GuiControlList extends GuiListExtended {
                     list.add(new CategoryEntry(category));
                 }
 
-                int l = mc.fontRendererObj.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+                int l = mc.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
 
                 if (l > this.maxWidth) {
                     this.maxWidth = l;
@@ -89,22 +83,22 @@ public class GuiControlList extends GuiListExtended {
 
         CategoryEntry(String category) {
             this.category = I18n.format(category);
-            this.width = GuiControlList.this.mc.fontRendererObj.getStringWidth(this.category);
+            this.width = GuiControlList.this.mc.fontRenderer.getStringWidth(this.category);
         }
 
         @Override
-        public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
+        public void func_192633_a(int x, int y, int z, float partial) {
         }
 
         @Override
-        public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+        public void func_192634_a(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partial) {
             if (GuiControlList.this.mc.currentScreen != null) {
-                GuiControlList.this.mc.fontRendererObj.drawString(this.category, GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2, z + slotHeight - GuiControlList.this.mc.fontRendererObj.FONT_HEIGHT - 1, 16777215);
+                GuiControlList.this.mc.fontRenderer.drawString(this.category, GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2, z + slotHeight - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
             }
         }
 
         @Override
-        public boolean mousePressed(int slotIndex, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_) {
+        public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
             return false;
         }
 
@@ -116,11 +110,8 @@ public class GuiControlList extends GuiListExtended {
 
     @SideOnly(Side.CLIENT)
     public class KeyEntry implements GuiListExtended.IGuiListEntry {
-
         private final KeyBinding keyBinding;
-
         private final String description;
-
         private final GuiButton buttonSelect;
 
         private KeyEntry(KeyBinding keyBinding) {
@@ -130,21 +121,21 @@ public class GuiControlList extends GuiListExtended {
         }
 
         @Override
-        public void setSelected(int p_178011_1_, int p_178011_2_, int p_178011_3_) {
+        public void func_192633_a(int x, int y, int z, float partial) {
         }
 
         @Override
-        public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-            GuiControlList.this.mc.fontRendererObj.drawString(this.description, y + 90 - GuiControlList.this.maxWidth, z + slotHeight / 2 - GuiControlList.this.mc.fontRendererObj.FONT_HEIGHT / 2, 16777215);
-            this.buttonSelect.xPosition = y + 105;
-            this.buttonSelect.yPosition = z;
+        public void func_192634_a(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partial) {
+            GuiControlList.this.mc.fontRenderer.drawString(this.description, y + 90 - GuiControlList.this.maxWidth, z + slotHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2, 16777215);
+            this.buttonSelect.x = y + 105;
+            this.buttonSelect.x = z;
             this.buttonSelect.displayString = GameSettings.getKeyDisplayString(this.keyBinding.getKeyCode());
-            this.buttonSelect.drawButton(GuiControlList.this.mc, mouseX, mouseY);
+            this.buttonSelect.func_191745_a(GuiControlList.this.mc, mouseX, mouseY, partial);
         }
 
         @Override
-        public boolean mousePressed(int slotIndex, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_) {
-            if (buttonSelect.mousePressed(GuiControlList.this.mc, p_148278_2_, p_148278_3_)) {
+        public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY) {
+            if (buttonSelect.mousePressed(GuiControlList.this.mc, mouseX, mouseY)) {
                 GuiClickAction.keyBinding = keyBinding;
                 GuiStack.pop();
                 return true;

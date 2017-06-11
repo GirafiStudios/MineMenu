@@ -20,34 +20,24 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
 
-/**
- * @author dmillerw
- */
 public class GuiClickAction extends GuiScreen {
     @Nonnull
     public static ItemStack item;
-
     public static KeyBinding keyBinding;
     private static boolean toggle = false;
-
     private static boolean clipboard = false;
-
     private GuiTextField textCommand;
     private GuiTextField textCategory;
-
     private GuiButtonExt modeCommand;
     private GuiButtonExt modeKeybinding;
     private GuiButtonExt modeUseItem;
     private GuiButtonExt modeCategory;
-
     private GuiButton commandClipboardButton;
     private GuiButton keybindButton;
     private GuiButton keybindToggleButton;
     private GuiButton selectItemButton;
-
     private GuiButton buttonCancel;
     private GuiButton buttonConfirm;
-
     private int mode = 0;
 
     public GuiClickAction() {
@@ -123,12 +113,12 @@ public class GuiClickAction extends GuiScreen {
         this.buttonList.add(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD)));
         this.buttonList.add(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST)));
 
-        this.textCommand = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCommand = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
         this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
-        this.textCategory = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textCategory = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textCategory.setMaxStringLength(32767);
         this.textCategory.setFocused(true);
         this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
@@ -273,19 +263,27 @@ public class GuiClickAction extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partial);
         String header = "";
         switch (mode) {
-            case 0: header = "Enter a command"; break;
-            case 1: header = "Select a key"; break;
-            case 2: header = "Pick an item"; break;
-            case 3: header = "Enter a category"; break;
+            case 0:
+                header = "Enter a command";
+                break;
+            case 1:
+                header = "Select a key";
+                break;
+            case 2:
+                header = "Pick an item";
+                break;
+            case 3:
+                header = "Enter a category";
+                break;
         }
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, header);
-        if (mouseX > modeCommand.xPosition && mouseX < modeCommand.xPosition + modeCommand.width && mouseY > modeCommand.yPosition && mouseY < modeCommand.yPosition + modeCommand.width) {
+        if (mouseX > modeCommand.x && mouseX < modeCommand.x + modeCommand.width && mouseY > modeCommand.y && mouseY < modeCommand.y + modeCommand.width) {
             this.drawHoveringText(Collections.singletonList("Click Action: Command"), mouseX, mouseY);
-        } else if (mouseX > modeKeybinding.xPosition && mouseX < modeKeybinding.xPosition + modeKeybinding.width && mouseY > modeKeybinding.yPosition && mouseY < modeKeybinding.yPosition + modeKeybinding.width) {
+        } else if (mouseX > modeKeybinding.x && mouseX < modeKeybinding.x + modeKeybinding.width && mouseY > modeKeybinding.y && mouseY < modeKeybinding.y + modeKeybinding.width) {
             this.drawHoveringText(Collections.singletonList("Click Action: KeyBinding"), mouseX, mouseY);
-        } else if (mouseX > modeUseItem.xPosition && mouseX < modeUseItem.xPosition + modeUseItem.width && mouseY > modeUseItem.yPosition && mouseY < modeUseItem.yPosition + modeUseItem.width) {
+        } else if (mouseX > modeUseItem.x && mouseX < modeUseItem.x + modeUseItem.width && mouseY > modeUseItem.y && mouseY < modeUseItem.y + modeUseItem.width) {
             this.drawHoveringText(Collections.singletonList("Click Action: Use Item"), mouseX, mouseY);
-        } else if (mouseX > modeCategory.xPosition && mouseX < modeCategory.xPosition + modeCategory.width && mouseY > modeCategory.yPosition && mouseY < modeCategory.yPosition + modeCategory.width) {
+        } else if (mouseX > modeCategory.x && mouseX < modeCategory.x + modeCategory.width && mouseY > modeCategory.y && mouseY < modeCategory.y + modeCategory.width) {
             this.drawHoveringText(Collections.singletonList("Click Action: Category"), mouseX, mouseY);
         }
     }

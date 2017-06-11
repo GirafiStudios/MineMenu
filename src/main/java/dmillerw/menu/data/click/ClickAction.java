@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author dmillerw
- */
 public enum ClickAction {
-
     COMMAND(false),
     KEYBIND(false),
     ITEM_USE(true),
@@ -25,7 +21,7 @@ public enum ClickAction {
 
     public static List<ClickAction> getClientValues() {
         if (clientValues == null) {
-            List<ClickAction> temp = new ArrayList<ClickAction>();
+            List<ClickAction> temp = new ArrayList<>();
             for (ClickAction action : getValues()) {
                 if (!action.requiresServer) {
                     temp.add(action);
@@ -45,7 +41,9 @@ public enum ClickAction {
 
     public interface IClickAction {
         ClickAction getClickAction();
+
         boolean onClicked();
+
         void onRemoved();
     }
 }

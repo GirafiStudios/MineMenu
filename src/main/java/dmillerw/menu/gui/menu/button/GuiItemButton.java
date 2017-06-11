@@ -20,18 +20,18 @@ public class GuiItemButton extends GuiButtonExt {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+    public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float partial) {
         if (this.visible) {
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int k = this.getHoverState(this.hovered);
-            GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.xPosition, this.yPosition, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
+            GuiUtils.drawContinuousTexturedBox(BUTTON_TEXTURES, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
             this.mouseDragged(mc, mouseX, mouseY);
 
             GlStateManager.pushMatrix();
             if (this.icon.isEmpty()) {
                 this.icon = new ItemStack(Blocks.STONE);
             }
-            ItemRenderHelper.renderItem(this.xPosition + this.width / 2, this.yPosition + this.height / 2, icon);
+            ItemRenderHelper.renderItem(this.x + this.width / 2, this.y + this.height / 2, icon);
             GlStateManager.popMatrix();
         }
     }

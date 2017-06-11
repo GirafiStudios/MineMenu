@@ -17,7 +17,7 @@ public abstract class Packet <REQ extends Packet<REQ>> implements IMessage, IMes
     @Override
     public REQ onMessage(REQ message, MessageContext ctx) {
         if (ctx.side == Side.SERVER) {
-            runServer(message, ctx.getServerHandler().playerEntity);
+            runServer(message, ctx.getServerHandler().player);
         } else {
             runClient(message, getPlayerClient());
         }
@@ -26,21 +26,11 @@ public abstract class Packet <REQ extends Packet<REQ>> implements IMessage, IMes
 
     @SideOnly(Side.CLIENT)
     private void runClient(final REQ packet, final EntityPlayer player) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                packet.handleClientSide(player);
-            }
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> packet.handleClientSide(player));
     }
 
     private void runServer(final REQ packet, final EntityPlayer player) {
-        player.getServer().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                packet.handleServerSide(player);
-            }
-        });
+        player.getServer().addScheduledTask(() -> packet.handleServerSide(player));
     }
 
     @SideOnly(Side.CLIENT)

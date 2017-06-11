@@ -16,9 +16,6 @@ import net.minecraft.item.ItemStack;
 import java.io.*;
 import java.util.Map;
 
-/**
- * @author dmillerw
- */
 public class MenuLoader {
     private static final Gson GSON;
 

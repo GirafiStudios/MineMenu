@@ -3,9 +3,6 @@ package dmillerw.menu.helper;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Mouse;
 
-/**
- * @author dmillerw
- */
 public class AngleHelper {
 
     public static double getMouseAngle() {
@@ -23,7 +20,6 @@ public class AngleHelper {
         } else if (angle > 360) {
             angle -= 360;
         }
-
         return angle;
     }
 
@@ -33,7 +29,6 @@ public class AngleHelper {
         } else if (angle > 360) {
             angle -= 360;
         }
-
         return angle;
     }
 }

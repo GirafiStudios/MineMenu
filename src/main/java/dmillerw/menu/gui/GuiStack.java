@@ -6,11 +6,8 @@ import net.minecraft.client.gui.GuiScreen;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author dmillerw
- */
 public class GuiStack {
-    private static final List<GuiScreen> GUI_LIST = new ArrayList<GuiScreen>();
+    private static final List<GuiScreen> GUI_LIST = new ArrayList<>();
 
     public static void push(GuiScreen screen) {
         GUI_LIST.add(0, screen);

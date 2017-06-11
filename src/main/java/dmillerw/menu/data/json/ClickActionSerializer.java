@@ -7,9 +7,6 @@ import net.minecraft.item.ItemStack;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-/**
- * @author dmillerw
- */
 public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickAction>, JsonDeserializer<ClickAction.IClickAction> {
 
     @Override
@@ -44,43 +41,43 @@ public class ClickActionSerializer implements JsonSerializer<ClickAction.IClickA
             String key = entry.getKey();
             JsonElement element = entry.getValue();
 
-            if (key.equals("command")) {
-                if (element.isJsonPrimitive()) {
-                    return new ClickActionCommand(element.getAsString(), false);
-                } else {
-                    String command = "";
-                    boolean clipboard = false;
+            switch (key) {
+                case "command":
+                    if (element.isJsonPrimitive()) {
+                        return new ClickActionCommand(element.getAsString(), false);
+                    } else {
+                        String command = "";
+                        boolean clipboard = false;
 
-                    for (Map.Entry<String, JsonElement> entry1 : element.getAsJsonObject().entrySet()) {
-                        if (entry1.getKey().equals("command")) {
-                            command = entry1.getValue().getAsString();
-                        } else if (entry1.getKey().equals("clipboard")) {
-                            clipboard = entry1.getValue().getAsBoolean();
+                        for (Map.Entry<String, JsonElement> entry1 : element.getAsJsonObject().entrySet()) {
+                            if (entry1.getKey().equals("command")) {
+                                command = entry1.getValue().getAsString();
+                            } else if (entry1.getKey().equals("clipboard")) {
+                                clipboard = entry1.getValue().getAsBoolean();
+                            }
                         }
+                        return new ClickActionCommand(command, clipboard);
                     }
-                    return new ClickActionCommand(command, clipboard);
-                }
-            } else if (key.equals("key")) {
-                if (element.isJsonPrimitive()) {
-                    return new ClickActionKey(element.getAsString(), false);
-                } else {
-                    String keybind = "";
-                    boolean toggle = false;
+                case "key":
+                    if (element.isJsonPrimitive()) {
+                        return new ClickActionKey(element.getAsString(), false);
+                    } else {
+                        String keybind = "";
+                        boolean toggle = false;
 
-                    for (Map.Entry<String, JsonElement> entry1 : element.getAsJsonObject().entrySet()) {
-                        if (entry1.getKey().equals("key")) {
-                            keybind = entry1.getValue().getAsString();
-                        } else if (entry1.getKey().equals("toggle")) {
-                            toggle = entry1.getValue().getAsBoolean();
+                        for (Map.Entry<String, JsonElement> entry1 : element.getAsJsonObject().entrySet()) {
+                            if (entry1.getKey().equals("key")) {
+                                keybind = entry1.getValue().getAsString();
+                            } else if (entry1.getKey().equals("toggle")) {
+                                toggle = entry1.getValue().getAsBoolean();
+                            }
                         }
+                        return new ClickActionKey(keybind, toggle);
                     }
-
-                    return new ClickActionKey(keybind, toggle);
-                }
-            } else if (key.equals("item")) {
-                return new ClickActionUseItem((ItemStack) context.deserialize(element, ItemStack.class));
-            } else if (key.equals("category")) {
-                return new ClickActionCategory(element.getAsString());
+                case "item":
+                    return new ClickActionUseItem(context.deserialize(element, ItemStack.class));
+                case "category":
+                    return new ClickActionCategory(element.getAsString());
             }
         }
         return null;

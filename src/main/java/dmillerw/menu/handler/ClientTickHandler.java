@@ -10,10 +10,10 @@ import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -24,15 +24,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
-/**
- * @author dmillerw
- */
 public class ClientTickHandler {
-
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
-
     private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
-
     private static final double OUTER_RADIUS = 80;
     private static final double INNER_RADIUS = 60;
 
@@ -100,7 +94,7 @@ public class ClientTickHandler {
         GlStateManager.loadIdentity();
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= 270;
@@ -122,7 +116,7 @@ public class ClientTickHandler {
             double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
             double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
 
-            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
             float r, g, b, alpha;
 
@@ -145,10 +139,10 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.menuAlpha / (float) 255;
             }
 
-            vertexbuffer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            vertexbuffer.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            vertexbuffer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            vertexbuffer.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
@@ -170,7 +164,7 @@ public class ClientTickHandler {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : ( ConfigHandler.removeStoneOnMenuButton ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
+            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (ConfigHandler.removeStoneOnMenuButton ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5; //TODO Make constant
@@ -191,7 +185,7 @@ public class ClientTickHandler {
 
     private void renderText(ScaledResolution resolution) {
         Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontRenderer = mc.fontRendererObj;
+        FontRenderer fontRenderer = mc.fontRenderer;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
         mouseAngle = 360 - mouseAngle;
@@ -215,8 +209,8 @@ public class ClientTickHandler {
                 int drawX = resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
                 int drawY = resolution.getScaledHeight() / 2;
 
-                int drawWidth = mc.fontRendererObj.getStringWidth(string);
-                int drawHeight = mc.fontRendererObj.FONT_HEIGHT;
+                int drawWidth = mc.fontRenderer.getStringWidth(string);
+                int drawHeight = mc.fontRenderer.FONT_HEIGHT;
 
                 float padding = 5F;
 
@@ -226,18 +220,18 @@ public class ClientTickHandler {
 
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
-                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                BufferBuilder bufferBuilder = tessellator.getBuffer();
+                bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
                 float r = (float) ConfigHandler.menuRed / (float) 255;
                 float g = (float) ConfigHandler.menuGreen / (float) 255;
                 float b = (float) ConfigHandler.menuBlue / (float) 255;
                 float alpha = (float) ConfigHandler.menuAlpha / (float) 255;
 
-                vertexbuffer.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                vertexbuffer.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                vertexbuffer.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
-                vertexbuffer.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
                 GlStateManager.enableTexture2D();

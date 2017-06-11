@@ -3,15 +3,10 @@ package dmillerw.menu.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 
-/**
- * @author dmillerw
- */
 public class CompatibleScaledResolution {
-
     private int scaledWidth;
     private int scaledHeight;
     private int scaleFactor;
-
     private final double scaledWidthD;
     private final double scaledHeightD;
 

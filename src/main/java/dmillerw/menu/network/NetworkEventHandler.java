@@ -9,9 +9,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-/**
- * @author dmillerw
- */
 public class NetworkEventHandler {
 
     public static void register() {
@@ -22,7 +19,7 @@ public class NetworkEventHandler {
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 //			if (FMLServerHandler.instance().getServer().isDedicatedServer()) {
-            LogHandler.info("SERVER: MineMenu is installed. Sending server response packet");
+//            LogHandler.info("SERVER: MineMenu is installed. Sending server response packet");
 //				PacketHandler.INSTANCE.sendTo(new PacketServerResponse(), (EntityPlayerMP) event.player);
 //			}
         }

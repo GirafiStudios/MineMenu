@@ -17,12 +17,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author dmillerw
- */
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
-
     private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
 
     public static void register() {
@@ -31,14 +27,11 @@ public class KeyboardHandler {
     }
 
     private static boolean lastWheelState = false;
-
-    private final List<KeyBinding> firedKeys = new ArrayList<KeyBinding>();
-    private final List<KeyBinding> toggledKeys = new ArrayList<KeyBinding>();
-
+    private final List<KeyBinding> firedKeys = new ArrayList<>();
+    private final List<KeyBinding> toggledKeys = new ArrayList<>();
     private boolean ignoreNextTick = false;
 
     private KeyboardHandler() {
-
     }
 
     public void fireKey(KeyBinding key) {

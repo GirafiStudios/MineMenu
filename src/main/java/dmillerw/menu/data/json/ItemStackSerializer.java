@@ -9,9 +9,6 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-/**
- * @author dmillerw
- */
 public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
 
     @Override

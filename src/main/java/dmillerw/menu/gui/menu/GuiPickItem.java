@@ -13,14 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
-/**
- * @author dmillerw
- */
 public class GuiPickItem extends GuiScreen {
-
     private static final int XSIZE = 176;
     private static final int YSIZE = 166;
-
     private int guiLeft;
     private int guiTop;
 

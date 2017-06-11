@@ -7,9 +7,6 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-/**
- * @author dmillerw
- */
 public class EditSessionData {
     public static String title;
     @Nonnull

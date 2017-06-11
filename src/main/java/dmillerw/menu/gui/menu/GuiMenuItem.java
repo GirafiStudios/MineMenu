@@ -21,14 +21,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-/**
- * @author dmillerw
- */
 public class GuiMenuItem extends GuiScreen {
     private final int slot;
-
     private GuiTextField textTitle;
-
     private GuiButton buttonCancel;
     private GuiButton buttonConfirm;
     private GuiButton buttonDelete;
@@ -37,7 +32,6 @@ public class GuiMenuItem extends GuiScreen {
 
     public GuiMenuItem(int slot, MenuItem menuItem) {
         this.slot = slot;
-
         EditSessionData.fromMenuItem(menuItem);
     }
 
@@ -67,7 +61,7 @@ public class GuiMenuItem extends GuiScreen {
         }
         this.buttonList.add(this.buttonClickAction = new GuiButton(4, this.width / 2 - 20, this.height / 2, 100, 20, string));
 
-        this.textTitle = new GuiTextField(9, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
+        this.textTitle = new GuiTextField(9, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textTitle.setMaxStringLength(32767);
         this.textTitle.setFocused(false);
         this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
@@ -142,7 +136,7 @@ public class GuiMenuItem extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partial) {
         this.drawDefaultBackground();
         this.textTitle.drawTextBox();
-        this.drawCenteredString(this.fontRendererObj, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
         super.drawScreen(mouseX, mouseY, partial);
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Modifying Menu Item #" + slot);
     }

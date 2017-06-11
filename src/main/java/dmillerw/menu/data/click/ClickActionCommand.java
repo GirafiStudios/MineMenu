@@ -6,9 +6,6 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 
-/**
- * @author dmillerw
- */
 public class ClickActionCommand implements ClickAction.IClickAction {
     public final String command;
     public boolean clipboard;

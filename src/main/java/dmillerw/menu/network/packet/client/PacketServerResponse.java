@@ -8,9 +8,6 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-/**
- * @author dmillerw
- */
 public class PacketServerResponse extends Packet<PacketServerResponse> {
 
     @Override

@@ -6,11 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 import java.io.IOException;
 
-/**
- * @author dmillerw
- */
 public class GuiPickKey extends GuiScreen {
-
     private GuiControlList controlList;
 
     @Override
@@ -54,7 +50,7 @@ public class GuiPickKey extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.controlList.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "Select a Key:", this.width / 2, 8, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Select a Key:", this.width / 2, 8, 16777215);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

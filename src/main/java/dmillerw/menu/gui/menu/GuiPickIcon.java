@@ -20,20 +20,12 @@ import org.lwjgl.input.Mouse;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-/**
- * @author dmillerw
- */
 public class GuiPickIcon extends GuiScreen {
-
     private static final int MAX_COLUMN = 14;
     private static final int MAX_ROW = 4; // Actually increased by one
-
     private GuiTextField textSearch;
-
     private GuiButton buttonCancel;
-
     private NonNullList<ItemStack> stacks;
-
     private int listScrollIndex = 0;
 
     @Override
@@ -49,7 +41,7 @@ public class GuiPickIcon extends GuiScreen {
 
         for (Item item : Item.REGISTRY) {
             if (item != null && item.getCreativeTab() != null) {
-                item.getSubItems(item, null, stacks);
+                item.getSubItems(item.getCreativeTab(), stacks);
             }
         }
 
@@ -57,7 +49,7 @@ public class GuiPickIcon extends GuiScreen {
 
         this.buttonList.add(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")));
 
-        this.textSearch = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 150, 40, 300, 20);
+        this.textSearch = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 40, 300, 20);
         this.textSearch.setMaxStringLength(32767);
         this.textSearch.setFocused(true);
     }
@@ -100,12 +92,12 @@ public class GuiPickIcon extends GuiScreen {
                 } else {
                     for (Item item : Item.REGISTRY) {
                         if (item != null && item.getCreativeTab() != null) {
-                            item.getSubItems(item, null, temp);
+                            item.getSubItems(item.getCreativeTab(), temp);
                         }
                     }
 
                     for (ItemStack stack : temp) {
-                        if (stack != null && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                        if (!stack.isEmpty() && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
                             stacks.add(stack);
                         }
                     }
@@ -117,7 +109,7 @@ public class GuiPickIcon extends GuiScreen {
                     Item item = (Item) anItemRegistry;
 
                     if (item != null && item.getCreativeTab() != null) {
-                        item.getSubItems(item, null, stacks);
+                        item.getSubItems(item.getCreativeTab(), stacks);
                     }
                 }
             }

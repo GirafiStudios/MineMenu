@@ -5,19 +5,11 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author dmillerw
- */
 public class RadialMenu {
-
     public static final int MAX_ITEMS = 10;
-
     private static final String MAIN_TAG = "main";
-
     private static final Map<String, MenuItem[]> MENU_MAP = Maps.newHashMap();
-
     public static String currentCategory = MAIN_TAG;
-
     public static int animationTimer = 20;
 
     public static Set<String> getCategories() {

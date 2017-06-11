@@ -9,9 +9,6 @@ import net.minecraft.util.EnumHand;
 
 import javax.annotation.Nonnull;
 
-/**
- * @author dmillerw
- */
 public class ClickActionUseItem implements ClickAction.IClickAction {
     @Nonnull
     public final ItemStack stack;

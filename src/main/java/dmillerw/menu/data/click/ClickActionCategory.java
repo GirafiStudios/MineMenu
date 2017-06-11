@@ -2,9 +2,6 @@ package dmillerw.menu.data.click;
 
 import dmillerw.menu.data.menu.RadialMenu;
 
-/**
- * @author dmillerw
- */
 public class ClickActionCategory implements ClickAction.IClickAction {
 
     public final String category;

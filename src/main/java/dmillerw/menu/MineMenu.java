@@ -14,10 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import java.io.File;
 import java.lang.reflect.Field;
 
-/**
- * @author dmillerw
- */
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.11,1.12)", dependencies = Reference.DEPENDENCIES, guiFactory = Reference.GUI_FACTORY_CLASS)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.12,1.13)", dependencies = Reference.DEPENDENCIES, guiFactory = Reference.GUI_FACTORY_CLASS)
 public class MineMenu {
 
     @Mod.Instance(Reference.MOD_ID)

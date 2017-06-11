@@ -5,9 +5,6 @@ import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
-/**
- * @author dmillerw
- */
 public class ClickActionKey implements ClickAction.IClickAction {
     public final String key;
     public boolean toggle;

@@ -10,13 +10,8 @@ import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-/**
- * @author dmillerw
- */
 public class GuiRadialMenu extends GuiScreen {
-
     public static final GuiRadialMenu INSTANCE = new GuiRadialMenu();
-
     public static boolean active = false;
 
     public static void activate() {

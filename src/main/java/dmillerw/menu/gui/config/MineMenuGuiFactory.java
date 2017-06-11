@@ -1,32 +1,32 @@
 package dmillerw.menu.gui.config;
 
-import net.minecraft.client.Minecraft;
+import dmillerw.menu.handler.ConfigHandler;
+import dmillerw.menu.reference.Reference;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.DefaultGuiFactory;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * @author dmillerw
- */
-public class MineMenuGuiFactory implements IModGuiFactory {
+public class MineMenuGuiFactory extends DefaultGuiFactory {
 
-    @Override
-    public void initialize(Minecraft minecraftInstance) {
+    public MineMenuGuiFactory() {
+        super(Reference.MOD_ID, GuiConfig.getAbridgedConfigPath(ConfigHandler.config.toString()));
     }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return GuiForgeConfig.class;
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new GuiConfig(parentScreen, getElements(), modid, false, false, title);
     }
 
-    @Override
-    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        return null;
-    }
-
-    @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
-        return null;
+    private static List<IConfigElement> getElements() {
+        List<IConfigElement> list = new ArrayList<>();
+        list.addAll((new ConfigElement(ConfigHandler.config.getCategory(ConfigHandler.CATEGORY_VISUAL))).getChildElements());
+        list.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
+        return list;
     }
 }
