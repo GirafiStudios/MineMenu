@@ -91,7 +91,7 @@ public class GuiControlList extends GuiListExtended {
         }
 
         @Override
-        public void func_192634_a(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partial) {
+        public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
             if (GuiControlList.this.mc.currentScreen != null) {
                 GuiControlList.this.mc.fontRenderer.drawString(this.category, GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2, z + slotHeight - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
             }
@@ -125,12 +125,12 @@ public class GuiControlList extends GuiListExtended {
         }
 
         @Override
-        public void func_192634_a(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partial) {
+        public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
             GuiControlList.this.mc.fontRenderer.drawString(this.description, y + 90 - GuiControlList.this.maxWidth, z + slotHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2, 16777215);
             this.buttonSelect.x = y + 105;
             this.buttonSelect.x = z;
             this.buttonSelect.displayString = GameSettings.getKeyDisplayString(this.keyBinding.getKeyCode());
-            this.buttonSelect.func_191745_a(GuiControlList.this.mc, mouseX, mouseY, partial);
+            this.buttonSelect.drawButton(GuiControlList.this.mc, mouseX, mouseY, partialTicks);
         }
 
         @Override
