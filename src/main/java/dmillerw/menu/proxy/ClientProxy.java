@@ -2,7 +2,6 @@ package dmillerw.menu.proxy;
 
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.json.MenuLoader;
-import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -15,9 +14,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
 
         KeyReflectionHelper.gatherFields();
-
         KeyboardHandler.register();
-        ClientTickHandler.register();
     }
 
     @Override

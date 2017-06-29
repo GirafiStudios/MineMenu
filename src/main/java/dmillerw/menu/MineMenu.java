@@ -3,7 +3,6 @@ package dmillerw.menu;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.proxy.CommonProxy;
 import dmillerw.menu.reference.Reference;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -42,7 +41,6 @@ public class MineMenu {
         mainFolder.mkdir();
 
         ConfigHandler.init(new File(event.getModConfigurationDirectory(), Reference.MOD_NAME + ".cfg"));
-        MinecraftForge.EVENT_BUS.register(new ConfigHandler());
 
         proxy.preInit(event);
     }

@@ -19,23 +19,20 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
+@EventBusSubscriber
 public class ClientTickHandler {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
     private static final double OUTER_RADIUS = 80;
     private static final double INNER_RADIUS = 60;
 
-    public static void register() {
-        MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
-    }
-
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             RadialMenu.tickTimer();
 
@@ -47,7 +44,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getMinecraft();
 
@@ -62,7 +59,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent event) {
+    public static void onRenderOverlay(RenderGameOverlayEvent event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && GuiRadialMenu.active) {
             event.setCanceled(true);
         }
@@ -77,7 +74,7 @@ public class ClientTickHandler {
         }
     }
 
-    private void renderGui(CompatibleScaledResolution resolution) {
+    private static void renderGui(CompatibleScaledResolution resolution) {
         GlStateManager.pushMatrix();
 
         GlStateManager.disableTexture2D();
@@ -157,7 +154,7 @@ public class ClientTickHandler {
         GlStateManager.popMatrix();
     }
 
-    private void renderItems(CompatibleScaledResolution resolution) {
+    private static void renderItems(CompatibleScaledResolution resolution) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
         RenderHelper.enableGUIStandardItemLighting();
@@ -183,7 +180,7 @@ public class ClientTickHandler {
         GlStateManager.popMatrix();
     }
 
-    private void renderText(ScaledResolution resolution) {
+    private static void renderText(ScaledResolution resolution) {
         Minecraft mc = Minecraft.getMinecraft();
         FontRenderer fontRenderer = mc.fontRenderer;
         double mouseAngle = AngleHelper.getMouseAngle();

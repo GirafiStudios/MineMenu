@@ -1,13 +1,13 @@
 package dmillerw.menu.handler;
 
 import dmillerw.menu.reference.Reference;
-import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 
 public class LogHandler {
 
     private static void log(Level logLevel, Object object) {
-        FMLLog.log(Reference.MOD_NAME, logLevel, String.valueOf(object));
+        LogManager.getLogger(Reference.MOD_NAME).log(logLevel, String.valueOf(object));
     }
 
     public static void all(Object object) {

@@ -14,7 +14,7 @@ public class KeyReflectionHelper {
     private static Field pressTimeField;
 
     public static void gatherFields() {
-        unpressKeyMethod = ReflectionHelper.findMethod(KeyBinding.class, null, new String[]{"unpressKey", "func_74505_d", "j"});
+        unpressKeyMethod = ReflectionHelper.findMethod(KeyBinding.class, "unpressKey", "func_74505_d");
         unpressKeyMethod.setAccessible(true);
 
         pressedField = ReflectionHelper.findField(KeyBinding.class, "pressed", "field_74513_e", "h");

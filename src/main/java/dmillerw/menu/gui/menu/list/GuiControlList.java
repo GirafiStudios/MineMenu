@@ -87,7 +87,7 @@ public class GuiControlList extends GuiListExtended {
         }
 
         @Override
-        public void func_192633_a(int x, int y, int z, float partial) {
+        public void updatePosition(int x, int y, int z, float partial) {
         }
 
         @Override
@@ -121,7 +121,7 @@ public class GuiControlList extends GuiListExtended {
         }
 
         @Override
-        public void func_192633_a(int x, int y, int z, float partial) {
+        public void updatePosition(int x, int y, int z, float partial) {
         }
 
         @Override

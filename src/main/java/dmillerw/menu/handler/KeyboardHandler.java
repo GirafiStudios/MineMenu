@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -17,25 +18,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@EventBusSubscriber
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
     private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
 
     public static void register() {
-        MinecraftForge.EVENT_BUS.register(KeyboardHandler.INSTANCE);
         ClientRegistry.registerKeyBinding(WHEEL);
     }
 
     private static boolean lastWheelState = false;
-    private final List<KeyBinding> firedKeys = new ArrayList<>();
-    private final List<KeyBinding> toggledKeys = new ArrayList<>();
-    private boolean ignoreNextTick = false;
+    private static final List<KeyBinding> FIRED_KEYS = new ArrayList<>();
+    private static final List<KeyBinding> TOGGLED_KEYS = new ArrayList<>();
+    private static boolean ignoreNextTick = false;
 
     private KeyboardHandler() {
     }
 
     public void fireKey(KeyBinding key) {
-        firedKeys.add(key);
+        FIRED_KEYS.add(key);
         KeyReflectionHelper.pressKey(key);
         KeyReflectionHelper.increasePressTime(key);
 
@@ -48,12 +49,12 @@ public class KeyboardHandler {
     }
 
     public void toggleKey(KeyBinding key) {
-        if (!toggledKeys.contains(key)) {
-            toggledKeys.add(key);
+        if (!TOGGLED_KEYS.contains(key)) {
+            TOGGLED_KEYS.add(key);
             KeyReflectionHelper.pressKey(key);
             KeyReflectionHelper.increasePressTime(key);
         } else {
-            toggledKeys.remove(key);
+            TOGGLED_KEYS.remove(key);
             KeyReflectionHelper.unpressKey(key);
         }
 
@@ -66,7 +67,7 @@ public class KeyboardHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             return;
         }
@@ -119,14 +120,14 @@ public class KeyboardHandler {
             return;
         }
 
-        Iterator<KeyBinding> iterator = firedKeys.iterator();
+        Iterator<KeyBinding> iterator = FIRED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
             KeyReflectionHelper.unpressKey(keyBinding);
             iterator.remove();
         }
 
-        iterator = toggledKeys.iterator();
+        iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
             if ((keyBinding.getKeyCode() >= 0 ? Keyboard.isKeyDown(keyBinding.getKeyCode()) : Mouse.isButtonDown(keyBinding.getKeyCode() + 100))) {
@@ -134,7 +135,7 @@ public class KeyboardHandler {
             }
         }
 
-        for (KeyBinding keyBinding : toggledKeys) {
+        for (KeyBinding keyBinding : TOGGLED_KEYS) {
             KeyReflectionHelper.increasePressTime(keyBinding);
         }
     }
