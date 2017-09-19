@@ -76,9 +76,7 @@ public class GuiControlList extends GuiListExtended {
 
     @SideOnly(Side.CLIENT)
     public class CategoryEntry implements GuiListExtended.IGuiListEntry {
-
         private final String category;
-
         private final int width;
 
         CategoryEntry(String category) {
@@ -104,7 +102,6 @@ public class GuiControlList extends GuiListExtended {
 
         @Override
         public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
-
         }
     }
 
@@ -114,7 +111,7 @@ public class GuiControlList extends GuiListExtended {
         private final String description;
         private final GuiButton buttonSelect;
 
-        private KeyEntry(KeyBinding keyBinding) {
+        KeyEntry(KeyBinding keyBinding) {
             this.keyBinding = keyBinding;
             this.description = I18n.format(keyBinding.getKeyDescription());
             this.buttonSelect = new GuiButton(0, 0, 0, 75, 18, description);
@@ -128,7 +125,7 @@ public class GuiControlList extends GuiListExtended {
         public void drawEntry(int x, int y, int z, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
             GuiControlList.this.mc.fontRenderer.drawString(this.description, y + 90 - GuiControlList.this.maxWidth, z + slotHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2, 16777215);
             this.buttonSelect.x = y + 105;
-            this.buttonSelect.x = z;
+            this.buttonSelect.y = z;
             this.buttonSelect.displayString = GameSettings.getKeyDisplayString(this.keyBinding.getKeyCode());
             this.buttonSelect.drawButton(GuiControlList.this.mc, mouseX, mouseY, partialTicks);
         }
@@ -145,7 +142,6 @@ public class GuiControlList extends GuiListExtended {
 
         @Override
         public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY) {
-
         }
     }
 }
