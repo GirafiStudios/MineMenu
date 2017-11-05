@@ -22,9 +22,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 
-@EventBusSubscriber
+@EventBusSubscriber(value = Side.CLIENT)
 public class ClientTickHandler {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
