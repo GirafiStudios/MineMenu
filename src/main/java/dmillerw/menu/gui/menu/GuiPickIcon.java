@@ -97,7 +97,7 @@ public class GuiPickIcon extends GuiScreen {
                     }
 
                     for (ItemStack stack : temp) {
-                        if (!stack.isEmpty() && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                        if (!stack.isEmpty() && stack != null && stack.getDisplayName().toLowerCase().contains(textSearch.getText().toLowerCase())) {
                             stacks.add(stack);
                         }
                     }
