@@ -29,7 +29,12 @@ public class ClickActionKey implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() {
+    public boolean deactivates() {
+	return true;
+    }
+    
+    @Override
+    public void onClicked() {
         KeyBinding binding = getKeyBinding();
         if (binding != null) {
             if (toggle) {
@@ -38,7 +43,6 @@ public class ClickActionKey implements ClickAction.IClickAction {
                 KeyboardHandler.INSTANCE.fireKey(binding);
             }
         }
-        return true;
     }
 
     @Override

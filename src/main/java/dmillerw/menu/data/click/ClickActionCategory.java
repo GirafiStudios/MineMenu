@@ -1,6 +1,8 @@
 package dmillerw.menu.data.click;
 
 import dmillerw.menu.data.menu.RadialMenu;
+import dmillerw.menu.gui.GuiRadialMenu;
+import net.minecraft.client.Minecraft;
 
 public class ClickActionCategory implements ClickAction.IClickAction {
 
@@ -14,12 +16,16 @@ public class ClickActionCategory implements ClickAction.IClickAction {
     public ClickAction getClickAction() {
         return ClickAction.CATEGORY;
     }
-
+    
     @Override
-    public boolean onClicked() {
+    public boolean deactivates() {
+	return false;
+    }
+    
+    @Override
+    public void onClicked() {
         RadialMenu.currentCategory = category;
         RadialMenu.resetTimer();
-        return false;
     }
 
     @Override

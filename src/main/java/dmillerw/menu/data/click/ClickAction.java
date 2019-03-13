@@ -42,7 +42,8 @@ public enum ClickAction {
     public interface IClickAction {
         ClickAction getClickAction();
 
-        boolean onClicked();
+        boolean deactivates();
+        void onClicked();
 
         void onRemoved();
     }
