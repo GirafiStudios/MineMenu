@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
+public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> { //TODO 1.13 Write the stack to NBT
 
     @Override
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {

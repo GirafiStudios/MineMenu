@@ -4,6 +4,8 @@ import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -15,6 +17,8 @@ public class ClientProxy extends CommonProxy {
 
         KeyReflectionHelper.gatherFields();
         KeyboardHandler.register();
+
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new MineMenu());
     }
 
     @Override
