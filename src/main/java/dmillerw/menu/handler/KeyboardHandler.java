@@ -38,27 +38,25 @@ public class KeyboardHandler {
 
     public void fireKey(KeyBinding key) {
         FIRED_KEYS.add(key);
-        KeyReflectionHelper.pressKey(key);
-        KeyReflectionHelper.increasePressTime(key);
+        KeyBinding.setKeyBindState(key.getKeyCode(), true);
+        KeyReflectionHelper.setPressTime(key, 1);
 
-        boolean old = Minecraft.getMinecraft().inGameHasFocus;
-        Minecraft.getMinecraft().inGameHasFocus = true;
-        MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
-        Minecraft.getMinecraft().inGameHasFocus = old;
-
-        ignoreNextTick = true;
+        this.setFocus();
     }
 
     public void toggleKey(KeyBinding key) {
         if (!TOGGLED_KEYS.contains(key)) {
             TOGGLED_KEYS.add(key);
-            KeyReflectionHelper.pressKey(key);
-            KeyReflectionHelper.increasePressTime(key);
+            KeyBinding.setKeyBindState(key.getKeyCode(), true);
+            KeyReflectionHelper.setPressTime(key, 1);
         } else {
             TOGGLED_KEYS.remove(key);
-            KeyReflectionHelper.unpressKey(key);
+            KeyBinding.setKeyBindState(key.getKeyCode(), false);
         }
+        this.setFocus();
+    }
 
+    private void setFocus() {
         boolean old = Minecraft.getMinecraft().inGameHasFocus;
         Minecraft.getMinecraft().inGameHasFocus = true;
         MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
@@ -124,20 +122,20 @@ public class KeyboardHandler {
         Iterator<KeyBinding> iterator = FIRED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            KeyReflectionHelper.unpressKey(keyBinding);
+            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
             iterator.remove();
         }
 
         iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            if ((keyBinding.getKeyCode() >= 0 ? Keyboard.isKeyDown(keyBinding.getKeyCode()) : Mouse.isButtonDown(keyBinding.getKeyCode() + 100))) {
+            if ((keyBinding.getKeyCode() >= 0 ? keyBinding.isPressed() : Mouse.isButtonDown(keyBinding.getKeyCode() + 100)) || Minecraft.getMinecraft().currentScreen != null) {
                 iterator.remove();
             }
         }
 
         for (KeyBinding keyBinding : TOGGLED_KEYS) {
-            KeyReflectionHelper.increasePressTime(keyBinding);
+            KeyReflectionHelper.setPressTime(keyBinding, 1);
         }
     }
 }

@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,10 +42,10 @@ public class GuiControlList extends GuiListExtended {
                     list.add(new CategoryEntry(category));
                 }
 
-                int l = mc.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+                int width = mc.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
 
-                if (l > this.maxWidth) {
-                    this.maxWidth = l;
+                if (width > this.maxWidth) {
+                    this.maxWidth = width;
                 }
 
                 list.add(new KeyEntry(keybinding));
@@ -114,7 +113,7 @@ public class GuiControlList extends GuiListExtended {
         KeyEntry(KeyBinding keyBinding) {
             this.keyBinding = keyBinding;
             this.description = I18n.format(keyBinding.getKeyDescription());
-            this.buttonSelect = new GuiButton(0, 0, 0, 75, 18, description);
+            this.buttonSelect = new GuiButton(0, 0, 0, 95, 18, description);
         }
 
         @Override
@@ -126,7 +125,7 @@ public class GuiControlList extends GuiListExtended {
             GuiControlList.this.mc.fontRenderer.drawString(this.description, y + 90 - GuiControlList.this.maxWidth, z + slotHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2, 16777215);
             this.buttonSelect.x = y + 105;
             this.buttonSelect.y = z;
-            this.buttonSelect.displayString = GameSettings.getKeyDisplayString(this.keyBinding.getKeyCode());
+            this.buttonSelect.displayString = this.keyBinding.getDisplayName();
             this.buttonSelect.drawButton(GuiControlList.this.mc, mouseX, mouseY, partialTicks);
         }
 

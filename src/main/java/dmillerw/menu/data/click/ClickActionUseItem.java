@@ -23,7 +23,7 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() {
+    public void onClicked() {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
 
@@ -35,7 +35,6 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
                 PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i));
             }
         }
-        return false;
     }
 
     @Override

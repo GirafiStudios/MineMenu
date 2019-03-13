@@ -1,7 +1,6 @@
 package dmillerw.menu.data.click;
 
 import dmillerw.menu.handler.KeyboardHandler;
-import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
@@ -29,7 +28,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() {
+    public void onClicked() {
         KeyBinding binding = getKeyBinding();
         if (binding != null) {
             if (toggle) {
@@ -38,6 +37,10 @@ public class ClickActionKey implements ClickAction.IClickAction {
                 KeyboardHandler.INSTANCE.fireKey(binding);
             }
         }
+    }
+
+    @Override
+    public boolean deactivates() {
         return true;
     }
 
@@ -45,7 +48,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public void onRemoved() {
         KeyBinding keyBinding = getKeyBinding();
         if (keyBinding != null) {
-            KeyReflectionHelper.unpressKey(getKeyBinding());
+            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
         }
         toggle = !toggle;
     }

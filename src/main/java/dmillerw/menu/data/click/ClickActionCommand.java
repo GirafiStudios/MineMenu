@@ -21,7 +21,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     }
 
     @Override
-    public boolean onClicked() {
+    public void onClicked() {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         String parsedCommand = command.replace("@p", player.getName());
 
@@ -33,7 +33,6 @@ public class ClickActionCommand implements ClickAction.IClickAction {
                 player.sendChatMessage(parsedCommand);
             }
         }
-        return false;
     }
 
     @Override
