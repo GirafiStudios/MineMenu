@@ -60,6 +60,9 @@ public class GuiRadialMenu extends GuiScreen {
                                         deactivate();
                                         menuItem.clickAction.onClicked();
                                         return;
+                                    } else {
+                                        menuItem.clickAction.onClicked();
+                                        return;
                                     }
                                 }
                             }
