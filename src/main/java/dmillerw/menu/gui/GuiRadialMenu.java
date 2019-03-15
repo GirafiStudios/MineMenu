@@ -15,21 +15,21 @@ public class GuiRadialMenu extends GuiScreen {
     public static boolean active = false;
 
     public static void activate() {
-        if (Minecraft.getMinecraft().currentScreen == null) {
+        if (Minecraft.getInstance().currentScreen == null) {
             active = true;
-            Minecraft.getMinecraft().displayGuiScreen(INSTANCE);
+            Minecraft.getInstance().displayGuiScreen(INSTANCE);
         }
     }
 
     public static void deactivate() {
         active = false;
-        if (Minecraft.getMinecraft().currentScreen == INSTANCE) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+        if (Minecraft.getInstance().currentScreen == INSTANCE) {
+            Minecraft.getInstance().displayGuiScreen(null);
         }
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (active && RadialMenu.animationTimer == 0) {
             double mouseAngle = AngleHelper.getMouseAngle();
             mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -50,16 +50,16 @@ public class GuiRadialMenu extends GuiScreen {
                         boolean disabled = menuItem != null && !ActionSessionData.AVAILABLE_ACTIONS.contains(menuItem.clickAction.getClickAction());
 
                         if (menuItem != null) {
-                            if (isShiftKeyDown() || (ConfigHandler.rightClickToEdit && button == 1)) {
+                            if (isShiftKeyDown() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
                                 deactivate();
                                 GuiStack.push(new GuiMenuItem(i, menuItem));
-                                return;
+                                return true;
                             } else {
                                 if (!disabled && button == 0) {
                                     if (menuItem.clickAction.deactivates()) {
                                         deactivate();
                                         menuItem.clickAction.onClicked();
-                                        return;
+                                        return true;
                                     }
                                 }
                             }
@@ -67,13 +67,14 @@ public class GuiRadialMenu extends GuiScreen {
                             if (button == 0) {
                                 deactivate();
                                 GuiStack.push(new GuiMenuItem(i, menuItem));
-                                return;
+                                return true;
                             }
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     @Override

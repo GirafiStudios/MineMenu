@@ -7,9 +7,10 @@ import dmillerw.menu.gui.CompatibleScaledResolution;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
+import dmillerw.menu.reference.Reference;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -18,14 +19,14 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.opengl.GL11;
 
-@EventBusSubscriber(value = Side.CLIENT)
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ClientTickHandler {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
@@ -37,7 +38,7 @@ public class ClientTickHandler {
         if (event.phase == TickEvent.Phase.END) {
             RadialMenu.tickTimer();
 
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
             if ((mc.world == null || mc.isGamePaused()) && GuiRadialMenu.active) {
                 GuiRadialMenu.deactivate();
             }
@@ -47,11 +48,11 @@ public class ClientTickHandler {
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
 
             if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
                 if (GuiRadialMenu.active) {
-                    CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+                    CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.mainWindow.getWidth(), mc.mainWindow.getHeight());
                     renderGui(resolution);
                     renderItems(resolution);
                 }
@@ -69,9 +70,9 @@ public class ClientTickHandler {
             return;
         }
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
-            renderText(event.getResolution());
+            renderText();
         }
     }
 
@@ -123,18 +124,18 @@ public class ClientTickHandler {
                     r = (float) 200 / (float) 255;
                     g = (float) 200 / (float) 255;
                     b = (float) 200 / (float) 255;
-                    alpha = (float) ConfigHandler.selectAlpha / (float) 255;
+                    alpha = (float) ConfigHandler.VISUAL.selectAlpha.get() / (float) 255;
                 } else {
-                    r = (float) ConfigHandler.selectRed / (float) 255;
-                    g = (float) ConfigHandler.selectGreen / (float) 255;
-                    b = (float) ConfigHandler.selectBlue / (float) 255;
-                    alpha = (float) ConfigHandler.selectAlpha / (float) 255;
+                    r = (float) ConfigHandler.VISUAL.selectRed.get() / (float) 255;
+                    g = (float) ConfigHandler.VISUAL.selectGreen.get() / (float) 255;
+                    b = (float) ConfigHandler.VISUAL.selectBlue.get() / (float) 255;
+                    alpha = (float) ConfigHandler.VISUAL.selectAlpha.get() / (float) 255;
                 }
             } else {
-                r = (float) ConfigHandler.menuRed / (float) 255;
-                g = (float) ConfigHandler.menuGreen / (float) 255;
-                b = (float) ConfigHandler.menuBlue / (float) 255;
-                alpha = (float) ConfigHandler.menuAlpha / (float) 255;
+                r = (float) ConfigHandler.VISUAL.menuRed.get() / (float) 255;
+                g = (float) ConfigHandler.VISUAL.menuGreen.get() / (float) 255;
+                b = (float) ConfigHandler.VISUAL.menuBlue.get() / (float) 255;
+                alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
             bufferBuilder.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
@@ -157,15 +158,15 @@ public class ClientTickHandler {
 
     private static void renderItems(CompatibleScaledResolution resolution) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
+        GlStateManager.translated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (ConfigHandler.removeStoneOnMenuButton ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
+            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (ConfigHandler.GENERAL.removeStoneOnMenuButton.get() ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
-            double drawOffset = 1.5; //TODO Make constant
+            double drawOffset = 1.5;
             double drawX = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
             double drawY = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
 
@@ -174,15 +175,16 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(StrictMath.toRadians(angle)));
             drawY = (length * Math.sin(StrictMath.toRadians(angle)));
 
-            ItemRenderHelper.renderItem((float) drawX, (float) drawY, stack);
+            ItemRenderHelper.renderItem((int) drawX, (int) drawY, stack);
         }
 
         RenderHelper.disableStandardItemLighting();
         GlStateManager.popMatrix();
     }
 
-    private static void renderText(ScaledResolution resolution) {
-        Minecraft mc = Minecraft.getMinecraft();
+    private static void renderText() {
+        Minecraft mc = Minecraft.getInstance();
+        MainWindow window = mc.mainWindow;
         FontRenderer fontRenderer = mc.fontRenderer;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -204,8 +206,8 @@ public class ClientTickHandler {
                     string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
                 }
 
-                int drawX = resolution.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
-                int drawY = resolution.getScaledHeight() / 2;
+                int drawX = window.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
+                int drawY = window.getScaledHeight() / 2;
 
                 int drawWidth = mc.fontRenderer.getStringWidth(string);
                 int drawHeight = mc.fontRenderer.FONT_HEIGHT;
@@ -221,10 +223,10 @@ public class ClientTickHandler {
                 BufferBuilder bufferBuilder = tessellator.getBuffer();
                 bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
-                float r = (float) ConfigHandler.menuRed / (float) 255;
-                float g = (float) ConfigHandler.menuGreen / (float) 255;
-                float b = (float) ConfigHandler.menuBlue / (float) 255;
-                float alpha = (float) ConfigHandler.menuAlpha / (float) 255;
+                float r = (float) ConfigHandler.VISUAL.menuRed.get() / (float) 255;
+                float g = (float) ConfigHandler.VISUAL.menuGreen.get() / (float) 255;
+                float b = (float) ConfigHandler.VISUAL.menuBlue.get() / (float) 255;
+                float alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
 
                 bufferBuilder.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
                 bufferBuilder.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();

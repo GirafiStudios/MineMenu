@@ -11,7 +11,7 @@ public class GuiStack {
 
     public static void push(GuiScreen screen) {
         GUI_LIST.add(0, screen);
-        Minecraft.getMinecraft().displayGuiScreen(screen);
+        Minecraft.getInstance().displayGuiScreen(screen);
     }
 
     public static void pop() {
@@ -19,9 +19,9 @@ public class GuiStack {
             GUI_LIST.remove(0);
         }
         if (GUI_LIST.size() > 0) {
-            Minecraft.getMinecraft().displayGuiScreen(GUI_LIST.get(0));
+            Minecraft.getInstance().displayGuiScreen(GUI_LIST.get(0));
         } else {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            Minecraft.getInstance().displayGuiScreen(null);
         }
     }
 }

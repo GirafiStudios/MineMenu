@@ -4,8 +4,6 @@ import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
 import net.minecraft.client.gui.GuiScreen;
 
-import java.io.IOException;
-
 public class GuiPickKey extends GuiScreen {
     private GuiControlList controlList;
 
@@ -14,11 +12,11 @@ public class GuiPickKey extends GuiScreen {
         controlList = new GuiControlList(this, this.mc);
     }
 
-    @Override
-    public void handleMouseInput() throws IOException {
+    /*@Override
+    public void handleMouseInput() { //TODO
         super.handleMouseInput();
         this.controlList.handleMouseInput();
-    }
+    }*/
 
     @Override
     public boolean doesGuiPauseGame() {
@@ -26,31 +24,35 @@ public class GuiPickKey extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int keycode) {
+    public boolean charTyped(char key, int keycode) {
         if (keycode == 1) {
             GuiStack.pop();
+            return true;
         }
+        return false;
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton != 0 || !this.controlList.mouseClicked(mouseX, mouseY, mouseButton)) {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
+        return false;
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
+    public boolean mouseReleased(double mouseX, double mouseY, int state) {
         if (state != 0 || !this.controlList.mouseReleased(mouseX, mouseY, state)) {
-            super.mouseReleased(mouseX, mouseY, state);
+            return super.mouseReleased(mouseX, mouseY, state);
         }
+        return false;
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.controlList.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRenderer, "Select a Key:", this.width / 2, 8, 16777215);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 }

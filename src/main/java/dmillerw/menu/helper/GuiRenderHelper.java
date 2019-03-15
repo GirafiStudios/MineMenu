@@ -13,8 +13,8 @@ public class GuiRenderHelper {
         GlStateManager.pushMatrix();
 
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 0, 1);
-        GlStateManager.disableAlpha();
+        GlStateManager.blendFuncSeparate(770, 771, 0, 1);
+        GlStateManager.disableAlphaTest();
         GlStateManager.shadeModel(7425);
         GlStateManager.disableTexture2D();
 
@@ -45,7 +45,7 @@ public class GuiRenderHelper {
 
         GlStateManager.enableTexture2D();
         GlStateManager.shadeModel(7424);
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.disableBlend();
 
         GlStateManager.popMatrix();
@@ -54,7 +54,7 @@ public class GuiRenderHelper {
 
         base.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32F;
 
         // HEADER

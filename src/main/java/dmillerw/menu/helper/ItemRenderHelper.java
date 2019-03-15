@@ -9,14 +9,14 @@ import javax.annotation.Nonnull;
 
 public class ItemRenderHelper {
 
-    public static void renderItem(float x, float y, @Nonnull ItemStack stack) {
+    public static void renderItem(int x, int y, @Nonnull ItemStack stack) {
         GlStateManager.pushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
         x -= 8;
         y -= 8;
 
         if (!stack.isEmpty()) {
-            Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, (int) x, (int) y);
+            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, x, y);
         }
         GlStateManager.popMatrix();
     }

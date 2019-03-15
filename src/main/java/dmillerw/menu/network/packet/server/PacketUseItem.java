@@ -1,54 +1,50 @@
 package dmillerw.menu.network.packet.server;
 
 import dmillerw.menu.helper.HeldHelper;
-import dmillerw.menu.network.packet.Packet;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-public class PacketUseItem extends Packet<PacketUseItem> {
+public class PacketUseItem {
     private int slot;
-
-    public PacketUseItem() {
-    }
 
     public PacketUseItem(int slot) {
         this.slot = slot;
     }
 
-    @Override
-    protected void handleClientSide(EntityPlayer player) {
+    public static void encode(PacketUseItem pingPacket, PacketBuffer buf) {
+        buf.writeInt(pingPacket.slot);
     }
 
-    @Override
-    protected void handleServerSide(EntityPlayer player) {
-        ItemStack slotStack = player.inventory.getStackInSlot(slot);
-        ItemStack held = player.getHeldItemMainhand();
-        EnumHand hand = EnumHand.MAIN_HAND;
-        EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
+    public static PacketUseItem decode(PacketBuffer buf) {
+        return new PacketUseItem(buf.readInt());
+    }
 
-        player.setItemStackToSlot(slot, slotStack);
-        ItemStack heldItem = player.getHeldItem(hand);
-        if (!heldItem.isEmpty()) {
-            heldItem.useItemRightClick(player.world, player, hand).getResult();
+    public static class Handler {
+        public static void handle(PacketUseItem message, Supplier<NetworkEvent.Context> ctx) {
+            EntityPlayerMP player = ctx.get().getSender();
+            if (player != null) {
+                ItemStack slotStack = player.inventory.getStackInSlot(message.slot);
+                ItemStack held = player.getHeldItemMainhand();
+                EnumHand hand = EnumHand.MAIN_HAND;
+                EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
+
+                player.setItemStackToSlot(slot, slotStack);
+                ItemStack heldItem = player.getHeldItem(hand);
+                if (!heldItem.isEmpty()) {
+                    heldItem.useItemRightClick(player.world, player, hand).getResult();
+                }
+                player.setItemStackToSlot(slot, held);
+
+                player.sendContainerToPlayer(player.inventoryContainer);
+
+                ctx.get().setPacketHandled(true);
+            }
         }
-        player.setItemStackToSlot(slot, held);
-
-        ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
-    }
-
-    @Override
-    public void toBytes(PacketBuffer buffer) {
-        buffer.writeInt(slot);
-    }
-
-    @Override
-    public void fromBytes(PacketBuffer buffer) throws IOException {
-        slot = buffer.readInt();
     }
 }

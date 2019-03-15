@@ -14,10 +14,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.Collections;
 
 public class GuiClickAction extends GuiScreen {
@@ -46,9 +44,9 @@ public class GuiClickAction extends GuiScreen {
     }
 
     @Override
-    public void updateScreen() {
-        this.textCommand.updateCursorCounter();
-        this.textCategory.updateCursorCounter();
+    public void tick() {
+        this.textCommand.tick();
+        this.textCategory.tick();
     }
 
     @Override
@@ -61,40 +59,74 @@ public class GuiClickAction extends GuiScreen {
             mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
         }
 
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
 
-        this.buttonList.clear();
-
-        this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 150, 20, I18n.format("gui.done")));
-        this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")));
+        addButton(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 150, 20, I18n.format("gui.done")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                if (mode == 0) {
+                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
+                } else if (mode == 1 && GuiClickAction.keyBinding != null) {
+                    EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
+                } else if (mode == 2 && !GuiClickAction.item.isEmpty()) {
+                    EditSessionData.clickAction = new ClickActionUseItem(item);
+                } else if (mode == 3) {
+                    EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new ClickActionCategory(textCategory.getText().trim()) : null;
+                }
+                GuiStack.pop();
+            }
+        });
+        addButton(this.buttonCancel = new GuiButton(1, this.width / 2 + 4, this.height - 60, 150, 20, I18n.format("gui.cancel")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                GuiStack.pop();
+            }
+        });
 
         String commandString;
-        if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) {
+        if (EditSessionData.clickAction instanceof ClickActionCommand) {
             commandString = ((ClickActionCommand) EditSessionData.clickAction).clipboard ? "Clipboard" : "Send";
         } else {
             commandString = clipboard ? "Clipboard" : "Send";
         }
-        this.buttonList.add(this.commandClipboardButton = new GuiButton(9, this.width / 2 - 75, 80, 150, 20, commandString));
+        addButton(this.commandClipboardButton = new GuiButton(9, this.width / 2 - 75, 80, 150, 20, commandString) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                clipboard = !clipboard;
+                commandClipboardButton.displayString = clipboard ? "Clipboard" : "Send";
+            }
+        });
 
         String keyString;
         if (GuiClickAction.keyBinding != null) {
             keyString = I18n.format(keyBinding.getKeyDescription());
         } else {
-            if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
+            if (EditSessionData.clickAction instanceof ClickActionKey) {
                 keyString = I18n.format(((ClickActionKey) EditSessionData.clickAction).key);
             } else {
                 keyString = "Select a key";
             }
         }
-        this.buttonList.add(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString));
+        addButton(this.keybindButton = new GuiButton(2, this.width / 2 - 75, 50, 150, 20, keyString) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                GuiStack.push(new GuiPickKey());
+            }
+        });
 
         String keyToggleString;
-        if (EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionKey) {
+        if (EditSessionData.clickAction instanceof ClickActionKey) {
             keyToggleString = ((ClickActionKey) EditSessionData.clickAction).toggle ? "Toggle" : "Press";
         } else {
             keyToggleString = toggle ? "Toggle" : "Press";
         }
-        this.buttonList.add(this.keybindToggleButton = new GuiButton(3, this.width / 2 - 75, 80, 150, 20, keyToggleString));
+        addButton(this.keybindToggleButton = new GuiButton(3, this.width / 2 - 75, 80, 150, 20, keyToggleString) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                toggle = !toggle;
+                keybindToggleButton.displayString = toggle ? "Toggle" : "Press";
+            }
+        });
 
         String itemString;
         if (!GuiClickAction.item.isEmpty()) {
@@ -106,22 +138,99 @@ public class GuiClickAction extends GuiScreen {
                 itemString = "Select a Slot";
             }
         }
-        this.buttonList.add(this.selectItemButton = new GuiButton(4, this.width / 2 - 75, 50, 150, 20, itemString));
+        addButton(this.selectItemButton = new GuiButton(4, this.width / 2 - 75, 50, 150, 20, itemString) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                GuiStack.push(new GuiPickItem());
+            }
+        });
 
-        this.buttonList.add(this.modeCommand = new GuiItemButton(5, this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER)));
-        this.buttonList.add(this.modeKeybinding = new GuiItemButton(6, this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.WOODEN_BUTTON)));
-        this.buttonList.add(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD)));
-        this.buttonList.add(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST)));
+        addButton(this.modeCommand = new GuiItemButton(5, this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                // Command
+                mode = 0;
+
+                modeCategory.enabled = true;
+                modeUseItem.enabled = true;
+                modeKeybinding.enabled = true;
+                modeCommand.enabled = false;
+
+                textCategory.setVisible(false);
+                selectItemButton.visible = false;
+                textCommand.setVisible(true);
+                commandClipboardButton.visible = true;
+                keybindButton.visible = false;
+                keybindToggleButton.visible = false;
+            }
+        });
+        addButton(this.modeKeybinding = new GuiItemButton(6, this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.OAK_BUTTON)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                // Keybinding
+                mode = 1;
+
+                modeCategory.enabled = true;
+                modeUseItem.enabled = true;
+                modeKeybinding.enabled = false;
+                modeCommand.enabled = true;
+
+                textCategory.setVisible(false);
+                selectItemButton.visible = false;
+                textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
+                keybindButton.visible = true;
+                keybindToggleButton.visible = true;
+            }
+        });
+        addButton(this.modeUseItem = new GuiItemButton(7, this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                // Select item
+                mode = 2;
+
+                modeCategory.enabled = true;
+                modeUseItem.enabled = false;
+                modeKeybinding.enabled = true;
+                modeCommand.enabled = true;
+
+                textCategory.setVisible(false);
+                selectItemButton.visible = true;
+                textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
+                keybindButton.visible = false;
+                keybindToggleButton.visible = false;
+            }
+        });
+        addButton(this.modeCategory = new GuiItemButton(8, this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                // Category
+                mode = 3;
+
+                modeCategory.enabled = false;
+                modeUseItem.enabled = true;
+                modeKeybinding.enabled = true;
+                modeCommand.enabled = true;
+
+                textCategory.setVisible(true);
+                selectItemButton.visible = false;
+                textCommand.setVisible(false);
+                commandClipboardButton.visible = false;
+                keybindButton.visible = false;
+                keybindToggleButton.visible = false;
+            }
+        });
 
         this.textCommand = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textCommand.setMaxStringLength(32767);
         this.textCommand.setFocused(true);
-        this.textCommand.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
+        this.textCommand.setText((EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
         this.textCategory = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textCategory.setMaxStringLength(32767);
         this.textCategory.setFocused(true);
-        this.textCategory.setText((EditSessionData.clickAction != null && EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
+        this.textCategory.setText((EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
 
         this.modeCommand.enabled = mode != 0;
         this.modeKeybinding.enabled = mode != 1;
@@ -138,7 +247,7 @@ public class GuiClickAction extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -147,120 +256,32 @@ public class GuiClickAction extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.enabled) {
-            if (button.id == 8) {
-                // Category
-                mode = 3;
+    public boolean charTyped(char key, int keycode) {
+        this.textCommand.charTyped(key, keycode);
+        this.textCategory.charTyped(key, keycode);
 
-                modeCategory.enabled = false;
-                modeUseItem.enabled = true;
-                modeKeybinding.enabled = true;
-                modeCommand.enabled = true;
-
-                textCategory.setVisible(true);
-                selectItemButton.visible = false;
-                textCommand.setVisible(false);
-                commandClipboardButton.visible = false;
-                keybindButton.visible = false;
-                keybindToggleButton.visible = false;
-            } else if (button.id == 7) {
-                // Select item
-                mode = 2;
-
-                modeCategory.enabled = true;
-                modeUseItem.enabled = false;
-                modeKeybinding.enabled = true;
-                modeCommand.enabled = true;
-
-                textCategory.setVisible(false);
-                selectItemButton.visible = true;
-                textCommand.setVisible(false);
-                commandClipboardButton.visible = false;
-                keybindButton.visible = false;
-                keybindToggleButton.visible = false;
-            } else if (button.id == 6) {
-                // Keybinding
-                mode = 1;
-
-                modeCategory.enabled = true;
-                modeUseItem.enabled = true;
-                modeKeybinding.enabled = false;
-                modeCommand.enabled = true;
-
-                textCategory.setVisible(false);
-                selectItemButton.visible = false;
-                textCommand.setVisible(false);
-                commandClipboardButton.visible = false;
-                keybindButton.visible = true;
-                keybindToggleButton.visible = true;
-            } else if (button.id == 5) {
-                // Command
-                mode = 0;
-
-                modeCategory.enabled = true;
-                modeUseItem.enabled = true;
-                modeKeybinding.enabled = true;
-                modeCommand.enabled = false;
-
-                textCategory.setVisible(false);
-                selectItemButton.visible = false;
-                textCommand.setVisible(true);
-                commandClipboardButton.visible = true;
-                keybindButton.visible = false;
-                keybindToggleButton.visible = false;
-            } else if (button.id == 9) {
-                clipboard = !clipboard;
-                commandClipboardButton.displayString = clipboard ? "Clipboard" : "Send";
-            } else if (button.id == 4) {
-                GuiStack.push(new GuiPickItem());
-            } else if (button.id == 3) {
-                toggle = !toggle;
-                keybindToggleButton.displayString = toggle ? "Toggle" : "Press";
-            } else if (button.id == 2) {
-                GuiStack.push(new GuiPickKey());
-            } else if (button.id == 1) {
-                GuiStack.pop();
-            } else if (button.id == 0) {
-                if (mode == 0) {
-                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
-                } else if (mode == 1 && GuiClickAction.keyBinding != null) {
-                    EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
-                } else if (mode == 2 && !GuiClickAction.item.isEmpty()) {
-                    EditSessionData.clickAction = new ClickActionUseItem(item);
-                } else if (mode == 3) {
-                    EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new ClickActionCategory(textCategory.getText().trim()) : null;
-                }
-                GuiStack.pop();
-            }
-        }
-    }
-
-    @Override
-    protected void keyTyped(char key, int keycode) {
-        this.textCommand.textboxKeyTyped(key, keycode);
-        this.textCategory.textboxKeyTyped(key, keycode);
-
-        if (keycode != 28 && keycode != 156) {
+        /*if (keycode != 28 && keycode != 156) {
             if (keycode == 1) {
                 this.actionPerformed(this.buttonCancel);
             }
-        }
+        }*/
+        return true;
     }
 
     @Override
-    protected void mouseClicked(int mx, int my, int button) throws IOException {
+    public boolean mouseClicked(double mx, double my, int button){
         super.mouseClicked(mx, my, button);
 
         this.textCommand.mouseClicked(mx, my, button);
+        return true;
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partial) {
+    public void render(int mouseX, int mouseY, float partial) {
         this.drawDefaultBackground();
-        this.textCommand.drawTextBox();
-        this.textCategory.drawTextBox();
-        super.drawScreen(mouseX, mouseY, partial);
+        this.textCommand.drawTextField(mouseX, mouseY, partial);
+        this.textCategory.drawTextField(mouseX, mouseY, partial);
+        super.render(mouseX, mouseY, partial);
         String header = "";
         switch (mode) {
             case 0:

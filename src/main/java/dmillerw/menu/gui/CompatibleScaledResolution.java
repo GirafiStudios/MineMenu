@@ -14,18 +14,17 @@ public class CompatibleScaledResolution {
         this.scaledWidth = width;
         this.scaledHeight = height;
         this.scaleFactor = 1;
-        boolean flag = minecraft.getLanguageManager().isCurrentLocaleUnicode() || minecraft.gameSettings.forceUnicodeFont;
-        int k = minecraft.gameSettings.guiScale;
+        int guiScale = minecraft.gameSettings.guiScale;
 
-        if (k == 0) {
-            k = 1000;
+        if (guiScale == 0) {
+            guiScale = 1000;
         }
 
-        while (this.scaleFactor < k && this.scaledWidth / (this.scaleFactor + 1) >= 320 && this.scaledHeight / (this.scaleFactor + 1) >= 240) {
+        while (this.scaleFactor < guiScale && this.scaledWidth / (this.scaleFactor + 1) >= 320 && this.scaledHeight / (this.scaleFactor + 1) >= 240) {
             ++this.scaleFactor;
         }
 
-        if (flag && this.scaleFactor % 2 != 0 && this.scaleFactor != 1) {
+        if (minecraft.gameSettings.forceUnicodeFont && this.scaleFactor % 2 != 0 && this.scaleFactor != 1) {
             --this.scaleFactor;
         }
 

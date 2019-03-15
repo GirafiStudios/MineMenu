@@ -1,13 +1,16 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 ext.buildnumber=""
 if (System.getenv().BUILD_NUMBER) {
@@ -19,30 +22,37 @@ group = "dmillerw.menu"
 archivesBaseName = "MineMenu"
 
 minecraft {
-    runDir = "run"
-    mappings = "${mappings_version}"
-    version = "${minecraft_version}-${forge_version}"
-	
-    replaceIn "Reference.java"
-    replace "%MOD_VERSION%", "${mod_version}"
-    replace "%FORGE_VERSION%", "${forge_version}"
+    mappings channel: 'snapshot', version: '20190314-1.13.2'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            mods {
+                waddles {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            mods {
+                waddles {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-processResources{
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 
 jar {
     classifier = 'universal'
+    manifest {
+        attributes([
+            "Implementation-Version": "${version}"
+        ])
+    }
 }

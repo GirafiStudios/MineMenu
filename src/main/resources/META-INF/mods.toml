@@ -1,0 +1,14 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+logoFile="logo.png"
+
+[[mods]]
+    modId="minemenu"
+    version="${file.jarVersion}"
+    displayName="MineMenu"
+    displayURL="https://minecraft.curseforge.com/projects/minemenu"
+    issueTrackerURL="https://github.com/dmillerw/MineMenu/issues"
+    authors="dmillerw, Girafi"
+    description='''
+    MineMenu supports key bindings, commands, and creative functions to make your life easier.
+    '''

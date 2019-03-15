@@ -14,7 +14,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
     }
 
     public KeyBinding getKeyBinding() {
-        for (KeyBinding binding : Minecraft.getMinecraft().gameSettings.keyBindings) {
+        for (KeyBinding binding : Minecraft.getInstance().gameSettings.keyBindings) {
             if (binding.getKeyDescription().equalsIgnoreCase(key)) {
                 return binding;
             }
@@ -48,7 +48,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public void onRemoved() {
         KeyBinding keyBinding = getKeyBinding();
         if (keyBinding != null) {
-            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
+            KeyBinding.setKeyBindState(keyBinding.getKey(), false);
         }
         toggle = !toggle;
     }

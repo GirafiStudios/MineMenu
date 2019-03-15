@@ -3,7 +3,6 @@ package dmillerw.menu.gui.menu;
 import dmillerw.menu.gui.GuiStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 
 public class GuiPickItem extends GuiScreen {
     private static final int XSIZE = 176;
@@ -27,9 +25,9 @@ public class GuiPickItem extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int par1, int par2, float par3) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
-        super.drawScreen(par1, par2, par3);
+        super.render(mouseX, mouseY, partialTicks);
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Pick an Item:");
         this.mc.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
@@ -40,7 +38,7 @@ public class GuiPickItem extends GuiScreen {
         GlStateManager.pushMatrix();
         for (int i1 = 0; i1 < this.mc.player.inventoryContainer.inventorySlots.size(); ++i1) {
             Slot slot = this.mc.player.inventoryContainer.inventorySlots.get(i1);
-            if (par1 - guiLeft >= slot.xPos && par1 - guiLeft <= slot.xPos + 16 && par2 - guiTop >= slot.yPos && par2 - guiTop <= slot.yPos + 16) {
+            if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
                 mousedOver = slot;
             } else {
                 this.drawSlot(slot, false);
@@ -50,14 +48,14 @@ public class GuiPickItem extends GuiScreen {
             GlStateManager.pushMatrix();
             drawSlot(mousedOver, true);
             GlStateManager.popMatrix();
-            renderToolTip(mousedOver.getStack(), par1, par2);
+            renderToolTip(mousedOver.getStack(), mouseX, mouseY);
         }
         GlStateManager.popMatrix();
     }
 
     private void drawSlot(Slot slot, boolean scale) {
-        int i = slot.xPos;
-        int j = slot.yPos;
+        int x = slot.xPos;
+        int y = slot.yPos;
         ItemStack stack = slot.getStack();
 
         this.zLevel = 100.0F;
@@ -69,17 +67,17 @@ public class GuiPickItem extends GuiScreen {
             if (sprite != null) {
                 GlStateManager.disableLighting();
                 this.mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                this.drawTexturedModalRect(this.guiLeft + i, this.guiTop + j, sprite, 16, 16);
+                this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, sprite, 16, 16);
                 GlStateManager.enableLighting();
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
-                GlStateManager.scale(2, 2, 2);
-                ItemRenderHelper.renderItem((this.guiLeft + i + 8) / 2, (this.guiTop + j + 8) / 2, stack);
+                GlStateManager.scaled(2, 2, 2);
+                ItemRenderHelper.renderItem((this.guiLeft + x + 8) / 2, (this.guiTop + y + 8) / 2, stack);
             } else {
-                ItemRenderHelper.renderItem(this.guiLeft + i + 8, this.guiTop + j + 8, stack);
+                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
 
@@ -88,7 +86,7 @@ public class GuiPickItem extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             for (int i1 = 0; i1 < this.mc.player.inventoryContainer.inventorySlots.size(); ++i1) {
                 Slot slot = this.mc.player.inventoryContainer.inventorySlots.get(i1);
@@ -97,15 +95,17 @@ public class GuiPickItem extends GuiScreen {
                     if (!stack.isEmpty()) {
                         GuiClickAction.item = stack.copy();
                         GuiStack.pop();
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     @Override
     public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -114,18 +114,20 @@ public class GuiPickItem extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char key, int keycode) {
+    public boolean charTyped(char key, int keycode) {
         if (keycode == 1) {
             GuiStack.pop();
+            return true;
         }
+        return false;
     }
 
-    @Override
-    protected void actionPerformed(GuiButton button) {
+    /*@Override
+    protected void actionPerformed(GuiButton button) { //TODO
         if (button.enabled) {
             if (button.id == 0) {
                 GuiStack.pop();
             }
         }
-    }
+    }*/
 }

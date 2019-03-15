@@ -3,26 +3,27 @@ package dmillerw.menu.handler;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
+import dmillerw.menu.reference.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@EventBusSubscriber(value = Side.CLIENT)
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
-    private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", Keyboard.KEY_R, "key.categories.misc");
+    private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", GLFW.GLFW_KEY_R, "key.categories.misc");
 
     public static void register() {
         ClientRegistry.registerKeyBinding(WHEEL);
@@ -38,7 +39,7 @@ public class KeyboardHandler {
 
     public void fireKey(KeyBinding key) {
         FIRED_KEYS.add(key);
-        KeyBinding.setKeyBindState(key.getKeyCode(), true);
+        KeyBinding.setKeyBindState(key.getKey(), true);
         KeyReflectionHelper.setPressTime(key, 1);
 
         this.setFocus();
@@ -47,20 +48,21 @@ public class KeyboardHandler {
     public void toggleKey(KeyBinding key) {
         if (!TOGGLED_KEYS.contains(key)) {
             TOGGLED_KEYS.add(key);
-            KeyBinding.setKeyBindState(key.getKeyCode(), true);
+            KeyBinding.setKeyBindState(key.getKey(), true);
             KeyReflectionHelper.setPressTime(key, 1);
         } else {
             TOGGLED_KEYS.remove(key);
-            KeyBinding.setKeyBindState(key.getKeyCode(), false);
+            KeyBinding.setKeyBindState(key.getKey(), false);
         }
         this.setFocus();
     }
 
-    private void setFocus() {
-        boolean old = Minecraft.getMinecraft().inGameHasFocus;
-        Minecraft.getMinecraft().inGameHasFocus = true;
+    private void setFocus() { //TODO Test
+        Minecraft mc = Minecraft.getInstance();
+        boolean old = mc.isGameFocused();
+        mc.focusChanged(true);
         MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
-        Minecraft.getMinecraft().inGameHasFocus = old;
+        mc.focusChanged(old);
 
         ignoreNextTick = true;
     }
@@ -71,20 +73,20 @@ public class KeyboardHandler {
             return;
         }
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         if (mc.world == null) {
             return;
         }
 
-        boolean wheelKeyPressed = (WHEEL.getKeyCode() >= 0 ? Keyboard.isKeyDown(WHEEL.getKeyCode()) : Mouse.isButtonDown(WHEEL.getKeyCode() + 100));
+        boolean wheelKeyPressed = WHEEL.getKey().getKeyCode() >= 0 ? InputMappings.isKeyDown(WHEEL.getKey().getKeyCode()) : InputMappings.isKeyDown(WHEEL.getKey().getKeyCode() + 100);
 
         if (wheelKeyPressed != lastWheelState) {
-            if (ConfigHandler.toggle) {
+            if (ConfigHandler.GENERAL.toggle.get()) {
                 if (wheelKeyPressed) {
                     if (GuiRadialMenu.active) {
-                        if (ConfigHandler.releaseToSelect) {
-                            GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
+                        if (ConfigHandler.GENERAL.releaseToSelect.get()) {
+                            GuiRadialMenu.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
                         GuiRadialMenu.deactivate();
                     } else {
@@ -104,8 +106,8 @@ public class KeyboardHandler {
                             GuiRadialMenu.activate();
                         }
                     } else {
-                        if (ConfigHandler.releaseToSelect) {
-                            GuiRadialMenu.INSTANCE.mouseClicked(Mouse.getX(), Mouse.getY(), 0);
+                        if (ConfigHandler.GENERAL.releaseToSelect.get()) {
+                            GuiRadialMenu.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
                         GuiRadialMenu.deactivate();
                     }
@@ -122,14 +124,14 @@ public class KeyboardHandler {
         Iterator<KeyBinding> iterator = FIRED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            KeyBinding.setKeyBindState(keyBinding.getKeyCode(), false);
+            KeyBinding.setKeyBindState(keyBinding.getKey(), false);
             iterator.remove();
         }
 
         iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            if ((keyBinding.getKeyCode() >= 0 ? keyBinding.isPressed() : Mouse.isButtonDown(keyBinding.getKeyCode() + 100)) || Minecraft.getMinecraft().currentScreen != null) {
+            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(keyBinding.getKey().getKeyCode() + 100)) || mc.currentScreen != null) {
                 iterator.remove();
             }
         }

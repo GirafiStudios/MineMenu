@@ -17,9 +17,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
 
 public class GuiMenuItem extends GuiScreen {
     private final int slot;
@@ -36,21 +33,51 @@ public class GuiMenuItem extends GuiScreen {
     }
 
     @Override
-    public void updateScreen() {
-        this.textTitle.updateCursorCounter();
+    public void tick() {
+        this.textTitle.tick();
     }
 
     @Override
     public void initGui() {
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
 
-        this.buttonList.clear();
+        addButton(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
+                    if (RadialMenu.getActiveArray()[slot] != null) {
+                        RadialMenu.getActiveArray()[slot].onRemoved();
+                    }
+                    RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
+                }
+                MenuLoader.save(MineMenu.menuFile);
+                Minecraft.getInstance().displayGuiScreen(null);
+            }
+        });
+        addButton(this.buttonCancel = new GuiButton(1, this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel")) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                Minecraft.getInstance().displayGuiScreen(null);
+            }
+        });
+        addButton(this.buttonDelete = new GuiButton(2, this.width / 2 - 50, this.height - 60, 100, 20, "Delete") {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                if (RadialMenu.getActiveArray()[slot] != null) {
+                    RadialMenu.getActiveArray()[slot].onRemoved();
+                    RadialMenu.getActiveArray()[slot] = null;
+                    MenuLoader.save(MineMenu.menuFile);
+                    Minecraft.getInstance().displayGuiScreen(null);
+                }
+            }
+        });
 
-        this.buttonList.add(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done")));
-        this.buttonList.add(this.buttonCancel = new GuiButton(1, this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel")));
-        this.buttonList.add(this.buttonDelete = new GuiButton(2, this.width / 2 - 50, this.height - 60, 100, 20, "Delete"));
-
-        this.buttonList.add(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE)));
+        addButton(this.buttonPickIcon = new GuiItemButton(3, this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE)) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                GuiStack.push(new GuiPickIcon());
+            }
+        });
         String string = "Action";
         if (EditSessionData.clickAction != null) {
             if (EditSessionData.clickAction instanceof ClickActionCommand) {
@@ -59,7 +86,12 @@ public class GuiMenuItem extends GuiScreen {
                 string = "Keybind";
             }
         }
-        this.buttonList.add(this.buttonClickAction = new GuiButton(4, this.width / 2 - 20, this.height / 2, 100, 20, string));
+        addButton(this.buttonClickAction = new GuiButton(4, this.width / 2 - 20, this.height / 2, 100, 20, string) {
+            @Override
+            public void onClick(double mouseX, double mouseY) {
+                GuiStack.push(new GuiClickAction());
+            }
+        });
 
         this.textTitle = new GuiTextField(9, this.fontRenderer, this.width / 2 - 150, 50, 300, 20);
         this.textTitle.setMaxStringLength(32767);
@@ -73,7 +105,7 @@ public class GuiMenuItem extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -82,62 +114,35 @@ public class GuiMenuItem extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
-        if (button.enabled) {
-            if (button.id == 4) {
-                GuiStack.push(new GuiClickAction());
-            } else if (button.id == 3) {
-                GuiStack.push(new GuiPickIcon());
-            } else if (button.id == 2) {
-                if (RadialMenu.getActiveArray()[slot] != null) {
-                    RadialMenu.getActiveArray()[slot].onRemoved();
-                    RadialMenu.getActiveArray()[slot] = null;
-                    MenuLoader.save(MineMenu.menuFile);
-                    Minecraft.getMinecraft().displayGuiScreen(null);
-                }
-            } else if (button.id == 1) {
-                Minecraft.getMinecraft().displayGuiScreen(null);
-            } else if (button.id == 0) {
-                if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
-                    if (RadialMenu.getActiveArray()[slot] != null) {
-                        RadialMenu.getActiveArray()[slot].onRemoved();
-                    }
-                    RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
-                }
-                MenuLoader.save(MineMenu.menuFile);
-                Minecraft.getMinecraft().displayGuiScreen(null);
-            }
-        }
-    }
-
-    @Override
-    protected void keyTyped(char key, int keycode) {
-        if (this.textTitle.textboxKeyTyped(key, keycode)) {
+    public boolean charTyped(char key, int keycode) {
+        if (this.textTitle.charTyped(key, keycode)) {
             EditSessionData.title = textTitle.getText().trim();
         }
 
         this.buttonConfirm.enabled = this.textTitle.getText().trim().length() > 0;
 
-        if (keycode != 28 && keycode != 156) {
+        /*if (keycode != 28 && keycode != 156) { //TODO
             if (keycode == 1) {
                 this.actionPerformed(this.buttonCancel);
             }
-        }
+        }*/
+        return true;
     }
 
     @Override
-    protected void mouseClicked(int mx, int my, int button) throws IOException {
+    public boolean mouseClicked(double mx, double my, int button) {
         super.mouseClicked(mx, my, button);
 
         this.textTitle.mouseClicked(mx, my, button);
+        return true;
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partial) {
+    public void render(int mouseX, int mouseY, float partial) {
         this.drawDefaultBackground();
-        this.textTitle.drawTextBox();
+        this.textTitle.drawTextField(mouseX, mouseY, partial);
         this.drawCenteredString(this.fontRenderer, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
-        super.drawScreen(mouseX, mouseY, partial);
+        super.render(mouseX, mouseY, partial);
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Modifying Menu Item #" + slot);
     }
 }

@@ -1,4 +1,4 @@
-package dmillerw.menu.gui.config;
+/*package dmillerw.menu.gui.config;
 
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.reference.Reference;
@@ -29,4 +29,4 @@ public class MineMenuGuiFactory extends DefaultGuiFactory {
         list.addAll((new ConfigElement(ConfigHandler.config.getCategory(Configuration.CATEGORY_GENERAL))).getChildElements());
         return list;
     }
-}
+}*/

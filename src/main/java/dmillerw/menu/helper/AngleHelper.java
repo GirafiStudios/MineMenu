@@ -1,12 +1,12 @@
 package dmillerw.menu.helper;
 
 import net.minecraft.client.Minecraft;
-import org.lwjgl.input.Mouse;
 
 public class AngleHelper {
 
     public static double getMouseAngle() {
-        return getRelativeAngle(Minecraft.getMinecraft().displayWidth / 2, Minecraft.getMinecraft().displayHeight / 2, Mouse.getX(), Mouse.getY());
+        Minecraft mc = Minecraft.getInstance();
+        return getRelativeAngle(mc.mainWindow.getWidth() * 0.5D, mc.mainWindow.getHeight() * 0.5D, mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY());
     }
 
     private static double getRelativeAngle(double originX, double originY, double x, double y) {
