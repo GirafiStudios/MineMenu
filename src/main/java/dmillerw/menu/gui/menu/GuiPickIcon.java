@@ -113,7 +113,7 @@ public class GuiPickIcon extends GuiScreen {
                 }
             }
         }
-        return super.charTyped(key, keyCode);
+        return false;
     }
 
     @Override
@@ -122,7 +122,7 @@ public class GuiPickIcon extends GuiScreen {
             GuiStack.pop();
             return true;
         } else {
-            return false;
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }
 

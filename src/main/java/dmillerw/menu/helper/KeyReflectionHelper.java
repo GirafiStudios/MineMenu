@@ -2,6 +2,7 @@ package dmillerw.menu.helper;
 
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 
@@ -10,7 +11,7 @@ public class KeyReflectionHelper {
 
     public static void gatherFields() {
         try {
-            pressTimeField = KeyBinding.class.getDeclaredField("pressTime");
+            pressTimeField = KeyBinding.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_151474_i"));
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throwReflectionError("pressTime", KeyBinding.class);
