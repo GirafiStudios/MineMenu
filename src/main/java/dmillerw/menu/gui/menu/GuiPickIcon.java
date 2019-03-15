@@ -89,35 +89,40 @@ public class GuiPickIcon extends GuiScreen {
 
     @Override
     public boolean charTyped(char key, int keyCode) {
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            GuiStack.pop();
-            return true;
-        } else {
-            if (textSearch.charTyped(key, key)) {
-                listScrollIndex = 0;
+        if (textSearch.charTyped(key, key)) {
+            listScrollIndex = 0;
 
-                if (!textSearch.getText().trim().isEmpty()) {
-                    stacks.clear();
+            if (!textSearch.getText().trim().isEmpty()) {
+                stacks.clear();
 
-                    NonNullList<ItemStack> temp = NonNullList.create();
+                NonNullList<ItemStack> temp = NonNullList.create();
 
-                    if (textSearch.getText().equalsIgnoreCase(".in")) {
-                        EntityPlayer player = Minecraft.getInstance().player;
-                        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                            ItemStack stack = player.inventory.getStackInSlot(i);
-                            stacks.add(stack.copy());
-                        }
-                    } else {
-                        this.reconstructList(temp);
-                        for (ItemStack stack : temp) {
-                            if (stack.getDisplayName().getString().toLowerCase().contains(textSearch.getText().toLowerCase())) {
-                                stacks.add(stack);
-                            }
+                if (textSearch.getText().equalsIgnoreCase(".inv")) {
+                    EntityPlayer player = Minecraft.getInstance().player;
+                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                        ItemStack stack = player.inventory.getStackInSlot(i);
+                        stacks.add(stack.copy());
+                    }
+                } else {
+                    this.reconstructList(temp);
+                    for (ItemStack stack : temp) {
+                        if (stack.getDisplayName().getString().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                            stacks.add(stack);
                         }
                     }
                 }
             }
+        }
+        return super.charTyped(key, keyCode);
+    }
+
+    @Override
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+            GuiStack.pop();
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -130,10 +135,6 @@ public class GuiPickIcon extends GuiScreen {
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
             GuiStack.pop();
-        }
-
-        if (buttonCancel.mouseClicked(mouseX, mouseY, button)) {
-            EditSessionData.icon = ItemStack.EMPTY;
         }
         return true;
     }

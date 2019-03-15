@@ -24,7 +24,7 @@ public class GuiPickKey extends GuiScreen {
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             GuiStack.pop();
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }

@@ -18,6 +18,7 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 
@@ -40,6 +41,7 @@ public class GuiMenuItem extends GuiScreen {
         this.textTitle.tick();
 
         this.buttonConfirm.enabled = EditSessionData.clickAction != null;
+        this.buttonDelete.enabled = RadialMenu.getActiveArray()[slot] != null;
     }
 
     @Override
@@ -141,6 +143,16 @@ public class GuiMenuItem extends GuiScreen {
 
         this.textTitle.mouseClicked(mx, my, button);
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+            GuiStack.pop();
+            return true;
+        } else {
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+        }
     }
 
     @Override

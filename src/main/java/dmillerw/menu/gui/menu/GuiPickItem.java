@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiPickItem extends GuiScreen {
     private static final int XSIZE = 176;
@@ -114,11 +115,12 @@ public class GuiPickItem extends GuiScreen {
     }
 
     @Override
-    public boolean charTyped(char key, int keycode) {
-        if (keycode == 1) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             GuiStack.pop();
             return true;
+        } else {
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
-        return false;
     }
 }

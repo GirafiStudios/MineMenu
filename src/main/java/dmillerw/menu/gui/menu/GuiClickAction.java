@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -282,6 +283,16 @@ public class GuiClickAction extends GuiScreen {
 
         this.textCommand.mouseClicked(mx, my, button);
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+            GuiStack.pop();
+            return true;
+        } else {
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+        }
     }
 
     @Override
