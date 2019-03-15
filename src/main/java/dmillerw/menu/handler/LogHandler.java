@@ -1,13 +1,13 @@
 package dmillerw.menu.handler;
 
-import dmillerw.menu.reference.Reference;
+import dmillerw.menu.MineMenu;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
 public class LogHandler {
 
     private static void log(Level logLevel, Object object) {
-        LogManager.getLogger(Reference.MOD_NAME).log(logLevel, String.valueOf(object));
+        LogManager.getLogger(MineMenu.MOD_NAME).log(logLevel, String.valueOf(object));
     }
 
     public static void all(Object object) {

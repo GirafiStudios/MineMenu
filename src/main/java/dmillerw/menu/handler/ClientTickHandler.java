@@ -1,13 +1,11 @@
 package dmillerw.menu.handler;
 
+import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.data.session.ActionSessionData;
-import dmillerw.menu.gui.CompatibleScaledResolution;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
-import dmillerw.menu.reference.Reference;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,7 +24,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
-@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
 public class ClientTickHandler {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
@@ -52,9 +50,8 @@ public class ClientTickHandler {
 
             if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
                 if (GuiRadialMenu.active) {
-                    CompatibleScaledResolution resolution = new CompatibleScaledResolution(mc, mc.mainWindow.getWidth(), mc.mainWindow.getHeight());
-                    renderGui(resolution);
-                    renderItems(resolution);
+                    renderGui();
+                    renderItems();
                 }
             }
         }
@@ -76,7 +73,8 @@ public class ClientTickHandler {
         }
     }
 
-    private static void renderGui(CompatibleScaledResolution resolution) {
+    private static void renderGui() {
+        Minecraft mc = Minecraft.getInstance();
         GlStateManager.pushMatrix();
 
         GlStateManager.disableTexture2D();
@@ -100,8 +98,6 @@ public class ClientTickHandler {
         mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            MenuItem item = RadialMenu.getActiveArray()[i];
-            boolean disabled = item != null && !ActionSessionData.AVAILABLE_ACTIONS.contains(item.clickAction.getClickAction());
             double currAngle = ANGLE_PER_ITEM * i;
             double nextAngle = currAngle + ANGLE_PER_ITEM;
             currAngle = AngleHelper.correctAngle(currAngle);
@@ -112,25 +108,18 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) resolution.getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.mainWindow.getScaledHeight());
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.mainWindow.getScaledHeight());
 
             bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
             float r, g, b, alpha;
 
             if (mouseIn) {
-                if (disabled) {
-                    r = (float) 200 / (float) 255;
-                    g = (float) 200 / (float) 255;
-                    b = (float) 200 / (float) 255;
-                    alpha = (float) ConfigHandler.VISUAL.selectAlpha.get() / (float) 255;
-                } else {
-                    r = (float) ConfigHandler.VISUAL.selectRed.get() / (float) 255;
-                    g = (float) ConfigHandler.VISUAL.selectGreen.get() / (float) 255;
-                    b = (float) ConfigHandler.VISUAL.selectBlue.get() / (float) 255;
-                    alpha = (float) ConfigHandler.VISUAL.selectAlpha.get() / (float) 255;
-                }
+                r = (float) ConfigHandler.VISUAL.selectRed.get() / (float) 255;
+                g = (float) ConfigHandler.VISUAL.selectGreen.get() / (float) 255;
+                b = (float) ConfigHandler.VISUAL.selectBlue.get() / (float) 255;
+                alpha = (float) ConfigHandler.VISUAL.selectAlpha.get() / (float) 255;
             } else {
                 r = (float) ConfigHandler.VISUAL.menuRed.get() / (float) 255;
                 g = (float) ConfigHandler.VISUAL.menuGreen.get() / (float) 255;
@@ -138,10 +127,10 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            bufferBuilder.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(currAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * resolution.getScaledHeight_double() / resolution.getScaledWidth_double() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
@@ -156,9 +145,10 @@ public class ClientTickHandler {
         GlStateManager.popMatrix();
     }
 
-    private static void renderItems(CompatibleScaledResolution resolution) {
+    private static void renderItems() {
+        Minecraft mc = Minecraft.getInstance();
         GlStateManager.pushMatrix();
-        GlStateManager.translated(resolution.getScaledWidth_double() / 2, resolution.getScaledHeight_double() / 2, 0);
+        GlStateManager.translated(mc.mainWindow.getScaledWidth() * 0.5D, mc.mainWindow.getScaledHeight() * 0.5D, 0);
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {

@@ -121,13 +121,4 @@ public class GuiPickItem extends GuiScreen {
         }
         return false;
     }
-
-    /*@Override
-    protected void actionPerformed(GuiButton button) { //TODO
-        if (button.enabled) {
-            if (button.id == 0) {
-                GuiStack.pop();
-            }
-        }
-    }*/
 }

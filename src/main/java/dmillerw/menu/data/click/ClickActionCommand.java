@@ -2,7 +2,6 @@ package dmillerw.menu.data.click;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.TextComponentString;
 
 public class ClickActionCommand implements ClickAction.IClickAction {
@@ -23,16 +22,13 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     public void onClicked() {
         Minecraft mc = Minecraft.getInstance();
         EntityPlayerSP player = mc.player;
-        String parsedCommand = command.replace("@p", player.getName().getString()); //TODO Test
-        IntegratedServer integratedServer = mc.getIntegratedServer();
+        String parsedCommand = command.replace("@p", player.getName().getString());
 
-        if (integratedServer != null && integratedServer.getCommandManager().handleCommand(player.getCommandSource(), parsedCommand) == 0) {
-            if (clipboard) {
-                mc.keyboardListener.setClipboardString(parsedCommand);
-                player.sendStatusMessage(new TextComponentString("Command copied to clipboard"), true);
-            } else {
-                player.sendChatMessage(parsedCommand);
-            }
+        if (clipboard) {
+            mc.keyboardListener.setClipboardString(parsedCommand);
+            player.sendStatusMessage(new TextComponentString("Command copied to clipboard"), true);
+        } else {
+            player.sendChatMessage(parsedCommand);
         }
     }
 

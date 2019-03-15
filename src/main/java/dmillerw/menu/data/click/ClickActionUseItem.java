@@ -1,5 +1,7 @@
 package dmillerw.menu.data.click;
 
+import dmillerw.menu.network.PacketHandler;
+import dmillerw.menu.network.packet.server.PacketUseItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,7 +32,7 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
 
             if (!stack.isEmpty() && this.stack.isItemEqual(stack)) {
                 stack.useItemRightClick(player.world, player, EnumHand.MAIN_HAND);
-                //PacketHandler.INSTANCE.sendToServer(new PacketUseItem(i)); //TODO
+                PacketHandler.CHANNEL.sendToServer(new PacketUseItem(i));
             }
         }
     }

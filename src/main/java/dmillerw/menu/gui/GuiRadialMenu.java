@@ -2,7 +2,6 @@ package dmillerw.menu.gui;
 
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.gui.menu.GuiMenuItem;
 import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.ConfigHandler;
@@ -47,7 +46,6 @@ public class GuiRadialMenu extends GuiScreen {
 
                     if (mouseIn) {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
-                        boolean disabled = menuItem != null && !ActionSessionData.AVAILABLE_ACTIONS.contains(menuItem.clickAction.getClickAction());
 
                         if (menuItem != null) {
                             if (isShiftKeyDown() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
@@ -55,9 +53,12 @@ public class GuiRadialMenu extends GuiScreen {
                                 GuiStack.push(new GuiMenuItem(i, menuItem));
                                 return true;
                             } else {
-                                if (!disabled && button == 0) {
+                                if (button == 0) {
                                     if (menuItem.clickAction.deactivates()) {
                                         deactivate();
+                                        menuItem.clickAction.onClicked();
+                                        return true;
+                                    } else {
                                         menuItem.clickAction.onClicked();
                                         return true;
                                     }

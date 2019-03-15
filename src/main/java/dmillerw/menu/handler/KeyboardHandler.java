@@ -1,9 +1,9 @@
 package dmillerw.menu.handler;
 
+import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.GuiRadialMenu;
 import dmillerw.menu.helper.KeyReflectionHelper;
-import dmillerw.menu.reference.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
     private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", GLFW.GLFW_KEY_R, "key.categories.misc");
@@ -57,7 +57,7 @@ public class KeyboardHandler {
         this.setFocus();
     }
 
-    private void setFocus() { //TODO Test
+    private void setFocus() {
         Minecraft mc = Minecraft.getInstance();
         boolean old = mc.isGameFocused();
         mc.focusChanged(true);

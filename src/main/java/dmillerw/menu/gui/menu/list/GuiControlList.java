@@ -31,7 +31,7 @@ public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
         for (KeyBinding keybinding : keyBindings) {
             String category = keybinding.getKeyCategory();
 
-            if (keybinding.getKey().getKeyCode() >= 0 && !keybinding.getKeyDescription().equalsIgnoreCase("key.open_menu")) { //TODO
+            if (!keybinding.getKeyDescription().equalsIgnoreCase("key.open_menu")) {
                 if (!category.equals(lastCategory)) {
                     lastCategory = category;
                     this.addEntry(new CategoryEntry(category));
@@ -106,6 +106,11 @@ public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
             this.buttonSelect.y = y;
             this.buttonSelect.displayString = this.keyBinding.func_197978_k();
             this.buttonSelect.render(mouseX, mouseY, partialTicks);
+        }
+
+        @Override
+        public boolean mouseClicked(double x, double y, int button) {
+            return this.buttonSelect.mouseClicked(x, y, button);
         }
 
         @Override

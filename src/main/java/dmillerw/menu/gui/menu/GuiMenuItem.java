@@ -14,9 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 public class GuiMenuItem extends GuiScreen {
     private final int slot;
@@ -35,6 +38,14 @@ public class GuiMenuItem extends GuiScreen {
     @Override
     public void tick() {
         this.textTitle.tick();
+
+        this.buttonConfirm.enabled = EditSessionData.clickAction != null;
+    }
+
+    @Override
+    @Nullable
+    public IGuiEventListener getFocused() {
+        return this.textTitle;
     }
 
     @Override
@@ -44,7 +55,11 @@ public class GuiMenuItem extends GuiScreen {
         addButton(this.buttonConfirm = new GuiButton(0, this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done")) {
             @Override
             public void onClick(double mouseX, double mouseY) {
-                if (!EditSessionData.title.trim().isEmpty() && EditSessionData.clickAction != null) {
+                if (EditSessionData.title.isEmpty()) {
+                    EditSessionData.title = "Menu Item #" + slot;
+                }
+
+                if (EditSessionData.clickAction != null) {
                     if (RadialMenu.getActiveArray()[slot] != null) {
                         RadialMenu.getActiveArray()[slot].onRemoved();
                     }
@@ -99,8 +114,6 @@ public class GuiMenuItem extends GuiScreen {
         this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
         this.buttonPickIcon.icon = EditSessionData.icon;
-
-        this.buttonConfirm.enabled = !this.textTitle.getText().trim().isEmpty();
     }
 
     @Override
@@ -117,16 +130,9 @@ public class GuiMenuItem extends GuiScreen {
     public boolean charTyped(char key, int keycode) {
         if (this.textTitle.charTyped(key, keycode)) {
             EditSessionData.title = textTitle.getText().trim();
+            return true;
         }
-
-        this.buttonConfirm.enabled = this.textTitle.getText().trim().length() > 0;
-
-        /*if (keycode != 28 && keycode != 156) { //TODO
-            if (keycode == 1) {
-                this.actionPerformed(this.buttonCancel);
-            }
-        }*/
-        return true;
+        return false;
     }
 
     @Override

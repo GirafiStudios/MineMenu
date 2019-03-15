@@ -8,6 +8,7 @@ import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.Blocks;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class GuiClickAction extends GuiScreen {
@@ -50,6 +52,18 @@ public class GuiClickAction extends GuiScreen {
     }
 
     @Override
+    @Nullable
+    public IGuiEventListener getFocused() {
+        if (mode == 0) {
+            return this.textCommand;
+        } else if (mode == 3) {
+            return this.textCategory;
+        } else {
+            return super.getFocused();
+        }
+    }
+
+    @Override
     public void initGui() {
         if (GuiClickAction.keyBinding != null) {
             mode = ClickAction.KEYBIND.ordinal();
@@ -65,7 +79,7 @@ public class GuiClickAction extends GuiScreen {
             @Override
             public void onClick(double mouseX, double mouseY) {
                 if (mode == 0) {
-                    EditSessionData.clickAction = !(textCommand.getText().trim().isEmpty()) ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
+                    EditSessionData.clickAction = !textCommand.getText().trim().isEmpty() ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
                 } else if (mode == 1 && GuiClickAction.keyBinding != null) {
                     EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
                 } else if (mode == 2 && !GuiClickAction.item.isEmpty()) {
@@ -130,10 +144,10 @@ public class GuiClickAction extends GuiScreen {
 
         String itemString;
         if (!GuiClickAction.item.isEmpty()) {
-            itemString = "Item: " + item.getDisplayName();
+            itemString = "Item: " + item.getDisplayName().getString();
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = "Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getDisplayName();
+                itemString = "Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItem().getName().getString();
             } else {
                 itemString = "Select a Slot";
             }
@@ -259,17 +273,11 @@ public class GuiClickAction extends GuiScreen {
     public boolean charTyped(char key, int keycode) {
         this.textCommand.charTyped(key, keycode);
         this.textCategory.charTyped(key, keycode);
-
-        /*if (keycode != 28 && keycode != 156) {
-            if (keycode == 1) {
-                this.actionPerformed(this.buttonCancel);
-            }
-        }*/
         return true;
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button){
+    public boolean mouseClicked(double mx, double my, int button) {
         super.mouseClicked(mx, my, button);
 
         this.textCommand.mouseClicked(mx, my, button);

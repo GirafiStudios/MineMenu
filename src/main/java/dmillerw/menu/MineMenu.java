@@ -3,8 +3,8 @@ package dmillerw.menu;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.handler.KeyboardHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
-import dmillerw.menu.reference.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
@@ -23,9 +23,11 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.function.Predicate;
 
-@Mod(value = Reference.MOD_ID)
+@Mod(value = MineMenu.MOD_ID)
 public class MineMenu implements ISelectiveResourceReloadListener {
-    public static File menuFolder = new File(FMLPaths.GAMEDIR.get().toFile(), Reference.MOD_ID);
+    public static final String MOD_ID = "minemenu";
+    public static final String MOD_NAME = "MineMenu";
+    public static File menuFolder = new File(FMLPaths.GAMEDIR.get().toFile(), MOD_ID);
     public static File menuFile = new File(menuFolder, "menu.json");
 
     public MineMenu() {
@@ -41,7 +43,7 @@ public class MineMenu implements ISelectiveResourceReloadListener {
     }
 
     private void setupClient(FMLClientSetupEvent event) {
-        //KeyReflectionHelper.gatherFields(); //TODO
+        KeyReflectionHelper.gatherFields();
         KeyboardHandler.register();
 
         if (!menuFolder.exists()) {

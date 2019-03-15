@@ -9,8 +9,12 @@ public class KeyReflectionHelper {
     private static Field pressTimeField;
 
     public static void gatherFields() {
-        //pressTimeField = ReflectionHelper.findField(KeyBinding.class, "pressTime", "field_151474_i"); //TODO
-        pressTimeField.setAccessible(true);
+        try {
+            pressTimeField = KeyBinding.class.getDeclaredField("pressTime");
+            pressTimeField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throwReflectionError("pressTime", KeyBinding.class);
+        }
     }
 
     public static void setPressTime(KeyBinding keyBinding, int pressTime) {

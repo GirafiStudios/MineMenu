@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,11 +34,11 @@ public class GuiPickIcon extends GuiScreen {
         this.textSearch.tick();
 
         if (textSearch.getText().trim().isEmpty()) {
-            this.reconstrucList(stacks);
+            this.reconstructList(stacks);
         }
     }
 
-    private void reconstrucList(NonNullList<ItemStack> list) {
+    private void reconstructList(NonNullList<ItemStack> list) {
         list.clear();
 
         for (Item registryItem : ForgeRegistries.ITEMS) {
@@ -51,6 +52,7 @@ public class GuiPickIcon extends GuiScreen {
         }
     }
 
+    @Override
     @Nullable
     public IGuiEventListener getFocused() {
         return this.textSearch;
@@ -61,7 +63,7 @@ public class GuiPickIcon extends GuiScreen {
         this.mc.keyboardListener.enableRepeatEvents(true);
 
         stacks = NonNullList.create();
-        this.reconstrucList(stacks);
+        this.reconstructList(stacks);
 
         addButton(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")) {
             @Override
@@ -86,35 +88,36 @@ public class GuiPickIcon extends GuiScreen {
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == 256) {
+    public boolean charTyped(char key, int keyCode) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             GuiStack.pop();
             return true;
         } else {
-            listScrollIndex = 0;
+            if (textSearch.charTyped(key, key)) {
+                listScrollIndex = 0;
 
-            if (!textSearch.getText().trim().isEmpty()) {
-                stacks.clear();
+                if (!textSearch.getText().trim().isEmpty()) {
+                    stacks.clear();
 
-                NonNullList<ItemStack> temp = NonNullList.create();
+                    NonNullList<ItemStack> temp = NonNullList.create();
 
-                if (textSearch.getText().equalsIgnoreCase(".inv")) {
-                    System.out.println("Inv");
-                    EntityPlayer player = Minecraft.getInstance().player;
-                    for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                        ItemStack stack = player.inventory.getStackInSlot(i);
-                        stacks.add(stack.copy());
-                    }
-                } else {
-                    this.reconstrucList(temp);
-                    for (ItemStack stack : temp) {
-                        if (!stack.isEmpty() && stack != null && stack.getDisplayName().getString().toLowerCase().contains(textSearch.getText().toLowerCase())) {
-                            stacks.add(stack);
+                    if (textSearch.getText().equalsIgnoreCase(".in")) {
+                        EntityPlayer player = Minecraft.getInstance().player;
+                        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                            ItemStack stack = player.inventory.getStackInSlot(i);
+                            stacks.add(stack.copy());
+                        }
+                    } else {
+                        this.reconstructList(temp);
+                        for (ItemStack stack : temp) {
+                            if (stack.getDisplayName().getString().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                                stacks.add(stack);
+                            }
                         }
                     }
                 }
             }
-            return this.textSearch.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return true;
         }
     }
 
