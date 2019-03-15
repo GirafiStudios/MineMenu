@@ -2,7 +2,6 @@ package dmillerw.menu.helper;
 
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Field;
 
@@ -10,8 +9,12 @@ public class KeyReflectionHelper {
     private static Field pressTimeField;
 
     public static void gatherFields() {
-        pressTimeField = ReflectionHelper.findField(KeyBinding.class, "pressTime", "field_151474_i");
-        pressTimeField.setAccessible(true);
+        try {
+            pressTimeField = KeyBinding.class.getDeclaredField("field_151474_i"); //pressTime
+            pressTimeField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throwReflectionError("pressTime", KeyBinding.class);
+        }
     }
 
     public static void setPressTime(KeyBinding keyBinding, int pressTime) {
