@@ -6,10 +6,16 @@ import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-public class ClientProxy extends CommonProxy {
+import javax.annotation.Nonnull;
+import java.util.function.Predicate;
+
+public class ClientProxy extends CommonProxy implements ISelectiveResourceReloadListener {
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
@@ -18,7 +24,7 @@ public class ClientProxy extends CommonProxy {
         KeyReflectionHelper.gatherFields();
         KeyboardHandler.register();
 
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new MineMenu());
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
     }
 
     @Override
@@ -28,6 +34,11 @@ public class ClientProxy extends CommonProxy {
         if (!MineMenu.menuFile.exists()) {
             MenuLoader.save(MineMenu.menuFile);
         }
+        MenuLoader.load(MineMenu.menuFile);
+    }
+
+    @Override
+    public void onResourceManagerReload(@Nonnull IResourceManager manager, @Nonnull Predicate<IResourceType> predicate) {
         MenuLoader.load(MineMenu.menuFile);
     }
 }
