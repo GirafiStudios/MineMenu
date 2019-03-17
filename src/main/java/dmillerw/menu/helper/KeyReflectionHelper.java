@@ -11,7 +11,7 @@ public class KeyReflectionHelper {
 
     public static void gatherFields() {
         try {
-            pressTimeField = KeyBinding.class.getDeclaredField(FMLLaunchHandler.isDeobfuscatedEnvironment() ? "pressTime" : "field_151474_i");
+            pressTimeField = KeyBinding.class.getDeclaredField(/*FMLLaunchHandler.isDeobfuscatedEnvironment() ? "pressTime" :*/ "field_151474_i"); //DO NOT USE isDeobfuscatedEnvironment, WILL BREAK OLDER VERSIONS OF FORGE (And Sponge Forge)
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throwReflectionError("pressTime", KeyBinding.class);
