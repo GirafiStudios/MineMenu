@@ -1,5 +1,6 @@
 package dmillerw.menu.helper;
 
+import cpw.mods.modlauncher.api.INameMappingService;
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -11,7 +12,7 @@ public class KeyReflectionHelper {
 
     public static void gatherFields() {
         try {
-            pressTimeField = KeyBinding.class.getDeclaredField(ObfuscationReflectionHelper.remapName("field_151474_i"));
+            pressTimeField = KeyBinding.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_151474_i"));
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throwReflectionError("pressTime", KeyBinding.class);
