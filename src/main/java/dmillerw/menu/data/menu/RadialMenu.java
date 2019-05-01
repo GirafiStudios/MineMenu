@@ -1,6 +1,7 @@
 package dmillerw.menu.data.menu;
 
 import com.google.common.collect.Maps;
+import dmillerw.menu.handler.ConfigHandler;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +22,9 @@ public class RadialMenu {
     }
 
     public static void tickTimer() {
-        if (animationTimer > 0) {
+        if (!ConfigHandler.GENERAL.menuAnimation.get()) {
+            animationTimer = 0;
+        } else if (animationTimer > 0) {
             animationTimer -= 5;
         }
     }

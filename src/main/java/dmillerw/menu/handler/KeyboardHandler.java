@@ -8,11 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -61,7 +59,6 @@ public class KeyboardHandler {
         Minecraft mc = Minecraft.getInstance();
         boolean old = mc.isGameFocused();
         mc.focusChanged(true);
-        MinecraftForge.EVENT_BUS.post(new InputEvent.KeyInputEvent());
         mc.focusChanged(old);
 
         ignoreNextTick = true;

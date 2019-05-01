@@ -11,7 +11,8 @@ public class ConfigHandler {
         public ForgeConfigSpec.BooleanValue toggle;
         public ForgeConfigSpec.BooleanValue rightClickToEdit;
         public ForgeConfigSpec.BooleanValue releaseToSelect;
-        public ForgeConfigSpec.BooleanValue removeStoneOnMenuButton;
+        public ForgeConfigSpec.BooleanValue menuAnimation;
+        public ForgeConfigSpec.ConfigValue menuButtonIcon;
 
         General(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -21,8 +22,10 @@ public class ConfigHandler {
                     .define("rightClickToEdit", false);
             releaseToSelect = builder
                     .define("releaseToSelect", false);
-            removeStoneOnMenuButton = builder
-                    .define("removeStoneOnMenuButton", false);
+            menuAnimation = builder
+                    .define("menuAnimation", true);
+            menuButtonIcon = builder
+                    .define("menuButtonIcon", "minecraft:stone");
             builder.pop();
         }
     }

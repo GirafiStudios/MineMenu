@@ -14,14 +14,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.opengl.GL11;
 
 @EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
@@ -153,7 +155,8 @@ public class ClientTickHandler {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (ConfigHandler.GENERAL.removeStoneOnMenuButton.get() ? ItemStack.EMPTY : new ItemStack(Blocks.STONE));
+            Item menuButton = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.GENERAL.menuButtonIcon.get().toString()));
+            ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
             double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
             double drawOffset = 1.5;
