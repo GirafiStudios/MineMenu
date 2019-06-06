@@ -22,7 +22,7 @@ group = "dmillerw.menu"
 archivesBaseName = "MineMenu"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190501-1.13.2'
+    mappings channel: 'stable', version: '47-1.13.2'
 
     runs {
         client {

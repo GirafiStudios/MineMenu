@@ -104,7 +104,7 @@ public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
             GuiControlList.this.mc.fontRenderer.drawString(this.description, (float) (x + 90 - GuiControlList.this.maxWidth), (float) (y + entryHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
             this.buttonSelect.x = x + 105;
             this.buttonSelect.y = y;
-            this.buttonSelect.displayString = this.keyBinding.func_197978_k();
+            this.buttonSelect.displayString = this.keyBinding.getLocalizedName();
             this.buttonSelect.render(mouseX, mouseY, partialTicks);
         }
 
