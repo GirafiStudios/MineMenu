@@ -23,7 +23,6 @@ archivesBaseName = "MineMenu"
 
 minecraft {
     mappings channel: 'stable', version: '47-1.13.2'
-
     runs {
         client {
             workingDirectory project.file('run')
