@@ -4,8 +4,8 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dmillerw.menu.handler.LogHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTTagCompound;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        object.add("stack", new JsonPrimitive(String.valueOf(src.write(new NBTTagCompound()))));
+        object.add("stack", new JsonPrimitive(String.valueOf(src.write(new CompoundNBT()))));
 
         return object;
     }
@@ -28,7 +28,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         if (!json.isJsonObject()) {
             return ItemStack.EMPTY;
         }
-        NBTTagCompound stackTag = null;
+        CompoundNBT stackTag = null;
 
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
             String key = entry.getKey();
@@ -42,7 +42,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
                 }
             }
         }
-
         return stackTag == null ? ItemStack.EMPTY : ItemStack.read(stackTag);
     }
 }

@@ -2,7 +2,7 @@ package dmillerw.menu.data.session;
 
 import dmillerw.menu.data.click.ClickAction;
 import dmillerw.menu.data.menu.MenuItem;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;

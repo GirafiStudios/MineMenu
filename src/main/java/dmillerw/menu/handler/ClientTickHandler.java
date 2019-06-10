@@ -1,16 +1,16 @@
 package dmillerw.menu.handler;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.gui.GuiRadialMenu;
+import dmillerw.menu.gui.RadialMenuScreen;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -39,8 +39,8 @@ public class ClientTickHandler {
             RadialMenu.tickTimer();
 
             Minecraft mc = Minecraft.getInstance();
-            if ((mc.world == null || mc.isGamePaused()) && GuiRadialMenu.active) {
-                GuiRadialMenu.deactivate();
+            if ((mc.world == null || mc.isGamePaused()) && RadialMenuScreen.active) {
+                RadialMenuScreen.deactivate();
             }
         }
     }
@@ -51,7 +51,7 @@ public class ClientTickHandler {
             Minecraft mc = Minecraft.getInstance();
 
             if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
-                if (GuiRadialMenu.active) {
+                if (RadialMenuScreen.active) {
                     renderGui();
                     renderItems();
                 }
@@ -61,7 +61,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && GuiRadialMenu.active) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && RadialMenuScreen.active) {
             event.setCanceled(true);
         }
 
@@ -70,7 +70,7 @@ public class ClientTickHandler {
         }
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && GuiRadialMenu.active) {
+        if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && RadialMenuScreen.active) {
             renderText();
         }
     }
@@ -79,7 +79,7 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         GlStateManager.pushMatrix();
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
 
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -142,7 +142,7 @@ public class ClientTickHandler {
         GlStateManager.popMatrix();
 
         GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
 
         GlStateManager.popMatrix();
     }
@@ -195,7 +195,7 @@ public class ClientTickHandler {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (GuiRadialMenu.isShiftKeyDown() && item != null) {
+                if (RadialMenuScreen.hasShiftDown() && item != null) {
                     string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
                 }
 
@@ -211,7 +211,7 @@ public class ClientTickHandler {
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-                GlStateManager.disableTexture2D();
+                GlStateManager.disableTexture();
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.getBuffer();
                 bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -227,7 +227,7 @@ public class ClientTickHandler {
                 bufferBuilder.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
-                GlStateManager.enableTexture2D();
+                GlStateManager.enableTexture();
                 GlStateManager.disableBlend();
 
                 // Text

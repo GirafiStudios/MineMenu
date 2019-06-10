@@ -1,29 +1,34 @@
 package dmillerw.menu.gui.menu;
 
-import dmillerw.menu.gui.GuiStack;
+import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiPickKey extends GuiScreen {
+public class PickKeyScreen extends Screen {
     private GuiControlList controlList;
 
+    public PickKeyScreen() {
+        super(new TranslationTextComponent("minemenu.keyScreen.title"));
+    }
+
     @Override
-    public void initGui() {
-        controlList = new GuiControlList(this, this.mc);
+    public void init() {
+        controlList = new GuiControlList(this, this.getMinecraft());
         this.children.add(controlList);
         this.setFocused(controlList);
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
-            GuiStack.pop();
+            ScreenStack.pop();
             return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
@@ -52,9 +57,9 @@ public class GuiPickKey extends GuiScreen {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
-        this.controlList.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRenderer, "Select a Key:", this.width / 2, 8, 16777215);
+        this.renderBackground();
+        this.controlList.render(mouseX, mouseY, partialTicks);
+        this.drawCenteredString(this.font, "Select a Key:", this.width / 2, 8, 16777215);
         super.render(mouseX, mouseY, partialTicks);
     }
 }

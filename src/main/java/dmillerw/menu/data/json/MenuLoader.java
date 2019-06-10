@@ -10,7 +10,7 @@ import dmillerw.menu.data.click.ClickActionKey;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.handler.LogHandler;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 
 import java.io.*;

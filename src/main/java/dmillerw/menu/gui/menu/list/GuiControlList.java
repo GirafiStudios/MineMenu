@@ -1,26 +1,31 @@
 package dmillerw.menu.gui.menu.list;
 
-import dmillerw.menu.gui.GuiStack;
-import dmillerw.menu.gui.menu.GuiClickAction;
+import com.google.common.collect.ImmutableList;
+import dmillerw.menu.gui.ScreenStack;
+import dmillerw.menu.gui.menu.ClickActionScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiKeyBindingList;
-import net.minecraft.client.gui.GuiListExtended;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.list.AbstractOptionList;
+import net.minecraft.client.gui.widget.list.KeyBindingList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
+public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
     private final Minecraft mc;
     private int maxWidth = 0;
 
-    public GuiControlList(GuiScreen parent, Minecraft mc) {
+    public GuiControlList(Screen parent, Minecraft mc) {
         super(mc, parent.width, parent.height, 25, parent.height - 20, 20);
         this.mc = mc;
 
@@ -48,21 +53,17 @@ public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
     }
 
     @Override
-    public int getListWidth() {
-        return super.getListWidth() + 32;
+    public int getWidth() {
+        return super.getWidth() + 32;
     }
 
     @Override
-    protected int getScrollBarX() {
-        return super.getScrollBarX() + 15;
-    }
-
-    @Override
-    protected void drawContainerBackground(Tessellator tessellator) {
+    protected int getScrollbarPosition() {
+        return super.getScrollbarPosition() + 15;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends GuiKeyBindingList.Entry {
+    public class CategoryEntry extends KeyBindingList.Entry {
         private final String category;
         private final int width;
 
@@ -72,40 +73,50 @@ public class GuiControlList extends GuiListExtended<GuiKeyBindingList.Entry> {
         }
 
         @Override
-        public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
-            if (GuiControlList.this.mc.currentScreen != null) {
-                GuiControlList.this.mc.fontRenderer.drawString(this.category, (float) (GuiControlList.this.mc.currentScreen.width / 2 - this.width / 2), this.getY() + slotHeight - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
-            }
+        public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
+            GuiControlList.this.mc.fontRenderer.drawString(this.category, (float) (Objects.requireNonNull(GuiControlList.this.mc.currentScreen).width / 2 - this.width / 2), (float) p_render_2_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
+        }
+
+        @Override
+        public boolean changeFocus(boolean changeFocus) {
+            return false;
+        }
+
+        @Override
+        @Nonnull
+        public List<? extends IGuiEventListener> children() {
+            return Collections.emptyList();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends GuiKeyBindingList.Entry {
+    public class KeyEntry extends KeyBindingList.Entry {
         private final KeyBinding keyBinding;
         private final String description;
-        private final GuiButton buttonSelect;
+        private final Button buttonSelect;
 
         KeyEntry(KeyBinding keyBinding) {
             this.keyBinding = keyBinding;
             this.description = I18n.format(keyBinding.getKeyDescription());
-            this.buttonSelect = new GuiButton(0, 0, 0, 95, 18, description) {
-                @Override
-                public void onClick(double mouseX, double mouseY) {
-                    GuiClickAction.keyBinding = keyBinding;
-                    GuiStack.pop();
-                }
-            };
+            this.buttonSelect = new Button(0, 0, 95, 18, description, (screen) -> {
+                ClickActionScreen.keyBinding = keyBinding;
+                ScreenStack.pop();
+            });
         }
 
         @Override
-        public void drawEntry(int entryWidth, int entryHeight, int mouseX, int mouseY, boolean p_194999_5_, float partialTicks) {
-            int y = this.getY();
-            int x = this.getX();
-            GuiControlList.this.mc.fontRenderer.drawString(this.description, (float) (x + 90 - GuiControlList.this.maxWidth), (float) (y + entryHeight / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
-            this.buttonSelect.x = x + 105;
-            this.buttonSelect.y = y;
-            this.buttonSelect.displayString = this.keyBinding.getLocalizedName();
-            this.buttonSelect.render(mouseX, mouseY, partialTicks);
+        public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
+            GuiControlList.this.mc.fontRenderer.drawString(this.description, (float) (p_render_3_ + 90 - GuiControlList.this.maxWidth), (float) (p_render_2_ + p_render_5_ / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
+            this.buttonSelect.x = p_render_3_ + 105;
+            this.buttonSelect.y = p_render_2_;
+            this.buttonSelect.setMessage(this.keyBinding.getLocalizedName());
+            this.buttonSelect.render(p_render_6_, p_render_7_, p_render_9_);
+        }
+
+        @Override
+        @Nonnull
+        public List<? extends IGuiEventListener> children() {
+            return ImmutableList.of(this.buttonSelect);
         }
 
         @Override

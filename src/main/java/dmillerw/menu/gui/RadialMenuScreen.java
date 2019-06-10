@@ -2,16 +2,21 @@ package dmillerw.menu.gui;
 
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.gui.menu.GuiMenuItem;
+import dmillerw.menu.gui.menu.MenuItemScreen;
 import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.TranslationTextComponent;
 
-public class GuiRadialMenu extends GuiScreen {
-    public static final GuiRadialMenu INSTANCE = new GuiRadialMenu();
+public class RadialMenuScreen extends Screen {
+    public static final RadialMenuScreen INSTANCE = new RadialMenuScreen();
     public static boolean active = false;
+
+    public RadialMenuScreen() {
+        super(new TranslationTextComponent("minemenu.radialMenu.title"));
+    }
 
     public static void activate() {
         if (Minecraft.getInstance().currentScreen == null) {
@@ -35,7 +40,7 @@ public class GuiRadialMenu extends GuiScreen {
             mouseAngle = 360 - mouseAngle;
             mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
-            if (!mc.gameSettings.hideGUI) {
+            if (!getMinecraft().gameSettings.hideGUI) {
                 for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
                     double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
                     double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
@@ -48,9 +53,9 @@ public class GuiRadialMenu extends GuiScreen {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
 
                         if (menuItem != null) {
-                            if (isShiftKeyDown() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
+                            if (hasShiftDown() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
                                 deactivate();
-                                GuiStack.push(new GuiMenuItem(i, menuItem));
+                                ScreenStack.push(new MenuItemScreen(i, menuItem));
                                 return true;
                             } else {
                                 if (button == 0) {
@@ -67,7 +72,7 @@ public class GuiRadialMenu extends GuiScreen {
                         } else {
                             if (button == 0) {
                                 deactivate();
-                                GuiStack.push(new GuiMenuItem(i, menuItem));
+                                ScreenStack.push(new MenuItemScreen(i, menuItem));
                                 return true;
                             }
                         }
@@ -79,13 +84,13 @@ public class GuiRadialMenu extends GuiScreen {
     }
 
     @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
+    public void removed() {
+        super.removed();
         active = false;
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
+    public boolean isPauseScreen() {
         return false;
     }
 }

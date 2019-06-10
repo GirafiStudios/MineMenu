@@ -1,15 +1,15 @@
 package dmillerw.menu.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiStack {
-    private static final List<GuiScreen> GUI_LIST = new ArrayList<>();
+public class ScreenStack {
+    private static final List<Screen> GUI_LIST = new ArrayList<>();
 
-    public static void push(GuiScreen screen) {
+    public static void push(Screen screen) {
         GUI_LIST.add(0, screen);
         Minecraft.getInstance().displayGuiScreen(screen);
     }

@@ -1,8 +1,8 @@
 package dmillerw.menu.data.click;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class ClickActionCommand implements ClickAction.IClickAction {
     public final String command;
@@ -21,12 +21,12 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     @Override
     public void onClicked() {
         Minecraft mc = Minecraft.getInstance();
-        EntityPlayerSP player = mc.player;
+        ClientPlayerEntity player = mc.player;
         String parsedCommand = command.replace("@p", player.getName().getString());
 
         if (clipboard) {
             mc.keyboardListener.setClipboardString(parsedCommand);
-            player.sendStatusMessage(new TextComponentString("Command copied to clipboard"), true);
+            player.sendStatusMessage(new TranslationTextComponent("Command copied to clipboard"), true);
         } else {
             player.sendChatMessage(parsedCommand);
         }

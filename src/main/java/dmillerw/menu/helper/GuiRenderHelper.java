@@ -1,22 +1,22 @@
 package dmillerw.menu.helper;
 
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class GuiRenderHelper {
 
-    public static void renderHeaderAndFooter(GuiScreen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
+    public static void renderHeaderAndFooter(Screen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
         GlStateManager.pushMatrix();
 
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(770, 771, 0, 1);
         GlStateManager.disableAlphaTest();
         GlStateManager.shadeModel(7425);
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -43,7 +43,7 @@ public class GuiRenderHelper {
 
         tessellator.draw();
 
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
         GlStateManager.shadeModel(7424);
         GlStateManager.enableAlphaTest();
         GlStateManager.disableBlend();
@@ -52,7 +52,7 @@ public class GuiRenderHelper {
 
         GlStateManager.pushMatrix();
 
-        base.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
+        base.getMinecraft().getTextureManager().bindTexture(AbstractGui.BACKGROUND_LOCATION);
 
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32F;
@@ -81,6 +81,6 @@ public class GuiRenderHelper {
 
         GlStateManager.popMatrix();
 
-        base.drawCenteredString(base.mc.fontRenderer, headerText, base.width / 2, 8, 16777215);
+        base.drawCenteredString(base.getMinecraft().fontRenderer, headerText, base.width / 2, 8, 16777215);
     }
 }

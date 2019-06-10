@@ -2,7 +2,7 @@ package dmillerw.menu.handler;
 
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.RadialMenu;
-import dmillerw.menu.gui.GuiRadialMenu;
+import dmillerw.menu.gui.RadialMenuScreen;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -40,7 +40,7 @@ public class KeyboardHandler {
         KeyBinding.setKeyBindState(key.getKey(), true);
         KeyReflectionHelper.setPressTime(key, 1);
 
-        this.setFocus();
+        //this.setFocus(); //TODO
     }
 
     public void toggleKey(KeyBinding key) {
@@ -52,17 +52,19 @@ public class KeyboardHandler {
             TOGGLED_KEYS.remove(key);
             KeyBinding.setKeyBindState(key.getKey(), false);
         }
-        this.setFocus();
+        //this.setFocus(); //TODO
     }
 
-    private void setFocus() {
+    /*private void setFocus() {
         Minecraft mc = Minecraft.getInstance();
         boolean old = mc.isGameFocused();
+        //mc.mouseHelper.grabMouse();
+        //mc.mouseHelper.ungrabMouse();
         mc.focusChanged(true);
         mc.focusChanged(old);
 
         ignoreNextTick = true;
-    }
+    }*/
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
@@ -76,37 +78,38 @@ public class KeyboardHandler {
             return;
         }
 
-        boolean wheelKeyPressed = WHEEL.getKey().getKeyCode() >= 0 ? InputMappings.isKeyDown(WHEEL.getKey().getKeyCode()) : InputMappings.isKeyDown(WHEEL.getKey().getKeyCode() + 100);
+        long handle = Minecraft.getInstance().mainWindow.getHandle();
+        boolean wheelKeyPressed = WHEEL.getKey().getKeyCode() >= 0 ? InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode()) : InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode() + 100);
 
         if (wheelKeyPressed != lastWheelState) {
             if (ConfigHandler.GENERAL.toggle.get()) {
                 if (wheelKeyPressed) {
-                    if (GuiRadialMenu.active) {
+                    if (RadialMenuScreen.active) {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            GuiRadialMenu.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
-                        GuiRadialMenu.deactivate();
+                        RadialMenuScreen.deactivate();
                     } else {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof GuiRadialMenu) {
+                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
-                            GuiRadialMenu.activate();
+                            RadialMenuScreen.activate();
                         }
                     }
                 }
             } else {
-                if (wheelKeyPressed != GuiRadialMenu.active) {
+                if (wheelKeyPressed != RadialMenuScreen.active) {
                     if (wheelKeyPressed) {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof GuiRadialMenu) {
+                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
-                            GuiRadialMenu.activate();
+                            RadialMenuScreen.activate();
                         }
                     } else {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            GuiRadialMenu.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
-                        GuiRadialMenu.deactivate();
+                        RadialMenuScreen.deactivate();
                     }
                 }
             }
@@ -128,7 +131,7 @@ public class KeyboardHandler {
         iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(keyBinding.getKey().getKeyCode() + 100)) || mc.currentScreen != null) {
+            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(handle, keyBinding.getKey().getKeyCode() + 100)) || mc.currentScreen != null) {
                 iterator.remove();
             }
         }

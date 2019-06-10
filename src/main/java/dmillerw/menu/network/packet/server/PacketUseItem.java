@@ -1,11 +1,10 @@
 package dmillerw.menu.network.packet.server;
 
-import dmillerw.menu.helper.HeldHelper;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -27,12 +26,12 @@ public class PacketUseItem {
 
     public static class Handler {
         public static void handle(PacketUseItem message, Supplier<NetworkEvent.Context> ctx) {
-            EntityPlayerMP player = ctx.get().getSender();
+            ServerPlayerEntity player = ctx.get().getSender();
             if (player != null) {
                 ItemStack slotStack = player.inventory.getStackInSlot(message.slot);
                 ItemStack held = player.getHeldItemMainhand();
-                EnumHand hand = EnumHand.MAIN_HAND;
-                EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
+                Hand hand = Hand.MAIN_HAND;
+                EquipmentSlotType slot = getSlotFromHand(hand);
 
                 player.setItemStackToSlot(slot, slotStack);
                 ItemStack heldItem = player.getHeldItem(hand);
@@ -41,10 +40,14 @@ public class PacketUseItem {
                 }
                 player.setItemStackToSlot(slot, held);
 
-                player.sendContainerToPlayer(player.inventoryContainer);
+                player.sendContainerToPlayer(player.container);
 
                 ctx.get().setPacketHandled(true);
             }
         }
+    }
+
+    private static EquipmentSlotType getSlotFromHand(Hand hand) {
+        return hand == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND;
     }
 }

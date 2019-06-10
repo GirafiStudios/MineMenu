@@ -1,33 +1,38 @@
 package dmillerw.menu.gui.menu;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import dmillerw.menu.data.session.EditSessionData;
-import dmillerw.menu.gui.GuiStack;
+import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class GuiPickIcon extends GuiScreen {
+public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
     private static final int MAX_ROW = 4; // Actually increased by one
-    private GuiTextField textSearch;
-    private GuiButton buttonCancel;
+    private TextFieldWidget textSearch;
+    private Button buttonCancel;
     private NonNullList<ItemStack> stacks;
     private int listScrollIndex = 0;
+
+    public PickIconScreen() {
+        super(new TranslationTextComponent("minemenu.iconScreen.title"));
+    }
 
     @Override
     public void tick() {
@@ -59,31 +64,25 @@ public class GuiPickIcon extends GuiScreen {
     }
 
     @Override
-    public void initGui() {
-        this.mc.keyboardListener.enableRepeatEvents(true);
+    public void init() {
+        this.getMinecraft().keyboardListener.enableRepeatEvents(true);
 
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        addButton(this.buttonCancel = new GuiButton(0, this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel")) {
-            @Override
-            public void onClick(double mouseX, double mouseY) {
-                GuiStack.pop();
-            }
-        });
-
-        this.textSearch = new GuiTextField(0, this.fontRenderer, this.width / 2 - 150, 40, 300, 20);
+        addButton(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, I18n.format("gui.cancel"), (screen) -> ScreenStack.pop()));
+        this.textSearch = new TextFieldWidget(this.font, this.width / 2 - 150, 40, 300, 20, "minemenu.pickIcon.search");
         this.textSearch.setMaxStringLength(32767);
-        this.textSearch.setFocused(true);
+        this.textSearch.changeFocus(true);
     }
 
     @Override
-    public void onGuiClosed() {
-        this.mc.keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        this.getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
+    public boolean isPauseScreen() {
         return false;
     }
 
@@ -98,7 +97,7 @@ public class GuiPickIcon extends GuiScreen {
                 NonNullList<ItemStack> temp = NonNullList.create();
 
                 if (textSearch.getText().equalsIgnoreCase(".inv")) {
-                    EntityPlayer player = Minecraft.getInstance().player;
+                    PlayerEntity player = Minecraft.getInstance().player;
                     for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
                         ItemStack stack = player.inventory.getStackInSlot(i);
                         stacks.add(stack.copy());
@@ -119,7 +118,7 @@ public class GuiPickIcon extends GuiScreen {
     @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
-            GuiStack.pop();
+            ScreenStack.pop();
             return true;
         } else {
             return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
@@ -134,16 +133,16 @@ public class GuiPickIcon extends GuiScreen {
 
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
-            GuiStack.pop();
+            ScreenStack.pop();
         }
         return true;
     }
 
     @Override
-    public boolean mouseScrolled(double wheel) {
-        wheel = -wheel;
+    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ) { //TODO Test
+        mouseY = -mouseY;
 
-        if (wheel < 0) {
+        if (mouseY < 0) {
             listScrollIndex -= 2;
             if (listScrollIndex < 0) {
                 listScrollIndex = 0;
@@ -151,7 +150,7 @@ public class GuiPickIcon extends GuiScreen {
             return true;
         }
 
-        if (wheel > 0) {
+        if (mouseY > 0) {
             listScrollIndex += 2;
             if (listScrollIndex > Math.max(0, (stacks.size() / MAX_COLUMN)) - MAX_ROW) {
                 listScrollIndex = Math.max(0, (stacks.size() / MAX_COLUMN) - MAX_ROW);
@@ -163,9 +162,9 @@ public class GuiPickIcon extends GuiScreen {
 
     @Override
     public void render(int mouseX, int mouseY, float partial) {
-        this.drawDefaultBackground();
+        this.renderBackground();
 
-        this.textSearch.drawTextField(mouseX, mouseY, partial);
+        this.textSearch.render(mouseX, mouseY, partial);
 
         super.render(mouseX, mouseY, partial);
 
