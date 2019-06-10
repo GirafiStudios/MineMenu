@@ -93,7 +93,6 @@ public class MenuItemScreen extends Screen {
 
         this.textTitle = new TextFieldWidget(this.font, this.width / 2 - 150, 50, 300, 20, "minemenu.menuItem.title");
         this.textTitle.setMaxStringLength(32767);
-        this.textTitle.changeFocus(false);
         this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
         this.buttonPickIcon.icon = EditSessionData.icon;

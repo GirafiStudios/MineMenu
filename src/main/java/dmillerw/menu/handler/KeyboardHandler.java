@@ -40,7 +40,7 @@ public class KeyboardHandler {
         KeyBinding.setKeyBindState(key.getKey(), true);
         KeyReflectionHelper.setPressTime(key, 1);
 
-        //this.setFocus(); //TODO
+        ignoreNextTick = true;
     }
 
     public void toggleKey(KeyBinding key) {
@@ -52,26 +52,14 @@ public class KeyboardHandler {
             TOGGLED_KEYS.remove(key);
             KeyBinding.setKeyBindState(key.getKey(), false);
         }
-        //this.setFocus(); //TODO
-    }
-
-    /*private void setFocus() {
-        Minecraft mc = Minecraft.getInstance();
-        boolean old = mc.isGameFocused();
-        //mc.mouseHelper.grabMouse();
-        //mc.mouseHelper.ungrabMouse();
-        mc.focusChanged(true);
-        mc.focusChanged(old);
-
         ignoreNextTick = true;
-    }*/
+    }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             return;
         }
-
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.world == null) {

@@ -139,10 +139,10 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ) { //TODO Test
-        mouseY = -mouseY;
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel) {
+        wheel = -wheel;
 
-        if (mouseY < 0) {
+        if (wheel < 0) {
             listScrollIndex -= 2;
             if (listScrollIndex < 0) {
                 listScrollIndex = 0;
@@ -150,7 +150,7 @@ public class PickIconScreen extends Screen {
             return true;
         }
 
-        if (mouseY > 0) {
+        if (wheel > 0) {
             listScrollIndex += 2;
             if (listScrollIndex > Math.max(0, (stacks.size() / MAX_COLUMN)) - MAX_ROW) {
                 listScrollIndex = Math.max(0, (stacks.size() / MAX_COLUMN) - MAX_ROW);
