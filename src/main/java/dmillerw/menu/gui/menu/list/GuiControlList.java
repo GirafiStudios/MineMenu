@@ -74,7 +74,7 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
 
         @Override
         public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            GuiControlList.this.mc.fontRenderer.drawString(this.category, (float) (Objects.requireNonNull(GuiControlList.this.mc.currentScreen).width / 2 - this.width / 2), (float) p_render_2_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
+            GuiControlList.this.mc.fontRenderer.drawString(this.category, (float) (Objects.requireNonNull(GuiControlList.this.mc.field_71462_r).width / 2 - this.width / 2), (float) p_render_2_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1, 16777215);
         }
 
         @Override

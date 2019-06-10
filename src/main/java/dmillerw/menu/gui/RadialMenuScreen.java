@@ -19,7 +19,7 @@ public class RadialMenuScreen extends Screen {
     }
 
     public static void activate() {
-        if (Minecraft.getInstance().currentScreen == null) {
+        if (Minecraft.getInstance().field_71462_r == null) {
             active = true;
             Minecraft.getInstance().displayGuiScreen(INSTANCE);
         }
@@ -27,7 +27,7 @@ public class RadialMenuScreen extends Screen {
 
     public static void deactivate() {
         active = false;
-        if (Minecraft.getInstance().currentScreen == INSTANCE) {
+        if (Minecraft.getInstance().field_71462_r == INSTANCE) {
             Minecraft.getInstance().displayGuiScreen(null);
         }
     }

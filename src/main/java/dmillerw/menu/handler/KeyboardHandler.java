@@ -90,7 +90,7 @@ public class KeyboardHandler {
                         }
                         RadialMenuScreen.deactivate();
                     } else {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
+                        if (mc.field_71462_r == null || mc.field_71462_r instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();
@@ -100,7 +100,7 @@ public class KeyboardHandler {
             } else {
                 if (wheelKeyPressed != RadialMenuScreen.active) {
                     if (wheelKeyPressed) {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
+                        if (mc.field_71462_r == null || mc.field_71462_r instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();
@@ -131,7 +131,7 @@ public class KeyboardHandler {
         iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyBinding keyBinding = iterator.next();
-            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(handle, keyBinding.getKey().getKeyCode() + 100)) || mc.currentScreen != null) {
+            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(handle, keyBinding.getKey().getKeyCode() + 100)) || mc.field_71462_r != null) {
                 iterator.remove();
             }
         }
