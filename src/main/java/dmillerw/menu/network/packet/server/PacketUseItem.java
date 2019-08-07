@@ -4,6 +4,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -29,16 +31,17 @@ public class PacketUseItem {
             ServerPlayerEntity player = ctx.get().getSender();
             if (player != null) {
                 ItemStack slotStack = player.inventory.getStackInSlot(message.slot);
-                ItemStack held = player.getHeldItemMainhand();
+                ItemStack heldSaved = player.getHeldItemMainhand();
                 Hand hand = Hand.MAIN_HAND;
                 EquipmentSlotType slot = getSlotFromHand(hand);
 
                 player.setItemStackToSlot(slot, slotStack);
                 ItemStack heldItem = player.getHeldItem(hand);
-                if (!heldItem.isEmpty()) {
-                    heldItem.useItemRightClick(player.world, player, hand).getResult();
+                ActionResult<ItemStack> useStack = heldItem.useItemRightClick(player.world, player, hand);
+                if (useStack.getType() == ActionResultType.SUCCESS) {
+                    player.inventory.mainInventory.set(message.slot, useStack.getResult());
                 }
-                player.setItemStackToSlot(slot, held);
+                player.setItemStackToSlot(slot, heldSaved);
 
                 player.sendContainerToPlayer(player.container);
 
