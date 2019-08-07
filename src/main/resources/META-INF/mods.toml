@@ -12,3 +12,10 @@ logoFile="logo.png"
     description='''
     MineMenu supports key bindings, commands, and creative functions to make your life easier.
     '''
+
+[[dependencies.minemenu]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28.0.45,)"
+    ordering="NONE"
+    side="BOTH"
