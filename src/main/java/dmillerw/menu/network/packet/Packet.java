@@ -2,7 +2,9 @@ package dmillerw.menu.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -25,16 +27,16 @@ public abstract class Packet <REQ extends Packet<REQ>> implements IMessage, IMes
     }
 
     @SideOnly(Side.CLIENT)
-    private void runClient(final REQ packet, final EntityPlayer player) {
+    private void runClient(final REQ packet, final EntityPlayerSP player) {
         Minecraft.getMinecraft().addScheduledTask(() -> packet.handleClientSide(player));
     }
 
-    private void runServer(final REQ packet, final EntityPlayer player) {
+    private void runServer(final REQ packet, final EntityPlayerMP player) {
         player.getServer().addScheduledTask(() -> packet.handleServerSide(player));
     }
 
     @SideOnly(Side.CLIENT)
-    protected EntityPlayer getPlayerClient() {
+    protected EntityPlayerSP getPlayerClient() {
         return Minecraft.getMinecraft().player;
     }
 
@@ -55,7 +57,7 @@ public abstract class Packet <REQ extends Packet<REQ>> implements IMessage, IMes
     @SideOnly(Side.CLIENT)
     protected abstract void handleClientSide(EntityPlayer player);
 
-    protected abstract void handleServerSide(EntityPlayer player);
+    protected abstract void handleServerSide(EntityPlayerMP player);
 
     protected abstract void toBytes(PacketBuffer buffer);
 

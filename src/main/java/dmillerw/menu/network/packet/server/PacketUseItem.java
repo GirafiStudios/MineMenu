@@ -7,9 +7,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-
-import java.io.IOException;
 
 public class PacketUseItem extends Packet<PacketUseItem> {
     private int slot;
@@ -26,20 +26,21 @@ public class PacketUseItem extends Packet<PacketUseItem> {
     }
 
     @Override
-    protected void handleServerSide(EntityPlayer player) {
-        ItemStack slotStack = player.inventory.getStackInSlot(slot);
-        ItemStack held = player.getHeldItemMainhand();
+    protected void handleServerSide(EntityPlayerMP player) {
+        ItemStack slotStack = player.inventory.getStackInSlot(this.slot);
+        ItemStack heldSaved = player.getHeldItemMainhand();
         EnumHand hand = EnumHand.MAIN_HAND;
         EntityEquipmentSlot slot = HeldHelper.getSlotFromHand(hand);
 
         player.setItemStackToSlot(slot, slotStack);
         ItemStack heldItem = player.getHeldItem(hand);
-        if (!heldItem.isEmpty()) {
-            heldItem.useItemRightClick(player.world, player, hand).getResult();
+        ActionResult<ItemStack> useStack = heldItem.useItemRightClick(player.world, player, hand);
+        if (useStack.getType() == EnumActionResult.SUCCESS) {
+            player.inventory.mainInventory.set(this.slot, useStack.getResult());
         }
-        player.setItemStackToSlot(slot, held);
+        player.setItemStackToSlot(slot, heldSaved);
 
-        ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+        player.sendContainerToPlayer(player.inventoryContainer);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class PacketUseItem extends Packet<PacketUseItem> {
     }
 
     @Override
-    public void fromBytes(PacketBuffer buffer) throws IOException {
+    public void fromBytes(PacketBuffer buffer) {
         slot = buffer.readInt();
     }
 }

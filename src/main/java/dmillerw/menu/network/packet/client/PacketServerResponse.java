@@ -4,6 +4,7 @@ import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.handler.LogHandler;
 import dmillerw.menu.network.packet.Packet;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class PacketServerResponse extends Packet<PacketServerResponse> {
     }
 
     @Override
-    protected void handleServerSide(EntityPlayer player) {
+    protected void handleServerSide(EntityPlayerMP player) {
     }
 
     @Override

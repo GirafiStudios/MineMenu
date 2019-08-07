@@ -13,8 +13,8 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
     @Nonnull
     public final ItemStack stack;
 
-    public ClickActionUseItem(@Nonnull ItemStack item) {
-        this.stack = item;
+    public ClickActionUseItem(@Nonnull ItemStack stack) {
+        this.stack = stack;
     }
 
     @Override
