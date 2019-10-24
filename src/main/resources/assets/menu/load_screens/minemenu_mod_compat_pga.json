@@ -2,7 +2,7 @@
 	"screens" : [{
 			"COMMENT" : "MINEMENU RADIAL MENU SUPPORT", 
 			"class" : "dmillerw.menu.gui.RadialMenuScreen", 
-			"texture" : "menu:textures/gui/modsupport/minemenu/mine_menu_radial.png", 
+			"texture" : "menu:textures/gui/mine_menu_radial.png", 
 			"fullSize" : 255
 		}]
 }
