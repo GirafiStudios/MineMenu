@@ -66,7 +66,7 @@ public class KeyboardHandler {
             return;
         }
 
-        long handle = Minecraft.getInstance().mainWindow.getHandle();
+        long handle = Minecraft.getInstance().func_228018_at_().getHandle();
         boolean wheelKeyPressed = WHEEL.getKey().getKeyCode() >= 0 ? InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode()) : InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode() + 100);
 
         if (wheelKeyPressed != lastWheelState) {

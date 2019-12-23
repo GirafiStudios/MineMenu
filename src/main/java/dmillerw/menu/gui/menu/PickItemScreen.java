@@ -1,11 +1,11 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -41,22 +41,24 @@ public class PickItemScreen extends Screen {
         Slot mousedOver = null;
 
         // Draw inventory contents
-        GlStateManager.pushMatrix();
-        for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
-            Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
-            if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
-                mousedOver = slot;
-            } else {
-                this.drawSlot(slot, false);
+        if (this.getMinecraft().player != null) {
+            RenderSystem.pushMatrix();
+            for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
+                Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
+                if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
+                    mousedOver = slot;
+                } else {
+                    this.drawSlot(slot, false);
+                }
             }
+            if (mousedOver != null && !mousedOver.getStack().isEmpty()) {
+                RenderSystem.pushMatrix();
+                drawSlot(mousedOver, true);
+                RenderSystem.popMatrix();
+                renderTooltip(mousedOver.getStack(), mouseX, mouseY);
+            }
+            RenderSystem.popMatrix();
         }
-        if (mousedOver != null && !mousedOver.getStack().isEmpty()) {
-            GlStateManager.pushMatrix();
-            drawSlot(mousedOver, true);
-            GlStateManager.popMatrix();
-            renderTooltip(mousedOver.getStack(), mouseX, mouseY);
-        }
-        GlStateManager.popMatrix();
     }
 
     private void drawSlot(Slot slot, boolean scale) {
@@ -64,23 +66,22 @@ public class PickItemScreen extends Screen {
         int y = slot.yPos;
         ItemStack stack = slot.getStack();
 
-        this.blitOffset = 100;
+        this.setBlitOffset(100);
         itemRenderer.zLevel = 100.0F;
 
         if (stack.isEmpty()) {
-            TextureAtlasSprite sprite = slot.getBackgroundSprite();
+            Pair<ResourceLocation, ResourceLocation> pair = slot.func_225517_c_();
 
-            if (sprite != null) {
-                GlStateManager.disableLighting();
-                this.getMinecraft().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                blit(this.guiLeft + x, this.guiTop + y, this.blitOffset, 16, 16, sprite);
-                GlStateManager.enableLighting();
+            if (pair != null) {
+                TextureAtlasSprite sprite = this.getMinecraft().func_228015_a_(pair.getFirst()).apply(pair.getSecond());
+                this.getMinecraft().getTextureManager().bindTexture(sprite.func_229241_m_().func_229223_g_());
+                blit(this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
-                GlStateManager.scaled(2, 2, 2);
+                RenderSystem.scaled(2, 2, 2);
                 ItemRenderHelper.renderItem((this.guiLeft + x + 8) / 2, (this.guiTop + y + 8) / 2, stack);
             } else {
                 ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
@@ -88,12 +89,12 @@ public class PickItemScreen extends Screen {
         }
 
         itemRenderer.zLevel = 0.0F;
-        this.blitOffset = 0;
+        this.setBlitOffset(0);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
+        if (button == 0 && this.getMinecraft().player != null) {
             for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
                 Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
                 if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {

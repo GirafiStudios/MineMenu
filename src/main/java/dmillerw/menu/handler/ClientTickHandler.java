@@ -1,6 +1,6 @@
 package dmillerw.menu.handler;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
@@ -11,7 +11,6 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
@@ -77,20 +76,20 @@ public class ClientTickHandler {
 
     private static void renderGui() {
         Minecraft mc = Minecraft.getInstance();
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-        GlStateManager.pushMatrix();
-        GlStateManager.loadIdentity();
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.pushMatrix();
+        RenderSystem.loadIdentity();
 
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
-        GlStateManager.pushMatrix();
-        GlStateManager.loadIdentity();
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.pushMatrix();
+        RenderSystem.loadIdentity();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -110,8 +109,8 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.mainWindow.getScaledHeight());
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.mainWindow.getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.func_228018_at_().getScaledHeight());
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.func_228018_at_().getScaledHeight());
 
             bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
@@ -129,29 +128,28 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            bufferBuilder.pos(Math.cos(currAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(currAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * mc.mainWindow.getScaledHeight() / mc.mainWindow.getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.func_225582_a_(Math.cos(currAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
+            bufferBuilder.func_225582_a_(Math.cos(currAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
+            bufferBuilder.func_225582_a_(Math.cos(nextAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
+            bufferBuilder.func_225582_a_(Math.cos(nextAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
 
-        GlStateManager.popMatrix();
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.popMatrix();
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static void renderItems() {
         Minecraft mc = Minecraft.getInstance();
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(mc.mainWindow.getScaledWidth() * 0.5D, mc.mainWindow.getScaledHeight() * 0.5D, 0);
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(mc.func_228018_at_().getScaledWidth() * 0.5D, mc.func_228018_at_().getScaledHeight() * 0.5D, 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -171,13 +169,12 @@ public class ClientTickHandler {
             ItemRenderHelper.renderItem((int) drawX, (int) drawY, stack);
         }
 
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static void renderText() {
         Minecraft mc = Minecraft.getInstance();
-        MainWindow window = mc.mainWindow;
+        MainWindow window = mc.func_228018_at_();
         FontRenderer fontRenderer = mc.fontRenderer;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -208,10 +205,10 @@ public class ClientTickHandler {
                 float padding = 5F;
 
                 // Background
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-                GlStateManager.disableTexture();
+                RenderSystem.disableTexture();
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.getBuffer();
                 bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -221,14 +218,14 @@ public class ClientTickHandler {
                 float b = (float) ConfigHandler.VISUAL.menuBlue.get() / (float) 255;
                 float alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
 
-                bufferBuilder.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.func_225582_a_(drawX - padding, drawY + drawHeight + padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
+                bufferBuilder.func_225582_a_(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
+                bufferBuilder.func_225582_a_(drawX + drawWidth + padding, drawY - padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
+                bufferBuilder.func_225582_a_(drawX - padding, drawY - padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
-                GlStateManager.enableTexture();
-                GlStateManager.disableBlend();
+                RenderSystem.enableTexture();
+                RenderSystem.disableBlend();
 
                 // Text
                 fontRenderer.drawStringWithShadow(string, drawX, drawY, 0xFFFFFF);

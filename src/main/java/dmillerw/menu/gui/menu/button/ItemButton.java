@@ -1,6 +1,6 @@
 package dmillerw.menu.gui.menu.button;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -24,15 +24,15 @@ public class ItemButton extends GuiButtonExt {
         if (this.visible) {
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int k = this.getYImage(this.isHovered);
-            GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.blitOffset);
+            GuiUtils.drawContinuousTexturedBox(WIDGETS_LOCATION, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
             this.renderBg(Minecraft.getInstance(), mouseX, mouseY);
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             if (this.icon.isEmpty()) {
                 this.icon = new ItemStack(Blocks.STONE);
             }
             ItemRenderHelper.renderItem(this.x + this.width / 2, this.y + this.height / 2, icon);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 }

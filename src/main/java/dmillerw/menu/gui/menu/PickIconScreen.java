@@ -1,6 +1,6 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
@@ -129,7 +129,7 @@ public class PickIconScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
 
-        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().mainWindow.getScaledHeight() - 80), mouseX, mouseY);
+        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().func_228018_at_().getScaledHeight() - 80), mouseX, mouseY);
 
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
@@ -170,7 +170,7 @@ public class PickIconScreen extends Screen {
 
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this.width / 2, this.height - (Minecraft.getInstance().mainWindow.getScaledHeight() - 80), mouseX, mouseY);
+        drawList(this.width / 2, this.height - (Minecraft.getInstance().func_228018_at_().getScaledHeight() - 80), mouseX, mouseY);
     }
 
     private void drawList(int x, int y, int mx, int my) {
@@ -183,7 +183,7 @@ public class PickIconScreen extends Screen {
             int drawY = i / MAX_COLUMN;
 
             if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
 
                 boolean scaled = false;
                 int actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
@@ -201,17 +201,17 @@ public class PickIconScreen extends Screen {
                     ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             } else {
                 break;
             }
         }
 
         if (!highlighted.isEmpty()) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scaled(2, 2, 2);
+            RenderSystem.pushMatrix();
+            RenderSystem.scaled(2, 2, 2);
             ItemRenderHelper.renderItem(highlightedX, highlightedY, highlighted);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 
