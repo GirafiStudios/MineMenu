@@ -73,8 +73,8 @@ public class PickItemScreen extends Screen {
             Pair<ResourceLocation, ResourceLocation> pair = slot.func_225517_c_();
 
             if (pair != null) {
-                TextureAtlasSprite sprite = this.getMinecraft().func_228015_a_(pair.getFirst()).apply(pair.getSecond());
-                this.getMinecraft().getTextureManager().bindTexture(sprite.func_229241_m_().func_229223_g_());
+                TextureAtlasSprite sprite = this.getMinecraft().getTextureGetter(pair.getFirst()).apply(pair.getSecond());
+                this.getMinecraft().getTextureManager().bindTexture(sprite.getAtlasTexture().getBasePath());
                 blit(this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }

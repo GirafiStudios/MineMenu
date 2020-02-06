@@ -24,22 +24,22 @@ public class GuiRenderHelper {
         // HEADER - SHADOW
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        bufferBuilder.func_225582_a_(0, headerHeight + shadowDepth, 0.0D).func_225583_a_(0.0F, 1.0F).func_225586_a_(0, 0, 0, 0).endVertex();
-        bufferBuilder.func_225582_a_(base.width, headerHeight + shadowDepth, 0.0D).func_225583_a_(1.0F, 1.0F).func_225586_a_(0, 0, 0, 0).endVertex();
+        bufferBuilder.pos(0, headerHeight + shadowDepth, 0.0D).tex(0.0F, 1.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.pos(base.width, headerHeight + shadowDepth, 0.0D).tex(1.0F, 1.0F).color(0, 0, 0, 0).endVertex();
 
-        bufferBuilder.func_225582_a_(base.width, headerHeight, 0.0D).func_225583_a_(1.0F, 0.0F).func_225586_a_(0, 0, 0, 255).endVertex();
-        bufferBuilder.func_225582_a_(0, headerHeight, 0.0D).func_225583_a_(0.0F, 0.0F).func_225586_a_(0, 0, 0, 255).endVertex();
+        bufferBuilder.pos(base.width, headerHeight, 0.0D).tex(1.0F, 0.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.pos(0, headerHeight, 0.0D).tex(0.0F, 0.0F).color(0, 0, 0, 255).endVertex();
 
         tessellator.draw();
 
         // FOOTER - SHADOW
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        bufferBuilder.func_225582_a_(0, base.height - footerHeight, 0.0D).func_225583_a_(0.0F, 1.0F).func_225586_a_(0, 0, 0, 255).endVertex();
-        bufferBuilder.func_225582_a_(base.width, base.height - footerHeight, 0.0D).func_225583_a_(1.0F, 1.0F).func_225586_a_(0, 0, 0, 255).endVertex();
+        bufferBuilder.pos(0, base.height - footerHeight, 0.0D).tex(0.0F, 1.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.pos(base.width, base.height - footerHeight, 0.0D).tex(1.0F, 1.0F).color(0, 0, 0, 255).endVertex();
 
-        bufferBuilder.func_225582_a_(base.width, base.height - footerHeight - shadowDepth, 0.0D).func_225583_a_(1.0F, 0.0F).func_225586_a_(0, 0, 0, 0).endVertex();
-        bufferBuilder.func_225582_a_(0, base.height - footerHeight - shadowDepth, 0.0D).func_225583_a_(0.0F, 0.0F).func_225586_a_(0, 0, 0, 0).endVertex();
+        bufferBuilder.pos(base.width, base.height - footerHeight - shadowDepth, 0.0D).tex(1.0F, 0.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.pos(0, base.height - footerHeight - shadowDepth, 0.0D).tex(0.0F, 0.0F).color(0, 0, 0, 0).endVertex();
 
         tessellator.draw();
 
@@ -60,22 +60,22 @@ public class GuiRenderHelper {
         // HEADER
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        bufferBuilder.func_225582_a_(0, headerHeight, 0.0D).func_225583_a_(0.0F, ((float) headerHeight / f)).func_225586_a_(64, 64, 64, 255).endVertex();
-        bufferBuilder.func_225582_a_((double) 0 + base.width, headerHeight, 0.0D).func_225583_a_(((float) base.width / f), ((float) headerHeight / f)).func_225586_a_(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos(0, headerHeight, 0.0D).tex(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos((double) 0 + base.width, headerHeight, 0.0D).tex(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        bufferBuilder.func_225582_a_((double) 0 + base.width, 0, 0.0D).func_225583_a_(((float) base.width / f), ((float) 0 / f)).func_225586_a_(64, 64, 64, 255).endVertex();
-        bufferBuilder.func_225582_a_(0, 0, 0.0D).func_225583_a_(0.0F, ((float) 0 / f)).func_225586_a_(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos((double) 0 + base.width, 0, 0.0D).tex(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos(0, 0, 0.0D).tex(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
         tessellator.draw();
 
         // FOOTER
         bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        bufferBuilder.func_225582_a_(0, base.height, 0.0D).func_225583_a_(0.0F, ((float) headerHeight / f)).func_225586_a_(64, 64, 64, 255).endVertex();
-        bufferBuilder.func_225582_a_((double) 0 + base.width, base.height, 0.0D).func_225583_a_(((float) base.width / f), ((float) headerHeight / f)).func_225586_a_(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos(0, base.height, 0.0D).tex(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos((double) 0 + base.width, base.height, 0.0D).tex(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        bufferBuilder.func_225582_a_((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).func_225583_a_(((float) base.width / f), ((float) 0 / f)).func_225586_a_(64, 64, 64, 255).endVertex();
-        bufferBuilder.func_225582_a_(0, (double) base.height - footerHeight, 0.0D).func_225583_a_(0.0F, ((float) 0 / f)).func_225586_a_(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).tex(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.pos(0, (double) base.height - footerHeight, 0.0D).tex(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
         tessellator.draw();
 

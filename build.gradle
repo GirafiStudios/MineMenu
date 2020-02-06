@@ -27,7 +27,7 @@ minecraft {
         client {
             workingDirectory project.file('run')
             mods {
-                waddles {
+                minemenu {
                     source sourceSets.main
                 }
             }
@@ -35,7 +35,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
             mods {
-                waddles {
+                minemenu {
                     source sourceSets.main
                 }
             }

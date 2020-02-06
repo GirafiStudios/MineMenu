@@ -15,7 +15,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -30,10 +30,10 @@ public class ClickActionScreen extends Screen {
     private static boolean clipboard = false;
     private TextFieldWidget textCommand;
     private TextFieldWidget textCategory;
-    private GuiButtonExt modeCommand;
-    private GuiButtonExt modeKeybinding;
-    private GuiButtonExt modeUseItem;
-    private GuiButtonExt modeCategory;
+    private ExtendedButton modeCommand;
+    private ExtendedButton modeKeybinding;
+    private ExtendedButton modeUseItem;
+    private ExtendedButton modeCategory;
     private Button commandClipboardButton;
     private Button keybindButton;
     private Button keybindToggleButton;

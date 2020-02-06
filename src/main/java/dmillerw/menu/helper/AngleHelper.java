@@ -6,7 +6,7 @@ public class AngleHelper {
 
     public static double getMouseAngle() {
         Minecraft mc = Minecraft.getInstance();
-        return getRelativeAngle(mc.func_228018_at_().getWidth() * 0.5D, mc.func_228018_at_().getHeight() * 0.5D, mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY());
+        return getRelativeAngle(mc.getMainWindow().getWidth() * 0.5D, mc.getMainWindow().getHeight() * 0.5D, mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY());
     }
 
     private static double getRelativeAngle(double originX, double originY, double x, double y) {

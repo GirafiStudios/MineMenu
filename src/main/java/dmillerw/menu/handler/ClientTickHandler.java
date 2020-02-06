@@ -109,8 +109,8 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.func_228018_at_().getScaledHeight());
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.func_228018_at_().getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getMainWindow().getScaledHeight());
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getMainWindow().getScaledHeight());
 
             bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
@@ -128,10 +128,10 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            bufferBuilder.func_225582_a_(Math.cos(currAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
-            bufferBuilder.func_225582_a_(Math.cos(currAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
-            bufferBuilder.func_225582_a_(Math.cos(nextAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
-            bufferBuilder.func_225582_a_(Math.cos(nextAngle) * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).func_227885_a_(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(currAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.pos(Math.cos(nextAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.draw();
         }
@@ -149,7 +149,7 @@ public class ClientTickHandler {
     private static void renderItems() {
         Minecraft mc = Minecraft.getInstance();
         RenderSystem.pushMatrix();
-        RenderSystem.translated(mc.func_228018_at_().getScaledWidth() * 0.5D, mc.func_228018_at_().getScaledHeight() * 0.5D, 0);
+        RenderSystem.translated(mc.getMainWindow().getScaledWidth() * 0.5D, mc.getMainWindow().getScaledHeight() * 0.5D, 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -174,7 +174,7 @@ public class ClientTickHandler {
 
     private static void renderText() {
         Minecraft mc = Minecraft.getInstance();
-        MainWindow window = mc.func_228018_at_();
+        MainWindow window = mc.getMainWindow();
         FontRenderer fontRenderer = mc.fontRenderer;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -218,10 +218,10 @@ public class ClientTickHandler {
                 float b = (float) ConfigHandler.VISUAL.menuBlue.get() / (float) 255;
                 float alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
 
-                bufferBuilder.func_225582_a_(drawX - padding, drawY + drawHeight + padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
-                bufferBuilder.func_225582_a_(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
-                bufferBuilder.func_225582_a_(drawX + drawWidth + padding, drawY - padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
-                bufferBuilder.func_225582_a_(drawX - padding, drawY - padding, 0).func_227885_a_(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.draw();
                 RenderSystem.enableTexture();

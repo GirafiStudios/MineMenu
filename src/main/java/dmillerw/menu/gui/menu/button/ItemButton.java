@@ -5,12 +5,12 @@ import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
-import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 
 import javax.annotation.Nonnull;
 
-public class ItemButton extends GuiButtonExt {
+public class ItemButton extends ExtendedButton {
     @Nonnull
     public ItemStack icon;
 

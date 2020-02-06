@@ -129,7 +129,7 @@ public class PickIconScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
 
-        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().func_228018_at_().getScaledHeight() - 80), mouseX, mouseY);
+        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
 
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
@@ -170,7 +170,7 @@ public class PickIconScreen extends Screen {
 
         GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this.width / 2, this.height - (Minecraft.getInstance().func_228018_at_().getScaledHeight() - 80), mouseX, mouseY);
+        drawList(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
     }
 
     private void drawList(int x, int y, int mx, int my) {
