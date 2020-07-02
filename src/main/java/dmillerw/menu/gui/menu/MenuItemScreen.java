@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;
@@ -18,9 +19,12 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class MenuItemScreen extends Screen {
@@ -39,24 +43,24 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public void tick() {
+    public void func_231023_e_() {
         this.textTitle.tick();
 
-        this.buttonConfirm.visible = EditSessionData.clickAction != null;
-        this.buttonDelete.visible = RadialMenu.getActiveArray()[slot] != null;
+        this.buttonConfirm.field_230694_p_ = EditSessionData.clickAction != null;
+        this.buttonDelete.field_230694_p_ = RadialMenu.getActiveArray()[slot] != null;
     }
 
     @Override
     @Nullable
-    public IGuiEventListener getFocused() {
+    public IGuiEventListener func_241217_q_() {
         return this.textTitle;
     }
 
     @Override
-    public void init() {
+    public void func_231160_c_() {
         this.getMinecraft().keyboardListener.enableRepeatEvents(true);
 
-        addButton(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, I18n.format("gui.done"), (screen) -> {
+        func_230480_a_(this.buttonConfirm = new Button(this.field_230708_k_ / 2 - 4 - 150, this.field_230709_l_ - 60, 100, 20, new TranslationTextComponent("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
             }
@@ -70,8 +74,8 @@ public class MenuItemScreen extends Screen {
             MenuLoader.save(MineMenu.menuFile);
             Minecraft.getInstance().displayGuiScreen(null);
         }));
-        addButton(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, I18n.format("gui.cancel"), (screen) -> Minecraft.getInstance().displayGuiScreen(null)));
-        addButton(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, "Delete", (screen) -> {
+        func_230480_a_(this.buttonCancel = new Button(this.field_230708_k_ / 2 + 4 + 50, this.field_230709_l_ - 60, 100, 20, new TranslationTextComponent("gui.cancel"), (screen) -> Minecraft.getInstance().displayGuiScreen(null)));
+        func_230480_a_(this.buttonDelete = new Button(this.field_230708_k_ / 2 - 50, this.field_230709_l_ - 60, 100, 20, new StringTextComponent("Delete"), (screen) -> {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
@@ -79,19 +83,19 @@ public class MenuItemScreen extends Screen {
                 Minecraft.getInstance().displayGuiScreen(null);
             }
         }));
-        addButton(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
+        func_230480_a_(this.buttonPickIcon = new ItemButton(this.field_230708_k_ / 2 - 4 - 40, this.field_230709_l_ / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
 
-        String string = "Action";
+        ITextComponent string = new StringTextComponent("Action");
         if (EditSessionData.clickAction != null) {
             if (EditSessionData.clickAction instanceof ClickActionCommand) {
-                string = "Command";
+                string = new StringTextComponent("Command");
             } else if (EditSessionData.clickAction instanceof ClickActionKey) {
-                string = "Keybind";
+                string = new StringTextComponent("Keybind");
             }
         }
-        addButton(this.buttonClickAction = new Button(this.width / 2 - 20, this.height / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
+        func_230480_a_(this.buttonClickAction = new Button(this.field_230708_k_ / 2 - 20, this.field_230709_l_ / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
 
-        this.textTitle = new TextFieldWidget(this.font, this.width / 2 - 150, 50, 300, 20, "minemenu.menuItem.title");
+        this.textTitle = new TextFieldWidget(this.field_230712_o_, this.field_230708_k_ / 2 - 150, 50, 300, 20, new TranslationTextComponent("minemenu.menuItem.title"));
         this.textTitle.setMaxStringLength(32767);
         this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
@@ -99,18 +103,18 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public void removed() {
+    public void func_231164_f_() {
         this.getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean func_231177_au__() {
         return false;
     }
 
     @Override
-    public boolean charTyped(char key, int keycode) {
-        if (this.textTitle.charTyped(key, keycode)) {
+    public boolean func_231042_a_(char key, int keycode) {
+        if (this.textTitle.func_231042_a_(key, keycode)) {
             EditSessionData.title = textTitle.getText().trim();
             return true;
         }
@@ -118,29 +122,29 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        super.mouseClicked(mx, my, button);
+    public boolean func_231044_a_(double mx, double my, int button) {
+        super.func_231044_a_(mx, my, button);
 
-        this.textTitle.mouseClicked(mx, my, button);
+        this.textTitle.func_231044_a_(mx, my, button);
         return true;
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    public boolean func_231046_a_(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partial) {
-        this.renderBackground();
-        this.textTitle.render(mouseX, mouseY, partial);
-        this.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
-        super.render(mouseX, mouseY, partial);
-        GuiRenderHelper.renderHeaderAndFooter(this, 25, 20, 5, "Modifying Menu Item #" + slot);
+    public void func_230430_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+        this.func_230446_a_(matrixStack);
+        this.textTitle.func_230430_a_(matrixStack, mouseX, mouseY, partial);
+        this.func_238471_a_(matrixStack, this.field_230712_o_, "Enter a title, then configure using the options below", this.field_230708_k_ / 2, 80, 16777215);
+        super.func_230430_a_(matrixStack, mouseX, mouseY, partial);
+        GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Modifying Menu Item #" + slot);
     }
 }

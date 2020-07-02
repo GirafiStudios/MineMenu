@@ -33,7 +33,7 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         if (active && RadialMenu.animationTimer == 0) {
             double mouseAngle = AngleHelper.getMouseAngle();
             mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
@@ -53,7 +53,7 @@ public class RadialMenuScreen extends Screen {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
 
                         if (menuItem != null) {
-                            if (hasShiftDown() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
+                            if (func_231173_s_() || (ConfigHandler.GENERAL.rightClickToEdit.get() && button == 1)) {
                                 deactivate();
                                 ScreenStack.push(new MenuItemScreen(i, menuItem));
                                 return true;
@@ -84,13 +84,13 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public void removed() {
-        super.removed();
+    public void func_231164_f_() {
+        super.func_231164_f_();
         active = false;
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean func_231177_au__() {
         return false;
     }
 }
