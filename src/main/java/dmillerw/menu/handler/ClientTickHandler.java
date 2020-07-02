@@ -1,5 +1,6 @@
 package dmillerw.menu.handler;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.MenuItem;
@@ -70,7 +71,7 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && RadialMenuScreen.active) {
-            renderText();
+            renderText(event.getMatrixStack());
         }
     }
 
@@ -172,7 +173,7 @@ public class ClientTickHandler {
         RenderSystem.popMatrix();
     }
 
-    private static void renderText() {
+    private static void renderText(MatrixStack matrixStack) {
         Minecraft mc = Minecraft.getInstance();
         MainWindow window = mc.getMainWindow();
         FontRenderer fontRenderer = mc.fontRenderer;
@@ -192,7 +193,7 @@ public class ClientTickHandler {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.hasShiftDown() && item != null) {
+                if (RadialMenuScreen.func_231173_s_() && item != null) {
                     string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
                 }
 
@@ -228,7 +229,7 @@ public class ClientTickHandler {
                 RenderSystem.disableBlend();
 
                 // Text
-                fontRenderer.drawStringWithShadow(string, drawX, drawY, 0xFFFFFF);
+                fontRenderer.func_238406_a_(matrixStack, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }
