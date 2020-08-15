@@ -36,7 +36,7 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void func_231023_e_() {
+    public void tick() {
         this.textSearch.tick();
 
         if (textSearch.getText().trim().isEmpty()) {
@@ -60,36 +60,36 @@ public class PickIconScreen extends Screen {
 
     @Override
     @Nullable
-    public IGuiEventListener func_241217_q_() {
+    public IGuiEventListener getListener() {
         return this.textSearch;
     }
 
     @Override
-    public void func_231160_c_() {
+    public void init() {
         this.getMinecraft().keyboardListener.enableRepeatEvents(true);
 
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        func_230480_a_(this.buttonCancel = new Button(this.field_230708_k_ / 2 - 75, this.field_230709_l_ - 60 + 12, 150, 20, new TranslationTextComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
-        this.textSearch = new TextFieldWidget(this.field_230712_o_, this.field_230708_k_ / 2 - 150, 40, 300, 20, new TranslationTextComponent("minemenu.pickIcon.search"));
+        addButton(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, new TranslationTextComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
+        this.textSearch = new TextFieldWidget(this.font, this.width / 2 - 150, 40, 300, 20, new TranslationTextComponent("minemenu.pickIcon.search"));
         this.textSearch.setMaxStringLength(32767);
-        this.textSearch.func_231049_c__(true);
+        this.textSearch.changeFocus(true);
     }
 
     @Override
-    public void func_231164_f_() {
+    public void onClose() {
         this.getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean func_231177_au__() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public boolean func_231042_a_(char key, int keyCode) {
-        if (textSearch.func_231042_a_(key, key)) {
+    public boolean charTyped(char key, int keyCode) {
+        if (textSearch.charTyped(key, key)) {
             listScrollIndex = 0;
 
             if (!textSearch.getText().trim().isEmpty()) {
@@ -119,20 +119,20 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public boolean func_231046_a_(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        super.func_231044_a_(mouseX, mouseY, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
 
-        ItemStack clicked = getClickedStack(this.field_230708_k_ / 2, this.field_230709_l_ - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
+        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
 
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
@@ -142,7 +142,7 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double wheel) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheel) {
         wheel = -wheel;
 
         if (wheel < 0) {
@@ -164,16 +164,16 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
-        this.func_230446_a_(matrixStack);
+    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+        this.renderBackground(matrixStack);
 
-        this.textSearch.func_230430_a_(matrixStack, mouseX, mouseY, partial);
+        this.textSearch.render(matrixStack, mouseX, mouseY, partial);
 
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partial);
+        super.render(matrixStack, mouseX, mouseY, partial);
 
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this.field_230708_k_ / 2, this.field_230709_l_ - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
+        drawList(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
     }
 
     private void drawList(int x, int y, int mx, int my) {

@@ -28,19 +28,19 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        this.guiLeft = (this.field_230708_k_ - XSIZE) / 2;
-        this.guiTop = (this.field_230709_l_ - YSIZE) / 2;
+    public void init() {
+        super.init();
+        this.guiLeft = (this.width - XSIZE) / 2;
+        this.guiTop = (this.height - YSIZE) / 2;
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.func_230446_a_(matrixStack);
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Pick an Item:");
         this.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
-        this.func_238474_b_(matrixStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
+        this.blit(matrixStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
 
@@ -59,7 +59,7 @@ public class PickItemScreen extends Screen {
                 RenderSystem.pushMatrix();
                 drawSlot(matrixStack, mousedOver, true);
                 RenderSystem.popMatrix();
-                func_230457_a_(matrixStack, mousedOver.getStack(), mouseX, mouseY);
+                renderTooltip(matrixStack, mousedOver.getStack(), mouseX, mouseY);
             }
             RenderSystem.popMatrix();
         }
@@ -70,16 +70,16 @@ public class PickItemScreen extends Screen {
         int y = slot.yPos;
         ItemStack stack = slot.getStack();
 
-        this.func_230926_e_(100);
-        field_230707_j_.zLevel = 100.0F;
+        this.setBlitOffset(100);
+        itemRenderer.zLevel = 100.0F;
 
         if (stack.isEmpty()) {
-            Pair<ResourceLocation, ResourceLocation> pair = slot.func_225517_c_();
+            Pair<ResourceLocation, ResourceLocation> pair = slot.getBackground();
 
             if (pair != null) {
                 TextureAtlasSprite sprite = this.getMinecraft().getAtlasSpriteGetter(pair.getFirst()).apply(pair.getSecond());
                 this.getMinecraft().getTextureManager().bindTexture(sprite.getAtlasTexture().getTextureLocation());
-                func_238470_a_(matrixStack, this.guiLeft + x, this.guiTop + y, this.func_230927_p_(), 16, 16, sprite);
+                blit(matrixStack, this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
 
@@ -92,12 +92,12 @@ public class PickItemScreen extends Screen {
             }
         }
 
-        field_230707_j_.zLevel = 0.0F;
-        this.func_230926_e_(0);
+        itemRenderer.zLevel = 0.0F;
+        this.setBlitOffset(0);
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && this.getMinecraft().player != null) {
             for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
                 Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
@@ -115,22 +115,22 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void func_231164_f_() {
+    public void onClose() {
         this.getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean func_231177_au__() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public boolean func_231046_a_(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.func_231046_a_(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }
 }

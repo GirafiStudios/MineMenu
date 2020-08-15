@@ -28,7 +28,7 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
     private int maxWidth = 0;
 
     public GuiControlList(Screen parent, Minecraft mc) {
-        super(mc, parent.field_230708_k_, parent.field_230709_l_, 25, parent.field_230709_l_ - 20, 20);
+        super(mc, parent.width, parent.height, 25, parent.height - 20, 20);
         this.mc = mc;
 
         KeyBinding[] keyBindings = Minecraft.getInstance().gameSettings.keyBindings;
@@ -41,7 +41,7 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
             if (!keybinding.getKeyDescription().equalsIgnoreCase("key.open_menu")) {
                 if (!category.equals(lastCategory)) {
                     lastCategory = category;
-                    this.func_230513_b_(new CategoryEntry(category));
+                    this.addEntry(new CategoryEntry(category));
                 }
 
                 int width = mc.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
@@ -49,7 +49,7 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
                 if (width > this.maxWidth) {
                     this.maxWidth = width;
                 }
-                this.func_230513_b_(new KeyEntry(keybinding));
+                this.addEntry(new KeyEntry(keybinding));
             }
         }
     }
@@ -60,8 +60,8 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
     }
 
     @Override
-    protected int func_230952_d_() {
-        return super.func_230952_d_() + 15;
+    protected int getScrollbarPosition() {
+        return super.getScrollbarPosition() + 15;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -75,18 +75,18 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
         }
 
         @Override
-        public void func_230432_a_(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.fontRenderer.func_238421_b_(matrixStack, this.category, (float)(Objects.requireNonNull(GuiControlList.this.mc.currentScreen).field_230708_k_ / 2 - this.width / 2), (float)(p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1), 16777215);
+        public void render(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            GuiControlList.this.mc.fontRenderer.drawString(matrixStack, this.category, (float)(Objects.requireNonNull(GuiControlList.this.mc.currentScreen).width / 2 - this.width / 2), (float)(p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1), 16777215);
         }
 
         @Override
         @Nonnull
-        public List<? extends IGuiEventListener> func_231039_at__() {
+        public List<? extends IGuiEventListener> getEventListeners() {
             return Collections.emptyList();
         }
 
         @Override
-        public boolean func_231049_c__(boolean changeFocus) {
+        public boolean changeFocus(boolean changeFocus) {
             return false;
         }
     }
@@ -107,28 +107,28 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
         }
 
         @Override
-        public void func_230432_a_(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.fontRenderer.func_238407_a_(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
-            this.buttonSelect.field_230690_l_ = p_230432_4_ + 105;
-            this.buttonSelect.field_230691_m_ = p_230432_3_;
-            this.buttonSelect.func_238482_a_(this.keyBinding.func_238171_j_());
-            this.buttonSelect.func_230431_b_(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
+        public void render(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            GuiControlList.this.mc.fontRenderer.func_243246_a(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
+            this.buttonSelect.x = p_230432_4_ + 105;
+            this.buttonSelect.y = p_230432_3_;
+            this.buttonSelect.setMessage(this.keyBinding.func_238171_j_());
+            this.buttonSelect.renderButton(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
         }
 
         @Override
         @Nonnull
-        public List<? extends IGuiEventListener> func_231039_at__() {
+        public List<? extends IGuiEventListener> getEventListeners() {
             return ImmutableList.of(this.buttonSelect);
         }
 
         @Override
-        public boolean func_231044_a_(double x, double y, int button) {
-            return this.buttonSelect.func_231044_a_(x, y, button);
+        public boolean mouseClicked(double x, double y, int button) {
+            return this.buttonSelect.mouseClicked(x, y, button);
         }
 
         @Override
-        public boolean func_231048_c_(double x, double y, int button) {
-            return buttonSelect.func_231048_c_(x, y, button);
+        public boolean mouseReleased(double x, double y, int button) {
+            return buttonSelect.mouseReleased(x, y, button);
         }
     }
 }

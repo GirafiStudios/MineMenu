@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[32,)"
 logoFile="logo.png"
+license="MIT"
 
 [[mods]]
     modId="minemenu"

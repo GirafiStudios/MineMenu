@@ -74,7 +74,7 @@ public class KeyboardHandler {
                 if (wheelKeyPressed) {
                     if (RadialMenuScreen.active) {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.func_231044_a_(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
                         RadialMenuScreen.deactivate();
                     } else {
@@ -95,7 +95,7 @@ public class KeyboardHandler {
                         }
                     } else {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.func_231044_a_(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
                         }
                         RadialMenuScreen.deactivate();
                     }

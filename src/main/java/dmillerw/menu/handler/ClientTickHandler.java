@@ -193,7 +193,7 @@ public class ClientTickHandler {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.func_231173_s_() && item != null) {
+                if (RadialMenuScreen.hasShiftDown() && item != null) {
                     string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
                 }
 
