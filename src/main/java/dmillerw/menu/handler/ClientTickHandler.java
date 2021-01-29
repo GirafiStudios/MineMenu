@@ -29,7 +29,6 @@ import org.lwjgl.opengl.GL11;
 @EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
 public class ClientTickHandler {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
-    private static final int ITEM_RENDER_ANGLE_OFFSET = -2;
     private static final double OUTER_RADIUS = 80;
     private static final double INNER_RADIUS = 60;
 
@@ -96,16 +95,19 @@ public class ClientTickHandler {
         BufferBuilder bufferBuilder = tessellator.getBuffer();
 
         double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle -= 270;
+        mouseAngle-=(ANGLE_PER_ITEM/2);
         mouseAngle = AngleHelper.correctAngle(mouseAngle);
-
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            double currAngle = ANGLE_PER_ITEM * i;
-            double nextAngle = currAngle + ANGLE_PER_ITEM;
+            double currAngle = (ANGLE_PER_ITEM * i)+90+(ANGLE_PER_ITEM/2);
+            double nextAngle = (currAngle + ANGLE_PER_ITEM);
+            currAngle = AngleHelper.correctAngle(currAngle);
+            nextAngle = AngleHelper.correctAngle(nextAngle);
+            double truecurrAngle = (ANGLE_PER_ITEM * i);
+            double truenextAngle = (truecurrAngle + ANGLE_PER_ITEM);
             currAngle = AngleHelper.correctAngle(currAngle);
             nextAngle = AngleHelper.correctAngle(nextAngle);
 
-            boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
+            boolean mouseIn = (mouseAngle > truecurrAngle && mouseAngle < truenextAngle);
 
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
@@ -157,7 +159,7 @@ public class ClientTickHandler {
             Item menuButton = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.GENERAL.menuButtonIcon.get().toString()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
-            double angle = (ANGLE_PER_ITEM * i + (ANGLE_PER_ITEM * ITEM_RENDER_ANGLE_OFFSET)) - ANGLE_PER_ITEM / 2;
+            double angle = (ANGLE_PER_ITEM * i) - (90);
             double drawOffset = 1.5;
             double drawX = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
             double drawY = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
