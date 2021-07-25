@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import dmillerw.menu.gui.ScreenStack;
@@ -37,7 +38,7 @@ public class PickItemScreen extends Screen {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Pick an Item:");
-        this.getMinecraft().getTextureManager().bindForSetup(new ResourceLocation("textures/gui/container/inventory.png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/container/inventory.png"));
         this.blit(matrixStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
@@ -76,7 +77,7 @@ public class PickItemScreen extends Screen {
 
             if (pair != null) {
                 TextureAtlasSprite sprite = this.getMinecraft().getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
-                this.getMinecraft().getTextureManager().bindForSetup(sprite.atlas().location());
+                RenderSystem.setShaderTexture(0, sprite.atlas().location());
                 blit(matrixStack, this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
@@ -84,7 +85,7 @@ public class PickItemScreen extends Screen {
         if (!stack.isEmpty()) {
             if (scale) {
                 matrixStack.scale(2, 2, 2);
-                ItemRenderHelper.renderItem((this.guiLeft + x + 8) / 2, (this.guiTop + y + 8) / 2, stack);
+                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             } else {
                 ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }

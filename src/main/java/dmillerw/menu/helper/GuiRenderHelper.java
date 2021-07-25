@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 
 public class GuiRenderHelper {
 
@@ -12,8 +13,7 @@ public class GuiRenderHelper {
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(770, 771, 0, 1);
-        //RenderSystem.disableAlphaTest(); //TODO
-        //RenderSystem.shadeModel(7425); //TODO
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableTexture();
 
         Tesselator tessellator = Tesselator.getInstance();
@@ -42,17 +42,16 @@ public class GuiRenderHelper {
         tessellator.end();
 
         RenderSystem.enableTexture();
-        //RenderSystem.shadeModel(7424); //TODO
-        //RenderSystem.enableAlphaTest(); //TODO
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
 
         matrixStack.popPose();
 
         matrixStack.pushPose();
 
-        base.getMinecraft().getTextureManager().bindForSetup(GuiComponent.BACKGROUND_LOCATION);
+        RenderSystem.setShaderTexture(0, GuiComponent.BACKGROUND_LOCATION);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F); //TODO
         float f = 32F;
 
         // HEADER

@@ -49,7 +49,7 @@ public class ClientTickHandler {
             if (mc.level != null && !mc.options.hideGui && !mc.isPaused()) {
                 if (RadialMenuScreen.active) {
                     renderGui();
-                    renderItems();
+                    //renderItems();
                 }
             }
         }
@@ -81,11 +81,11 @@ public class ClientTickHandler {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        //RenderSystem.matrixMode(GL11.GL_MODELVIEW); //TODO
+        RenderSystem.applyModelViewMatrix();
         poseStack.pushPose();
         poseStack.setIdentity();
 
-        //RenderSystem.matrixMode(GL11.GL_PROJECTION); //TODO
+        RenderSystem.applyModelViewMatrix();
         poseStack.pushPose();
         poseStack.setIdentity();
 
@@ -93,10 +93,10 @@ public class ClientTickHandler {
         BufferBuilder bufferBuilder = tessellator.getBuilder();
 
         double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle-=(ANGLE_PER_ITEM/2);
+        mouseAngle -= (ANGLE_PER_ITEM / 2);
         mouseAngle = AngleHelper.correctAngle(mouseAngle);
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            double currAngle = (ANGLE_PER_ITEM * i)+90+(ANGLE_PER_ITEM/2);
+            double currAngle = (ANGLE_PER_ITEM * i) + 90 + (ANGLE_PER_ITEM / 2);
             double nextAngle = (currAngle + ANGLE_PER_ITEM);
             currAngle = AngleHelper.correctAngle(currAngle);
             nextAngle = AngleHelper.correctAngle(nextAngle);
@@ -138,7 +138,7 @@ public class ClientTickHandler {
         }
 
         poseStack.popPose();
-        //RenderSystem.matrixMode(GL11.GL_MODELVIEW); //TODO
+        RenderSystem.applyModelViewMatrix();
         poseStack.popPose();
 
         RenderSystem.disableBlend();
