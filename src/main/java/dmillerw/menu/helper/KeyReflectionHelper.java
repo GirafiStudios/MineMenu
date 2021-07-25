@@ -2,8 +2,8 @@ package dmillerw.menu.helper;
 
 import cpw.mods.modlauncher.api.INameMappingService;
 import dmillerw.menu.handler.LogHandler;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.client.KeyMapping;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 
@@ -12,19 +12,19 @@ public class KeyReflectionHelper {
 
     public static void gatherFields() {
         try {
-            pressTimeField = KeyBinding.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "field_151474_i"));
+            pressTimeField = KeyMapping.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "clickCount"));
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throwReflectionError("pressTime", KeyBinding.class);
+            throwReflectionError("pressTime", KeyMapping.class);
         }
     }
 
-    public static void setPressTime(KeyBinding keyBinding, int pressTime) {
+    public static void setPressTime(KeyMapping keyBinding, int pressTime) {
         try {
             pressTimeField.set(keyBinding, pressTime == 0 ? 0 : pressTimeField.getInt(keyBinding) + pressTime);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throwReflectionError("pressTime", KeyBinding.class);
+            throwReflectionError("pressTime", KeyMapping.class);
         }
     }
 

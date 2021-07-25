@@ -10,8 +10,8 @@ import dmillerw.menu.data.click.ClickActionKey;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.handler.LogHandler;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import java.io.*;
 import java.util.Map;

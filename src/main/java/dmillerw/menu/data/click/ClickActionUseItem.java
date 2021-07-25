@@ -3,9 +3,9 @@ package dmillerw.menu.data.click;
 import dmillerw.menu.network.PacketHandler;
 import dmillerw.menu.network.packet.server.PacketUseItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -25,13 +25,13 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
     @Override
     public void onClicked() {
         Minecraft mc = Minecraft.getInstance();
-        ClientPlayerEntity player = mc.player;
+        LocalPlayer player = mc.player;
 
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
 
-            if (!stack.isEmpty() && this.stack.isItemEqual(stack)) {
-                stack.useItemRightClick(player.world, player, Hand.MAIN_HAND);
+            if (!stack.isEmpty() && this.stack.sameItem(stack)) {
+                stack.use(player.level, player, InteractionHand.MAIN_HAND);
                 PacketHandler.CHANNEL.sendToServer(new PacketUseItem(i));
             }
         }

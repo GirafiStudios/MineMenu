@@ -3,9 +3,9 @@ package dmillerw.menu.data.json;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dmillerw.menu.handler.LogHandler;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        object.add("stack", new JsonPrimitive(String.valueOf(src.write(new CompoundNBT()))));
+        object.add("stack", new JsonPrimitive(String.valueOf(src.save(new CompoundTag()))));
 
         return object;
     }
@@ -28,7 +28,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
         if (!json.isJsonObject()) {
             return ItemStack.EMPTY;
         }
-        CompoundNBT stackTag = null;
+        CompoundTag stackTag = null;
 
         for (Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
             String key = entry.getKey();
@@ -36,12 +36,12 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
             if (key.equals("stack")) {
                 try {
-                    stackTag = JsonToNBT.getTagFromJson(element.getAsString());
+                    stackTag = TagParser.parseTag(element.getAsString());
                 } catch (CommandSyntaxException e) {
                     LogHandler.error(e);
                 }
             }
         }
-        return stackTag == null ? ItemStack.EMPTY : ItemStack.read(stackTag);
+        return stackTag == null ? ItemStack.EMPTY : ItemStack.of(stackTag);
     }
 }

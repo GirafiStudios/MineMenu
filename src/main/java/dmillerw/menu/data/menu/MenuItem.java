@@ -2,7 +2,7 @@ package dmillerw.menu.data.menu;
 
 import com.google.gson.annotations.SerializedName;
 import dmillerw.menu.data.click.ClickAction;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 

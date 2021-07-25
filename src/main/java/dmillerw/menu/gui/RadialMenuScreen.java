@@ -7,28 +7,28 @@ import dmillerw.menu.handler.ClientTickHandler;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class RadialMenuScreen extends Screen {
     public static final RadialMenuScreen INSTANCE = new RadialMenuScreen();
     public static boolean active = false;
 
     public RadialMenuScreen() {
-        super(new TranslationTextComponent("minemenu.radialMenu.title"));
+        super(new TranslatableComponent("minemenu.radialMenu.title"));
     }
 
     public static void activate() {
-        if (Minecraft.getInstance().currentScreen == null) {
+        if (Minecraft.getInstance().screen == null) {
             active = true;
-            Minecraft.getInstance().displayGuiScreen(INSTANCE);
+            Minecraft.getInstance().setScreen(INSTANCE);
         }
     }
 
     public static void deactivate() {
         active = false;
-        if (Minecraft.getInstance().currentScreen == INSTANCE) {
-            Minecraft.getInstance().displayGuiScreen(null);
+        if (Minecraft.getInstance().screen == INSTANCE) {
+            Minecraft.getInstance().setScreen(null);
         }
     }
 
@@ -40,7 +40,7 @@ public class RadialMenuScreen extends Screen {
             mouseAngle = 360 - mouseAngle;
             mouseAngle = AngleHelper.correctAngle(mouseAngle);
 
-            if (!getMinecraft().gameSettings.hideGUI) {
+            if (!getMinecraft().options.hideGui) {
                 for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
                     double currAngle = ClientTickHandler.ANGLE_PER_ITEM * i;
                     double nextAngle = currAngle + ClientTickHandler.ANGLE_PER_ITEM;
@@ -84,8 +84,8 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void removed() {
+        super.removed();
         active = false;
     }
 

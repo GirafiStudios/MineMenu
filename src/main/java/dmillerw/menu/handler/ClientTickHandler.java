@@ -1,23 +1,20 @@
 package dmillerw.menu.handler;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.MenuItem;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.RadialMenuScreen;
 import dmillerw.menu.helper.AngleHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
-import net.minecraft.client.MainWindow;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.TickEvent;
@@ -38,7 +35,7 @@ public class ClientTickHandler {
             RadialMenu.tickTimer();
 
             Minecraft mc = Minecraft.getInstance();
-            if ((mc.world == null || mc.isGamePaused()) && RadialMenuScreen.active) {
+            if ((mc.level == null || mc.isPaused()) && RadialMenuScreen.active) {
                 RadialMenuScreen.deactivate();
             }
         }
@@ -49,7 +46,7 @@ public class ClientTickHandler {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getInstance();
 
-            if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused()) {
+            if (mc.level != null && !mc.options.hideGui && !mc.isPaused()) {
                 if (RadialMenuScreen.active) {
                     renderGui();
                     renderItems();
@@ -60,7 +57,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.CROSSHAIRS && RadialMenuScreen.active) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.LAYER && RadialMenuScreen.active) {
             event.setCanceled(true);
         }
 
@@ -69,30 +66,31 @@ public class ClientTickHandler {
         }
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.world != null && !mc.gameSettings.hideGUI && !mc.isGamePaused() && RadialMenuScreen.active) {
+        if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
             renderText(event.getMatrixStack());
         }
     }
 
     private static void renderGui() {
         Minecraft mc = Minecraft.getInstance();
-        RenderSystem.pushMatrix();
+        PoseStack poseStack = RenderSystem.getModelViewStack();
+        poseStack.pushPose();
 
         RenderSystem.disableTexture();
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
+        //RenderSystem.matrixMode(GL11.GL_MODELVIEW); //TODO
+        poseStack.pushPose();
+        poseStack.setIdentity();
 
-        RenderSystem.matrixMode(GL11.GL_PROJECTION);
-        RenderSystem.pushMatrix();
-        RenderSystem.loadIdentity();
+        //RenderSystem.matrixMode(GL11.GL_PROJECTION); //TODO
+        poseStack.pushPose();
+        poseStack.setIdentity();
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuilder();
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle-=(ANGLE_PER_ITEM/2);
@@ -112,10 +110,10 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getMainWindow().getScaledHeight());
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getMainWindow().getScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getWindow().getGuiScaledHeight());
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getWindow().getGuiScaledHeight());
 
-            bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
             float r, g, b, alpha;
 
@@ -131,28 +129,29 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            bufferBuilder.pos(Math.cos(currAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(currAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.pos(Math.cos(nextAngle) * mc.getMainWindow().getScaledHeight() / mc.getMainWindow().getScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(Math.cos(currAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(Math.cos(currAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(Math.cos(nextAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(Math.cos(nextAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
 
-            tessellator.draw();
+            tessellator.end();
         }
 
-        RenderSystem.popMatrix();
-        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-        RenderSystem.popMatrix();
+        poseStack.popPose();
+        //RenderSystem.matrixMode(GL11.GL_MODELVIEW); //TODO
+        poseStack.popPose();
 
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
 
-        RenderSystem.popMatrix();
+        poseStack.popPose();
     }
 
     private static void renderItems() {
         Minecraft mc = Minecraft.getInstance();
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(mc.getMainWindow().getScaledWidth() * 0.5D, mc.getMainWindow().getScaledHeight() * 0.5D, 0);
+        PoseStack poseStack = RenderSystem.getModelViewStack();
+        poseStack.pushPose();
+        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -172,13 +171,13 @@ public class ClientTickHandler {
             ItemRenderHelper.renderItem((int) drawX, (int) drawY, stack);
         }
 
-        RenderSystem.popMatrix();
+        poseStack.popPose();
     }
 
-    private static void renderText(MatrixStack matrixStack) {
+    private static void renderText(PoseStack matrixStack) {
         Minecraft mc = Minecraft.getInstance();
-        MainWindow window = mc.getMainWindow();
-        FontRenderer fontRenderer = mc.fontRenderer;
+        Window window = mc.getWindow();
+        Font fontRenderer = mc.font;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ClientTickHandler.ANGLE_PER_ITEM / 2;
         mouseAngle = 360 - mouseAngle;
@@ -196,14 +195,14 @@ public class ClientTickHandler {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
                 if (RadialMenuScreen.hasShiftDown() && item != null) {
-                    string = TextFormatting.RED + "EDIT: " + TextFormatting.WHITE + string;
+                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
-                int drawX = window.getScaledWidth() / 2 - fontRenderer.getStringWidth(string) / 2;
-                int drawY = window.getScaledHeight() / 2;
+                int drawX = window.getGuiScaledWidth() / 2 - fontRenderer.width(string) / 2;
+                int drawY = window.getGuiScaledHeight() / 2;
 
-                int drawWidth = mc.fontRenderer.getStringWidth(string);
-                int drawHeight = mc.fontRenderer.FONT_HEIGHT;
+                int drawWidth = mc.font.width(string);
+                int drawHeight = mc.font.lineHeight;
 
                 float padding = 5F;
 
@@ -212,26 +211,26 @@ public class ClientTickHandler {
                 RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
                 RenderSystem.disableTexture();
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder bufferBuilder = tessellator.getBuffer();
-                bufferBuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                Tesselator tessellator = Tesselator.getInstance();
+                BufferBuilder bufferBuilder = tessellator.getBuilder();
+                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
                 float r = (float) ConfigHandler.VISUAL.menuRed.get() / (float) 255;
                 float g = (float) ConfigHandler.VISUAL.menuGreen.get() / (float) 255;
                 float b = (float) ConfigHandler.VISUAL.menuBlue.get() / (float) 255;
                 float alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
 
-                bufferBuilder.pos(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.pos(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.vertex(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.vertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.vertex(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.vertex(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
-                tessellator.draw();
+                tessellator.end();
                 RenderSystem.enableTexture();
                 RenderSystem.disableBlend();
 
                 // Text
-                fontRenderer.func_238406_a_(matrixStack, string, drawX, drawY, 0xFFFFFF, false);
+                fontRenderer.drawShadow(matrixStack, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }

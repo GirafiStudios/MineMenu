@@ -1,17 +1,17 @@
 package dmillerw.menu.handler;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.RadialMenuScreen;
 import dmillerw.menu.helper.KeyReflectionHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -21,36 +21,36 @@ import java.util.List;
 @EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
-    private static final KeyBinding WHEEL = new KeyBinding("key.open_menu", GLFW.GLFW_KEY_R, "key.categories.misc");
+    private static final KeyMapping WHEEL = new KeyMapping("key.open_menu", GLFW.GLFW_KEY_R, "key.categories.misc");
 
     public static void register() {
         ClientRegistry.registerKeyBinding(WHEEL);
     }
 
     private static boolean lastWheelState = false;
-    private static final List<KeyBinding> FIRED_KEYS = new ArrayList<>();
-    private static final List<KeyBinding> TOGGLED_KEYS = new ArrayList<>();
+    private static final List<KeyMapping> FIRED_KEYS = new ArrayList<>();
+    private static final List<KeyMapping> TOGGLED_KEYS = new ArrayList<>();
     private static boolean ignoreNextTick = false;
 
     private KeyboardHandler() {
     }
 
-    public void fireKey(KeyBinding key) {
+    public void fireKey(KeyMapping key) {
         FIRED_KEYS.add(key);
-        KeyBinding.setKeyBindState(key.getKey(), true);
+        KeyMapping.set(key.getKey(), true);
         KeyReflectionHelper.setPressTime(key, 1);
 
         ignoreNextTick = true;
     }
 
-    public void toggleKey(KeyBinding key) {
+    public void toggleKey(KeyMapping key) {
         if (!TOGGLED_KEYS.contains(key)) {
             TOGGLED_KEYS.add(key);
-            KeyBinding.setKeyBindState(key.getKey(), true);
+            KeyMapping.set(key.getKey(), true);
             KeyReflectionHelper.setPressTime(key, 1);
         } else {
             TOGGLED_KEYS.remove(key);
-            KeyBinding.setKeyBindState(key.getKey(), false);
+            KeyMapping.set(key.getKey(), false);
         }
         ignoreNextTick = true;
     }
@@ -62,23 +62,23 @@ public class KeyboardHandler {
         }
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.world == null) {
+        if (mc.level == null) {
             return;
         }
 
-        long handle = Minecraft.getInstance().getMainWindow().getHandle();
-        boolean wheelKeyPressed = WHEEL.getKey().getKeyCode() >= 0 ? InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode()) : InputMappings.isKeyDown(handle, WHEEL.getKey().getKeyCode() + 100);
+        long handle = Minecraft.getInstance().getWindow().getWindow();
+        boolean wheelKeyPressed = WHEEL.getKey().getValue() >= 0 ? InputConstants.isKeyDown(handle, WHEEL.getKey().getValue()) : InputConstants.isKeyDown(handle, WHEEL.getKey().getValue() + 100);
 
         if (wheelKeyPressed != lastWheelState) {
             if (ConfigHandler.GENERAL.toggle.get()) {
                 if (wheelKeyPressed) {
                     if (RadialMenuScreen.active) {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
                         }
                         RadialMenuScreen.deactivate();
                     } else {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();
@@ -88,14 +88,14 @@ public class KeyboardHandler {
             } else {
                 if (wheelKeyPressed != RadialMenuScreen.active) {
                     if (wheelKeyPressed) {
-                        if (mc.currentScreen == null || mc.currentScreen instanceof RadialMenuScreen) {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();
                         }
                     } else {
                         if (ConfigHandler.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHelper.getMouseX(), mc.mouseHelper.getMouseY(), 0);
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
                         }
                         RadialMenuScreen.deactivate();
                     }
@@ -109,22 +109,22 @@ public class KeyboardHandler {
             return;
         }
 
-        Iterator<KeyBinding> iterator = FIRED_KEYS.iterator();
+        Iterator<KeyMapping> iterator = FIRED_KEYS.iterator();
         while (iterator.hasNext()) {
-            KeyBinding keyBinding = iterator.next();
-            KeyBinding.setKeyBindState(keyBinding.getKey(), false);
+            KeyMapping keyBinding = iterator.next();
+            KeyMapping.set(keyBinding.getKey(), false);
             iterator.remove();
         }
 
         iterator = TOGGLED_KEYS.iterator();
         while (iterator.hasNext()) {
-            KeyBinding keyBinding = iterator.next();
-            if ((keyBinding.getKey().getKeyCode() >= 0 ? keyBinding.isPressed() : InputMappings.isKeyDown(handle, keyBinding.getKey().getKeyCode() + 100)) || mc.currentScreen != null) {
+            KeyMapping keyBinding = iterator.next();
+            if ((keyBinding.getKey().getValue() >= 0 ? keyBinding.consumeClick() : InputConstants.isKeyDown(handle, keyBinding.getKey().getValue() + 100)) || mc.screen != null) {
                 iterator.remove();
             }
         }
 
-        for (KeyBinding keyBinding : TOGGLED_KEYS) {
+        for (KeyMapping keyBinding : TOGGLED_KEYS) {
             KeyReflectionHelper.setPressTime(keyBinding, 1);
         }
     }

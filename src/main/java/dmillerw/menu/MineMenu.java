@@ -5,9 +5,6 @@ import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -16,15 +13,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
-import javax.annotation.Nonnull;
 import java.io.File;
-import java.util.function.Predicate;
 
 @Mod(value = MineMenu.MOD_ID)
-public class MineMenu implements ISelectiveResourceReloadListener {
+public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
     public static final String MOD_ID = "minemenu";
     public static final String MOD_NAME = "MineMenu";
     public static File menuFolder = new File(FMLPaths.GAMEDIR.get().toFile(), MOD_ID);
@@ -55,13 +48,13 @@ public class MineMenu implements ISelectiveResourceReloadListener {
         }
         MenuLoader.load(menuFile);
 
-        ((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(this);
+        //((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
     }
 
-    @Override
-    public void onResourceManagerReload(@Nonnull IResourceManager manager, @Nonnull Predicate<IResourceType> predicate) {
+    /*@Override
+    public void onResourceManagerReload(@Nonnull ResourceManager manager, @Nonnull Predicate<IResourceType> predicate) {
         if (menuFile.exists()) {
             MenuLoader.load(menuFile);
         }
-    }
+    }*/
 }

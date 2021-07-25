@@ -1,18 +1,16 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -24,7 +22,7 @@ public class PickItemScreen extends Screen {
     private int guiTop;
 
     public PickItemScreen() {
-        super(new TranslationTextComponent("minemenu.itemScreen.title"));
+        super(new TranslatableComponent("minemenu.itemScreen.title"));
     }
 
     @Override
@@ -35,74 +33,74 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Pick an Item:");
-        this.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/inventory.png"));
+        this.getMinecraft().getTextureManager().bindForSetup(new ResourceLocation("textures/gui/container/inventory.png"));
         this.blit(matrixStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
 
         // Draw inventory contents
         if (this.getMinecraft().player != null) {
-            RenderSystem.pushMatrix();
-            for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
-                Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
-                if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
+            matrixStack.pushPose();
+            for (int i1 = 0; i1 < this.getMinecraft().player.inventoryMenu.slots.size(); ++i1) {
+                Slot slot = this.getMinecraft().player.inventoryMenu.slots.get(i1);
+                if (mouseX - guiLeft >= slot.x && mouseX - guiLeft <= slot.x + 16 && mouseY - guiTop >= slot.y && mouseY - guiTop <= slot.y + 16) {
                     mousedOver = slot;
                 } else {
                     this.drawSlot(matrixStack, slot, false);
                 }
             }
-            if (mousedOver != null && !mousedOver.getStack().isEmpty()) {
-                RenderSystem.pushMatrix();
+            if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
+                matrixStack.pushPose();
                 drawSlot(matrixStack, mousedOver, true);
-                RenderSystem.popMatrix();
-                renderTooltip(matrixStack, mousedOver.getStack(), mouseX, mouseY);
+                matrixStack.popPose();
+                renderTooltip(matrixStack, mousedOver.getItem(), mouseX, mouseY);
             }
-            RenderSystem.popMatrix();
+            matrixStack.popPose();
         }
     }
 
-    private void drawSlot(@Nonnull MatrixStack matrixStack, Slot slot, boolean scale) {
-        int x = slot.xPos;
-        int y = slot.yPos;
-        ItemStack stack = slot.getStack();
+    private void drawSlot(@Nonnull PoseStack matrixStack, Slot slot, boolean scale) {
+        int x = slot.x;
+        int y = slot.y;
+        ItemStack stack = slot.getItem();
 
         this.setBlitOffset(100);
-        itemRenderer.zLevel = 100.0F;
+        itemRenderer.blitOffset = 100.0F;
 
         if (stack.isEmpty()) {
-            Pair<ResourceLocation, ResourceLocation> pair = slot.getBackground();
+            Pair<ResourceLocation, ResourceLocation> pair = slot.getNoItemIcon();
 
             if (pair != null) {
-                TextureAtlasSprite sprite = this.getMinecraft().getAtlasSpriteGetter(pair.getFirst()).apply(pair.getSecond());
-                this.getMinecraft().getTextureManager().bindTexture(sprite.getAtlasTexture().getTextureLocation());
+                TextureAtlasSprite sprite = this.getMinecraft().getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
+                this.getMinecraft().getTextureManager().bindForSetup(sprite.atlas().location());
                 blit(matrixStack, this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
-                RenderSystem.scaled(2, 2, 2);
+                matrixStack.scale(2, 2, 2);
                 ItemRenderHelper.renderItem((this.guiLeft + x + 8) / 2, (this.guiTop + y + 8) / 2, stack);
             } else {
                 ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
 
-        itemRenderer.zLevel = 0.0F;
+        itemRenderer.blitOffset = 0.0F;
         this.setBlitOffset(0);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && this.getMinecraft().player != null) {
-            for (int i1 = 0; i1 < this.getMinecraft().player.container.inventorySlots.size(); ++i1) {
-                Slot slot = this.getMinecraft().player.container.inventorySlots.get(i1);
-                if (mouseX - guiLeft >= slot.xPos && mouseX - guiLeft <= slot.xPos + 16 && mouseY - guiTop >= slot.yPos && mouseY - guiTop <= slot.yPos + 16) {
-                    ItemStack stack = slot.getStack();
+            for (int i1 = 0; i1 < this.getMinecraft().player.inventoryMenu.slots.size(); ++i1) {
+                Slot slot = this.getMinecraft().player.inventoryMenu.slots.get(i1);
+                if (mouseX - guiLeft >= slot.x && mouseX - guiLeft <= slot.x + 16 && mouseY - guiTop >= slot.y && mouseY - guiTop <= slot.y + 16) {
+                    ItemStack stack = slot.getItem();
                     if (!stack.isEmpty()) {
                         ClickActionScreen.item = stack.copy();
                         ScreenStack.pop();
@@ -115,8 +113,8 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

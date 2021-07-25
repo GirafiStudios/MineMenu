@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[32,)"
+loaderVersion="[37,)"
 logoFile="logo.png"
 license="MIT"
 
@@ -18,6 +18,6 @@ license="MIT"
 [[dependencies.minemenu]]
     modId="forge"
     mandatory=true
-    versionRange="[32,)"
+    versionRange="[37,)"
     ordering="NONE"
     side="BOTH"

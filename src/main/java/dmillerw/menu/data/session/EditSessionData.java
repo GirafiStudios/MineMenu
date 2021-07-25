@@ -2,8 +2,8 @@ package dmillerw.menu.data.session;
 
 import dmillerw.menu.data.click.ClickAction;
 import dmillerw.menu.data.menu.MenuItem;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
 

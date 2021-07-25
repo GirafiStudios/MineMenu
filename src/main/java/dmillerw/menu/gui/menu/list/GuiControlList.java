@@ -1,18 +1,21 @@
 package dmillerw.menu.gui.menu.list;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.ClickActionScreen;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.list.AbstractOptionList;
-import net.minecraft.client.gui.widget.list.KeyBindingList;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
+public class GuiControlList extends ContainerObjectSelectionList<ControlList.Entry> {
     public final Minecraft mc;
     private int maxWidth = 0;
 
@@ -31,20 +34,20 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
         super(mc, parent.width, parent.height, 25, parent.height - 20, 20);
         this.mc = mc;
 
-        KeyBinding[] keyBindings = Minecraft.getInstance().gameSettings.keyBindings;
+        KeyMapping[] keyBindings = Minecraft.getInstance().options.keyMappings;
         Arrays.sort(keyBindings);
         String lastCategory = "";
 
-        for (KeyBinding keybinding : keyBindings) {
-            String category = keybinding.getKeyCategory();
+        for (KeyMapping keybinding : keyBindings) {
+            String category = keybinding.getCategory();
 
-            if (!keybinding.getKeyDescription().equalsIgnoreCase("key.open_menu")) {
+            if (!keybinding.getName().equalsIgnoreCase("key.open_menu")) {
                 if (!category.equals(lastCategory)) {
                     lastCategory = category;
                     this.addEntry(new CategoryEntry(category));
                 }
 
-                int width = mc.fontRenderer.getStringWidth(I18n.format(keybinding.getKeyDescription()));
+                int width = mc.font.width(I18n.get(keybinding.getName()));
 
                 if (width > this.maxWidth) {
                     this.maxWidth = width;
@@ -65,23 +68,23 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends KeyBindingList.Entry {
+    public class CategoryEntry extends ControlList.Entry {
         private final String category;
         private final int width;
 
         CategoryEntry(String category) {
-            this.category = I18n.format(category);
-            this.width = GuiControlList.this.mc.fontRenderer.getStringWidth(this.category);
+            this.category = I18n.get(category);
+            this.width = GuiControlList.this.mc.font.width(this.category);
         }
 
         @Override
-        public void render(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.fontRenderer.drawString(matrixStack, this.category, (float)(Objects.requireNonNull(GuiControlList.this.mc.currentScreen).width / 2 - this.width / 2), (float)(p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT - 1), 16777215);
+        public void render(@Nonnull PoseStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            GuiControlList.this.mc.font.draw(matrixStack, this.category, (float) (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (float) (p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
         }
 
         @Override
         @Nonnull
-        public List<? extends IGuiEventListener> getEventListeners() {
+        public List<? extends GuiEventListener> children() {
             return Collections.emptyList();
         }
 
@@ -89,17 +92,33 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
         public boolean changeFocus(boolean changeFocus) {
             return false;
         }
+
+        @Override
+        @Nonnull
+        public List<? extends NarratableEntry> narratables() {
+            return ImmutableList.of(new NarratableEntry() {
+                @Nonnull
+                public NarratableEntry.NarrationPriority narrationPriority() {
+                    return NarratableEntry.NarrationPriority.HOVERED;
+                }
+
+                @Override
+                public void updateNarration(@Nonnull NarrationElementOutput output) {
+                    output.add(NarratedElementType.TITLE, CategoryEntry.this.category);
+                }
+            });
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends KeyBindingList.Entry {
-        private final KeyBinding keyBinding;
-        private final TranslationTextComponent description;
+    public class KeyEntry extends ControlList.Entry {
+        private final KeyMapping keyBinding;
+        private final TranslatableComponent description;
         private final Button buttonSelect;
 
-        KeyEntry(KeyBinding keyBinding) {
+        KeyEntry(KeyMapping keyBinding) {
             this.keyBinding = keyBinding;
-            this.description = new TranslationTextComponent(keyBinding.getKeyDescription());
+            this.description = new TranslatableComponent(keyBinding.getName());
             this.buttonSelect = new Button(0, 0, 95, 18, description, (screen) -> {
                 ClickActionScreen.keyBinding = keyBinding;
                 ScreenStack.pop();
@@ -107,17 +126,23 @@ public class GuiControlList extends AbstractOptionList<KeyBindingList.Entry> {
         }
 
         @Override
-        public void render(@Nonnull MatrixStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.fontRenderer.func_243246_a(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.fontRenderer.FONT_HEIGHT / 2), 16777215);
+        public void render(@Nonnull PoseStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            GuiControlList.this.mc.font.drawShadow(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
             this.buttonSelect.x = p_230432_4_ + 105;
             this.buttonSelect.y = p_230432_3_;
-            this.buttonSelect.setMessage(this.keyBinding.func_238171_j_());
+            this.buttonSelect.setMessage(this.keyBinding.getTranslatedKeyMessage());
             this.buttonSelect.renderButton(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
         }
 
         @Override
         @Nonnull
-        public List<? extends IGuiEventListener> getEventListeners() {
+        public List<? extends GuiEventListener> children() {
+            return ImmutableList.of(this.buttonSelect);
+        }
+
+        @Override
+        @Nonnull
+        public List<? extends NarratableEntry> narratables() {
             return ImmutableList.of(this.buttonSelect);
         }
 

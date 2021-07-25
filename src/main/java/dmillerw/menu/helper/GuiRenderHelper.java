@@ -1,87 +1,84 @@
 package dmillerw.menu.helper;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
 
 public class GuiRenderHelper {
 
-    public static void renderHeaderAndFooter(MatrixStack matrixStack, Screen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
-        RenderSystem.pushMatrix();
+    public static void renderHeaderAndFooter(PoseStack matrixStack, Screen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
+        matrixStack.pushPose();
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(770, 771, 0, 1);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(7425);
+        //RenderSystem.disableAlphaTest(); //TODO
+        //RenderSystem.shadeModel(7425); //TODO
         RenderSystem.disableTexture();
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuilder();
 
         // HEADER - SHADOW
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.pos(0, headerHeight + shadowDepth, 0.0D).tex(0.0F, 1.0F).color(0, 0, 0, 0).endVertex();
-        bufferBuilder.pos(base.width, headerHeight + shadowDepth, 0.0D).tex(1.0F, 1.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.vertex(0, headerHeight + shadowDepth, 0.0D).uv(0.0F, 1.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.vertex(base.width, headerHeight + shadowDepth, 0.0D).uv(1.0F, 1.0F).color(0, 0, 0, 0).endVertex();
 
-        bufferBuilder.pos(base.width, headerHeight, 0.0D).tex(1.0F, 0.0F).color(0, 0, 0, 255).endVertex();
-        bufferBuilder.pos(0, headerHeight, 0.0D).tex(0.0F, 0.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.vertex(base.width, headerHeight, 0.0D).uv(1.0F, 0.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.vertex(0, headerHeight, 0.0D).uv(0.0F, 0.0F).color(0, 0, 0, 255).endVertex();
 
-        tessellator.draw();
+        tessellator.end();
 
         // FOOTER - SHADOW
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.pos(0, base.height - footerHeight, 0.0D).tex(0.0F, 1.0F).color(0, 0, 0, 255).endVertex();
-        bufferBuilder.pos(base.width, base.height - footerHeight, 0.0D).tex(1.0F, 1.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.vertex(0, base.height - footerHeight, 0.0D).uv(0.0F, 1.0F).color(0, 0, 0, 255).endVertex();
+        bufferBuilder.vertex(base.width, base.height - footerHeight, 0.0D).uv(1.0F, 1.0F).color(0, 0, 0, 255).endVertex();
 
-        bufferBuilder.pos(base.width, base.height - footerHeight - shadowDepth, 0.0D).tex(1.0F, 0.0F).color(0, 0, 0, 0).endVertex();
-        bufferBuilder.pos(0, base.height - footerHeight - shadowDepth, 0.0D).tex(0.0F, 0.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.vertex(base.width, base.height - footerHeight - shadowDepth, 0.0D).uv(1.0F, 0.0F).color(0, 0, 0, 0).endVertex();
+        bufferBuilder.vertex(0, base.height - footerHeight - shadowDepth, 0.0D).uv(0.0F, 0.0F).color(0, 0, 0, 0).endVertex();
 
-        tessellator.draw();
+        tessellator.end();
 
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.enableAlphaTest();
+        //RenderSystem.shadeModel(7424); //TODO
+        //RenderSystem.enableAlphaTest(); //TODO
         RenderSystem.disableBlend();
 
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
 
-        RenderSystem.pushMatrix();
+        matrixStack.pushPose();
 
-        base.getMinecraft().getTextureManager().bindTexture(AbstractGui.BACKGROUND_LOCATION);
+        base.getMinecraft().getTextureManager().bindForSetup(GuiComponent.BACKGROUND_LOCATION);
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F); //TODO
         float f = 32F;
 
         // HEADER
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.pos(0, headerHeight, 0.0D).tex(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.pos((double) 0 + base.width, headerHeight, 0.0D).tex(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(0, headerHeight, 0.0D).uv(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex((double) 0 + base.width, headerHeight, 0.0D).uv(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        bufferBuilder.pos((double) 0 + base.width, 0, 0.0D).tex(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.pos(0, 0, 0.0D).tex(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex((double) 0 + base.width, 0, 0.0D).uv(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(0, 0, 0.0D).uv(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
-        tessellator.draw();
+        tessellator.end();
 
         // FOOTER
-        bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.pos(0, base.height, 0.0D).tex(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.pos((double) 0 + base.width, base.height, 0.0D).tex(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(0, base.height, 0.0D).uv(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex((double) 0 + base.width, base.height, 0.0D).uv(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
 
-        bufferBuilder.pos((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).tex(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.pos(0, (double) base.height - footerHeight, 0.0D).tex(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).uv(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(0, (double) base.height - footerHeight, 0.0D).uv(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
 
-        tessellator.draw();
+        tessellator.end();
 
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
 
-        base.drawCenteredString(matrixStack, base.getMinecraft().fontRenderer, headerText, base.width / 2, 8, 16777215);
+        GuiComponent.drawCenteredString(matrixStack, base.getMinecraft().font, headerText, base.width / 2, 8, 16777215);
     }
 }

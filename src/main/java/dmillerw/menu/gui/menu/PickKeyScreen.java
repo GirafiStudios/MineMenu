@@ -1,10 +1,10 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -13,14 +13,14 @@ public class PickKeyScreen extends Screen {
     private GuiControlList controlList;
 
     public PickKeyScreen() {
-        super(new TranslationTextComponent("minemenu.keyScreen.title"));
+        super(new TranslatableComponent("minemenu.keyScreen.title"));
     }
 
     @Override
     public void init() {
-        controlList = new GuiControlList(this, this.getMinecraft());
-        this.children.add(controlList);
-        this.setListener(controlList);
+        this.controlList = new GuiControlList(this, this.getMinecraft());
+        this.addWidget(this.controlList);
+        this.setFocused(this.controlList);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PickKeyScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton == 0 && this.controlList.mouseClicked(mouseX, mouseY, mouseButton)) {
             this.setDragging(true);
-            this.setListener(this.controlList);
+            this.setFocused(this.controlList);
             return true;
         } else {
             return this.controlList != null && this.controlList.mouseClicked((int) mouseX, (int) mouseY, mouseButton);
@@ -59,7 +59,7 @@ public class PickKeyScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         this.controlList.render(matrixStack, mouseX, mouseY, partialTicks);
         this.drawCenteredString(matrixStack, this.font, "Select a Key:", this.width / 2, 8, 16777215);

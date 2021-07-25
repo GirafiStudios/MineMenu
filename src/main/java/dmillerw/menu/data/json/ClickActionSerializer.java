@@ -2,7 +2,7 @@ package dmillerw.menu.data.json;
 
 import com.google.gson.*;
 import dmillerw.menu.data.click.*;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.lang.reflect.Type;
 import java.util.Map;

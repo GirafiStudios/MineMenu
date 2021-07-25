@@ -1,8 +1,8 @@
 package dmillerw.menu.data.click;
 
 import dmillerw.menu.handler.KeyboardHandler;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
 
 public class ClickActionKey implements ClickAction.IClickAction {
     public final String key;
@@ -13,9 +13,9 @@ public class ClickActionKey implements ClickAction.IClickAction {
         this.toggle = toggle;
     }
 
-    public KeyBinding getKeyBinding() {
-        for (KeyBinding binding : Minecraft.getInstance().gameSettings.keyBindings) {
-            if (binding.getKeyDescription().equalsIgnoreCase(key)) {
+    public KeyMapping getKeyBinding() {
+        for (KeyMapping binding : Minecraft.getInstance().options.keyMappings) {
+            if (binding.getName().equalsIgnoreCase(key)) {
                 return binding;
             }
         }
@@ -29,7 +29,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
 
     @Override
     public void onClicked() {
-        KeyBinding binding = getKeyBinding();
+        KeyMapping binding = getKeyBinding();
         if (binding != null) {
             if (toggle) {
                 KeyboardHandler.INSTANCE.toggleKey(binding);
@@ -46,9 +46,9 @@ public class ClickActionKey implements ClickAction.IClickAction {
 
     @Override
     public void onRemoved() {
-        KeyBinding keyBinding = getKeyBinding();
+        KeyMapping keyBinding = getKeyBinding();
         if (keyBinding != null) {
-            KeyBinding.setKeyBindState(keyBinding.getKey(), false);
+            KeyMapping.set(keyBinding.getKey(), false);
         }
         toggle = !toggle;
     }

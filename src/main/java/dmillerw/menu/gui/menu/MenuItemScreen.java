@@ -1,6 +1,6 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;
@@ -11,17 +11,16 @@ import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.button.ItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -29,7 +28,7 @@ import javax.annotation.Nullable;
 
 public class MenuItemScreen extends Screen {
     private final int slot;
-    private TextFieldWidget textTitle;
+    private EditBox textTitle;
     private Button buttonCancel;
     private Button buttonConfirm;
     private Button buttonDelete;
@@ -37,7 +36,7 @@ public class MenuItemScreen extends Screen {
     private Button buttonClickAction;
 
     public MenuItemScreen(int slot, MenuItem menuItem) {
-        super(new TranslationTextComponent("minemenu.itemScreen.title"));
+        super(new TranslatableComponent("minemenu.itemScreen.title"));
         this.slot = slot;
         EditSessionData.fromMenuItem(menuItem);
     }
@@ -52,15 +51,15 @@ public class MenuItemScreen extends Screen {
 
     @Override
     @Nullable
-    public IGuiEventListener getListener() {
+    public GuiEventListener getFocused() {
         return this.textTitle;
     }
 
     @Override
     public void init() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(true);
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
-        addButton(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, new TranslationTextComponent("gui.done"), (screen) -> {
+        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, new TranslatableComponent("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
             }
@@ -72,39 +71,39 @@ public class MenuItemScreen extends Screen {
                 RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
             }
             MenuLoader.save(MineMenu.menuFile);
-            Minecraft.getInstance().displayGuiScreen(null);
+            Minecraft.getInstance().setScreen(null);
         }));
-        addButton(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, new TranslationTextComponent("gui.cancel"), (screen) -> Minecraft.getInstance().displayGuiScreen(null)));
-        addButton(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, new StringTextComponent("Delete"), (screen) -> {
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, new TranslatableComponent("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)));
+        addRenderableWidget(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, new TextComponent("Delete"), (screen) -> {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
                 MenuLoader.save(MineMenu.menuFile);
-                Minecraft.getInstance().displayGuiScreen(null);
+                Minecraft.getInstance().setScreen(null);
             }
         }));
-        addButton(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
+        addRenderableWidget(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
 
-        ITextComponent string = new StringTextComponent("Action");
+        Component string = new TextComponent("Action");
         if (EditSessionData.clickAction != null) {
             if (EditSessionData.clickAction instanceof ClickActionCommand) {
-                string = new StringTextComponent("Command");
+                string = new TextComponent("Command");
             } else if (EditSessionData.clickAction instanceof ClickActionKey) {
-                string = new StringTextComponent("Keybind");
+                string = new TextComponent("Keybind");
             }
         }
-        addButton(this.buttonClickAction = new Button(this.width / 2 - 20, this.height / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
+        addRenderableWidget(this.buttonClickAction = new Button(this.width / 2 - 20, this.height / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
 
-        this.textTitle = new TextFieldWidget(this.font, this.width / 2 - 150, 50, 300, 20, new TranslationTextComponent("minemenu.menuItem.title"));
-        this.textTitle.setMaxStringLength(32767);
-        this.textTitle.setText(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
+        this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, new TranslatableComponent("minemenu.menuItem.title"));
+        this.textTitle.setMaxLength(32767);
+        this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
         this.buttonPickIcon.icon = EditSessionData.icon;
     }
 
     @Override
-    public void onClose() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class MenuItemScreen extends Screen {
     @Override
     public boolean charTyped(char key, int keycode) {
         if (this.textTitle.charTyped(key, keycode)) {
-            EditSessionData.title = textTitle.getText().trim();
+            EditSessionData.title = textTitle.getValue().trim();
             return true;
         }
         return false;
@@ -140,7 +139,7 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         this.renderBackground(matrixStack);
         this.textTitle.render(matrixStack, mouseX, mouseY, partial);
         this.drawCenteredString(matrixStack, this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);

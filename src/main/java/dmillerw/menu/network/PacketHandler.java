@@ -2,9 +2,9 @@ package dmillerw.menu.network;
 
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.network.packet.server.PacketUseItem;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class PacketHandler {
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder

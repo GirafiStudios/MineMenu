@@ -1,22 +1,21 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
@@ -26,20 +25,20 @@ import javax.annotation.Nullable;
 public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
     private static final int MAX_ROW = 4; // Actually increased by one
-    private TextFieldWidget textSearch;
+    private EditBox textSearch;
     private Button buttonCancel;
     private NonNullList<ItemStack> stacks;
     private int listScrollIndex = 0;
 
     public PickIconScreen() {
-        super(new TranslationTextComponent("minemenu.iconScreen.title"));
+        super(new TranslatableComponent("minemenu.iconScreen.title"));
     }
 
     @Override
     public void tick() {
         this.textSearch.tick();
 
-        if (textSearch.getText().trim().isEmpty()) {
+        if (textSearch.getValue().trim().isEmpty()) {
             this.reconstructList(stacks);
         }
     }
@@ -51,8 +50,8 @@ public class PickIconScreen extends Screen {
             ItemStack stack = new ItemStack(registryItem);
             if (!stack.isEmpty() && stack != null) {
                 Item item = stack.getItem();
-                if (item.getGroup() != null) {
-                    item.fillItemGroup(item.getGroup(), list);
+                if (item.getItemCategory() != null) {
+                    item.fillItemCategory(item.getItemCategory(), list);
                 }
             }
         }
@@ -60,26 +59,26 @@ public class PickIconScreen extends Screen {
 
     @Override
     @Nullable
-    public IGuiEventListener getListener() {
+    public GuiEventListener getFocused() {
         return this.textSearch;
     }
 
     @Override
     public void init() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(true);
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        addButton(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, new TranslationTextComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
-        this.textSearch = new TextFieldWidget(this.font, this.width / 2 - 150, 40, 300, 20, new TranslationTextComponent("minemenu.pickIcon.search"));
-        this.textSearch.setMaxStringLength(32767);
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, new TranslatableComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
+        this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, new TranslatableComponent("minemenu.pickIcon.search"));
+        this.textSearch.setMaxLength(32767);
         this.textSearch.changeFocus(true);
     }
 
     @Override
-    public void onClose() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -92,23 +91,23 @@ public class PickIconScreen extends Screen {
         if (textSearch.charTyped(key, key)) {
             listScrollIndex = 0;
 
-            if (!textSearch.getText().trim().isEmpty()) {
+            if (!textSearch.getValue().trim().isEmpty()) {
                 stacks.clear();
 
                 NonNullList<ItemStack> temp = NonNullList.create();
 
-                if (textSearch.getText().equalsIgnoreCase(".inv")) {
-                    PlayerEntity player = Minecraft.getInstance().player;
+                if (textSearch.getValue().equalsIgnoreCase(".inv")) {
+                    Player player = Minecraft.getInstance().player;
                     if (player != null) {
-                        for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-                            ItemStack stack = player.inventory.getStackInSlot(i);
+                        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                            ItemStack stack = player.getInventory().getItem(i);
                             stacks.add(stack.copy());
                         }
                     }
                 } else {
                     this.reconstructList(temp);
                     for (ItemStack stack : temp) {
-                        if (stack.getDisplayName().getString().toLowerCase().contains(textSearch.getText().toLowerCase())) {
+                        if (stack.getHoverName().getString().toLowerCase().contains(textSearch.getValue().toLowerCase())) {
                             stacks.add(stack);
                         }
                     }
@@ -132,7 +131,7 @@ public class PickIconScreen extends Screen {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
 
-        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
+        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
 
         if (!clicked.isEmpty()) {
             EditSessionData.icon = clicked;
@@ -164,7 +163,7 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         this.renderBackground(matrixStack);
 
         this.textSearch.render(matrixStack, mouseX, mouseY, partial);
@@ -173,20 +172,21 @@ public class PickIconScreen extends Screen {
 
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this.width / 2, this.height - (Minecraft.getInstance().getMainWindow().getScaledHeight() - 80), mouseX, mouseY);
+        drawList(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
 
     private void drawList(int x, int y, int mx, int my) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;
+        PoseStack poseStack = RenderSystem.getModelViewStack();
 
         for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
             int drawX = i % MAX_COLUMN;
             int drawY = i / MAX_COLUMN;
 
             if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
-                RenderSystem.pushMatrix();
+                poseStack.pushPose();
 
                 boolean scaled = false;
                 int actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
@@ -204,17 +204,17 @@ public class PickIconScreen extends Screen {
                     ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 
-                RenderSystem.popMatrix();
+                poseStack.popPose();
             } else {
                 break;
             }
         }
 
         if (!highlighted.isEmpty()) {
-            RenderSystem.pushMatrix();
-            RenderSystem.scaled(2, 2, 2);
+            poseStack.pushPose();
+            poseStack.scale(2, 2, 2);
             ItemRenderHelper.renderItem(highlightedX, highlightedY, highlighted);
-            RenderSystem.popMatrix();
+            poseStack.popPose();
         }
     }
 

@@ -1,23 +1,23 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.data.click.*;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.button.ItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.fmlclient.gui.widget.ExtendedButton;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -27,11 +27,11 @@ import java.util.Collections;
 public class ClickActionScreen extends Screen {
     @Nonnull
     public static ItemStack item;
-    public static KeyBinding keyBinding;
+    public static KeyMapping keyBinding;
     private static boolean toggle = false;
     private static boolean clipboard = false;
-    private TextFieldWidget textCommand;
-    private TextFieldWidget textCategory;
+    private EditBox textCommand;
+    private EditBox textCategory;
     private ExtendedButton modeCommand;
     private ExtendedButton modeKeybinding;
     private ExtendedButton modeUseItem;
@@ -45,7 +45,7 @@ public class ClickActionScreen extends Screen {
     private int mode = 0;
 
     public ClickActionScreen() {
-        super(new TranslationTextComponent("minemenu.actionScreen.title"));
+        super(new TranslatableComponent("minemenu.actionScreen.title"));
         ClickActionScreen.keyBinding = null;
         ClickActionScreen.item = ItemStack.EMPTY;
     }
@@ -58,13 +58,13 @@ public class ClickActionScreen extends Screen {
 
     @Override
     @Nullable
-    public IGuiEventListener getListener() {
+    public GuiEventListener getFocused() {
         if (mode == 0) {
             return this.textCommand;
         } else if (mode == 3) {
             return this.textCategory;
         } else {
-            return super.getListener();
+            return super.getFocused();
         }
     }
 
@@ -78,70 +78,70 @@ public class ClickActionScreen extends Screen {
             mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
         }
 
-        this.getMinecraft().keyboardListener.enableRepeatEvents(true);
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
-        addButton(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 150, 20, new TranslationTextComponent("gui.done"), (screen) -> {
+        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 150, 20, new TranslatableComponent("gui.done"), (screen) -> {
             if (mode == 0) {
-                EditSessionData.clickAction = !textCommand.getText().trim().isEmpty() ? new ClickActionCommand(textCommand.getText().trim(), clipboard) : null;
+                EditSessionData.clickAction = !textCommand.getValue().trim().isEmpty() ? new ClickActionCommand(textCommand.getValue().trim(), clipboard) : null;
             } else if (mode == 1 && ClickActionScreen.keyBinding != null) {
-                EditSessionData.clickAction = new ClickActionKey(keyBinding.getKeyDescription(), toggle);
+                EditSessionData.clickAction = new ClickActionKey(keyBinding.getName(), toggle);
             } else if (mode == 2 && !ClickActionScreen.item.isEmpty()) {
                 EditSessionData.clickAction = new ClickActionUseItem(item);
             } else if (mode == 3) {
-                EditSessionData.clickAction = !(textCategory.getText().trim().isEmpty()) ? new ClickActionCategory(textCategory.getText().trim()) : null;
+                EditSessionData.clickAction = !(textCategory.getValue().trim().isEmpty()) ? new ClickActionCategory(textCategory.getValue().trim()) : null;
             }
             ScreenStack.pop();
         }));
 
-        addButton(this.buttonCancel = new Button(this.width / 2 + 4, this.height - 60, 150, 20, new TranslationTextComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4, this.height - 60, 150, 20, new TranslatableComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
 
-        ITextComponent commandString;
+        Component commandString;
         if (EditSessionData.clickAction instanceof ClickActionCommand) {
-            commandString = new StringTextComponent(((ClickActionCommand) EditSessionData.clickAction).clipboard ? "Clipboard" : "Send");
+            commandString = new TextComponent(((ClickActionCommand) EditSessionData.clickAction).clipboard ? "Clipboard" : "Send");
         } else {
-            commandString = new StringTextComponent(clipboard ? "Clipboard" : "Send");
+            commandString = new TextComponent(clipboard ? "Clipboard" : "Send");
         }
-        addButton(this.commandClipboardButton = new Button(this.width / 2 - 75, 80, 150, 20, commandString, (screen) -> {
+        addRenderableWidget(this.commandClipboardButton = new Button(this.width / 2 - 75, 80, 150, 20, commandString, (screen) -> {
             clipboard = !clipboard;
-            commandClipboardButton.setMessage(new StringTextComponent(clipboard ? "Clipboard" : "Send"));
+            commandClipboardButton.setMessage(new TextComponent(clipboard ? "Clipboard" : "Send"));
         }));
 
-        ITextComponent keyString;
+        Component keyString;
         if (ClickActionScreen.keyBinding != null) {
-            keyString = new TranslationTextComponent(keyBinding.getKeyDescription());
+            keyString = new TranslatableComponent(keyBinding.getName());
         } else {
             if (EditSessionData.clickAction instanceof ClickActionKey) {
-                keyString = new TranslationTextComponent(((ClickActionKey) EditSessionData.clickAction).key);
+                keyString = new TranslatableComponent(((ClickActionKey) EditSessionData.clickAction).key);
             } else {
-                keyString = new StringTextComponent("Select a key");
+                keyString = new TextComponent("Select a key");
             }
         }
-        addButton(this.keybindButton = new Button(this.width / 2 - 75, 50, 150, 20, keyString, (screen) -> ScreenStack.push(new PickKeyScreen())));
+        addRenderableWidget(this.keybindButton = new Button(this.width / 2 - 75, 50, 150, 20, keyString, (screen) -> ScreenStack.push(new PickKeyScreen())));
 
-        ITextComponent keyToggleString;
+        Component keyToggleString;
         if (EditSessionData.clickAction instanceof ClickActionKey) {
-            keyToggleString = new StringTextComponent(((ClickActionKey) EditSessionData.clickAction).toggle ? "Toggle" : "Press");
+            keyToggleString = new TextComponent(((ClickActionKey) EditSessionData.clickAction).toggle ? "Toggle" : "Press");
         } else {
-            keyToggleString = new StringTextComponent(toggle ? "Toggle" : "Press");
+            keyToggleString = new TextComponent(toggle ? "Toggle" : "Press");
         }
-        addButton(this.keybindToggleButton = new Button(this.width / 2 - 75, 80, 150, 20, keyToggleString, (screen) -> {
+        addRenderableWidget(this.keybindToggleButton = new Button(this.width / 2 - 75, 80, 150, 20, keyToggleString, (screen) -> {
             toggle = !toggle;
-            keybindToggleButton.setMessage(new StringTextComponent(toggle ? "Toggle" : "Press"));
+            keybindToggleButton.setMessage(new TextComponent(toggle ? "Toggle" : "Press"));
         }));
 
-        ITextComponent itemString;
+        Component itemString;
         if (!ClickActionScreen.item.isEmpty()) {
-            itemString = new StringTextComponent("Item: " + item.getDisplayName().getString());
+            itemString = new TextComponent("Item: " + item.getHoverName().getString());
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = new StringTextComponent("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItem().getName().getString());
+                itemString = new TextComponent("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItem().getDescription().getString());
             } else {
-                itemString = new StringTextComponent("Select a Slot");
+                itemString = new TextComponent("Select a Slot");
             }
         }
-        addButton(this.selectItemButton = new Button(this.width / 2 - 75, 50, 150, 20, itemString, (screen) -> ScreenStack.push(new PickItemScreen())));
+        addRenderableWidget(this.selectItemButton = new Button(this.width / 2 - 75, 50, 150, 20, itemString, (screen) -> ScreenStack.push(new PickItemScreen())));
 
-        addButton(this.modeCommand = new ItemButton(this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER), (screen) -> {
+        addRenderableWidget(this.modeCommand = new ItemButton(this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER), (screen) -> {
             // Command
             mode = 0;
 
@@ -158,7 +158,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = false;
         }));
 
-        addButton(this.modeKeybinding = new ItemButton(this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.OAK_BUTTON), (screen) -> {
+        addRenderableWidget(this.modeKeybinding = new ItemButton(this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.OAK_BUTTON), (screen) -> {
             // Keybinding
             mode = 1;
 
@@ -175,7 +175,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = true;
         }));
 
-        addButton(this.modeUseItem = new ItemButton(this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD), (screen) -> {
+        addRenderableWidget(this.modeUseItem = new ItemButton(this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD), (screen) -> {
             // Select item
             mode = 2;
 
@@ -192,7 +192,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = false;
         }));
 
-        addButton(this.modeCategory = new ItemButton(this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST), (screen) -> {
+        addRenderableWidget(this.modeCategory = new ItemButton(this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST), (screen) -> {
             // Category
             mode = 3;
 
@@ -209,15 +209,15 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = false;
         }));
 
-        this.textCommand = new TextFieldWidget(this.font, this.width / 2 - 150, 50, 300, 20, new TranslationTextComponent("minemenu.action.command"));
-        this.textCommand.setMaxStringLength(32767);
+        this.textCommand = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, new TranslatableComponent("minemenu.action.command"));
+        this.textCommand.setMaxLength(32767);
         this.textCommand.changeFocus(true);
-        this.textCommand.setText((EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
+        this.textCommand.setValue((EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
-        this.textCategory = new TextFieldWidget(this.font, this.width / 2 - 150, 50, 300, 20, new TranslationTextComponent( "minemenu.action.category"));
-        this.textCategory.setMaxStringLength(32767);
+        this.textCategory = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, new TranslatableComponent( "minemenu.action.category"));
+        this.textCategory.setMaxLength(32767);
         this.textCategory.changeFocus(true);
-        this.textCategory.setText((EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
+        this.textCategory.setValue((EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
 
         this.modeCommand.active = mode != 0;
         this.modeKeybinding.active = mode != 1;
@@ -233,8 +233,8 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
-        this.getMinecraft().keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         this.renderBackground(matrixStack);
         this.textCommand.render(matrixStack, mouseX, mouseY, partial);
         this.textCategory.render(matrixStack, mouseX, mouseY, partial);
@@ -290,13 +290,13 @@ public class ClickActionScreen extends Screen {
         }
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, header);
         if (mouseX > modeCommand.x && mouseX < modeCommand.x + modeCommand.getWidth() && mouseY > modeCommand.y && mouseY < modeCommand.y + modeCommand.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(new StringTextComponent("Click Action: Command").func_241878_f()), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Collections.singletonList(new TextComponent("Click Action: Command").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.x && mouseX < modeKeybinding.x + modeKeybinding.getWidth() && mouseY > modeKeybinding.y && mouseY < modeKeybinding.y + modeKeybinding.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(new StringTextComponent("Click Action: KeyBinding").func_241878_f()), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Collections.singletonList(new TextComponent("Click Action: KeyBinding").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeUseItem.x && mouseX < modeUseItem.x + modeUseItem.getWidth() && mouseY > modeUseItem.y && mouseY < modeUseItem.y + modeUseItem.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(new StringTextComponent("Click Action: Use Item").func_241878_f()), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Collections.singletonList(new TextComponent("Click Action: Use Item").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeCategory.x && mouseX < modeCategory.x + modeCategory.getWidth() && mouseY > modeCategory.y && mouseY < modeCategory.y + modeCategory.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(new StringTextComponent("Click Action: Category").func_241878_f()), mouseX, mouseY);
+            this.renderTooltip(matrixStack, Collections.singletonList(new TextComponent("Click Action: Category").getVisualOrderText()), mouseX, mouseY);
         }
     }
 }
