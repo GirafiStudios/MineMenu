@@ -48,8 +48,8 @@ public class ClientTickHandler {
 
             if (mc.level != null && !mc.options.hideGui && !mc.isPaused()) {
                 if (RadialMenuScreen.active) {
-                    renderGui();
-                    //renderItems();
+                    renderButtonBackgrounds();
+                    renderItems();
                 }
             }
         }
@@ -71,7 +71,7 @@ public class ClientTickHandler {
         }
     }
 
-    private static void renderGui() {
+    private static void renderButtonBackgrounds() {
         Minecraft mc = Minecraft.getInstance();
         PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
