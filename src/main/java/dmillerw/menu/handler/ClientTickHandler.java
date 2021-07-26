@@ -12,6 +12,7 @@ import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -209,8 +210,9 @@ public class ClientTickHandler {
                 // Background
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
                 RenderSystem.disableTexture();
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
                 Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.getBuilder();
                 bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
