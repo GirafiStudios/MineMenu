@@ -76,22 +76,16 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
-
-        RenderSystem.disableTexture();
-
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
+        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
         RenderSystem.applyModelViewMatrix();
-        poseStack.pushPose();
-        poseStack.setIdentity();
 
-        RenderSystem.applyModelViewMatrix();
-        poseStack.pushPose();
-        poseStack.setIdentity();
-
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -111,8 +105,8 @@ public class ClientTickHandler {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getWindow().getGuiScaledHeight());
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (257F / (float) mc.getWindow().getGuiScaledHeight());
+            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (130F);
+            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (130F);
 
             bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
@@ -130,22 +124,29 @@ public class ClientTickHandler {
                 alpha = (float) ConfigHandler.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            bufferBuilder.vertex(Math.cos(currAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * innerRadius, Math.sin(currAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(Math.cos(currAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * outerRadius, Math.sin(currAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(Math.cos(nextAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * outerRadius, Math.sin(nextAngle) * outerRadius, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(Math.cos(nextAngle) * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getGuiScaledWidth() * innerRadius, Math.sin(nextAngle) * innerRadius, 0).color(r, g, b, alpha).endVertex();
+            double x1 = Math.cos(currAngle) * innerRadius;
+            double x2 = Math.cos(currAngle) * outerRadius;
+            double x3 = Math.cos(nextAngle) * outerRadius;
+            double x4 = Math.cos(nextAngle) * innerRadius;
+
+            double y1 = Math.sin(currAngle) * innerRadius;
+            double y2 = Math.sin(currAngle) * outerRadius;
+            double y3 = Math.sin(nextAngle) * outerRadius;
+            double y4 = Math.sin(nextAngle) * innerRadius;
+
+            bufferBuilder.vertex(x1, y1, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(x2, y2, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(x3, y3, 0).color(r, g, b, alpha).endVertex();
+            bufferBuilder.vertex(x4, y4, 0).color(r, g, b, alpha).endVertex();
 
             tessellator.end();
         }
-
-        poseStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        poseStack.popPose();
-
+        RenderSystem.enableCull();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
 
         poseStack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
     private static void renderItems() {
@@ -159,17 +160,17 @@ public class ClientTickHandler {
             Item menuButton = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.GENERAL.menuButtonIcon.get().toString()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
-            double angle = (ANGLE_PER_ITEM * i) - (90);
+            double angle = (ANGLE_PER_ITEM * i);
             double drawOffset = 1.5;
             double drawX = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
             double drawY = INNER_RADIUS - RadialMenu.animationTimer + drawOffset;
 
             double length = Math.sqrt(drawX * drawX + drawY * drawY);
 
-            drawX = (length * Math.cos(StrictMath.toRadians(angle)));
-            drawY = (length * Math.sin(StrictMath.toRadians(angle)));
+            drawX = (length * Math.cos(Math.toRadians(angle)));
+            drawY = (length * Math.sin(Math.toRadians(angle)));
 
-            ItemRenderHelper.renderItem((int) drawX, (int) drawY, stack);
+            ItemRenderHelper.renderItem((int) drawY, (int) drawX, stack);
         }
 
         poseStack.popPose();
