@@ -15,7 +15,7 @@ public class KeyReflectionHelper {
             pressTimeField = KeyMapping.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "clickCount"));
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throwReflectionError("clickCount", KeyMapping.class);
+            throwReflectionError("f_90818_", KeyMapping.class);
         }
     }
 
@@ -24,7 +24,7 @@ public class KeyReflectionHelper {
             pressTimeField.set(keyBinding, pressTime == 0 ? 0 : pressTimeField.getInt(keyBinding) + pressTime);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throwReflectionError("clickCount", KeyMapping.class);
+            throwReflectionError("f_90818_", KeyMapping.class);
         }
     }
 
