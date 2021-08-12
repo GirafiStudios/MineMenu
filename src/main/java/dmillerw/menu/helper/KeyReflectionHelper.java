@@ -12,7 +12,7 @@ public class KeyReflectionHelper {
 
     public static void gatherFields() {
         try {
-            pressTimeField = KeyMapping.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "clickCount"));
+            pressTimeField = KeyMapping.class.getDeclaredField(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, "f_90818_"));
             pressTimeField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throwReflectionError("f_90818_", KeyMapping.class);
