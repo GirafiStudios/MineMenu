@@ -13,7 +13,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.ControlList;
+import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiControlList extends ContainerObjectSelectionList<ControlList.Entry> {
+public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.Entry> {
     public final Minecraft mc;
     private int maxWidth = 0;
 
@@ -68,7 +68,7 @@ public class GuiControlList extends ContainerObjectSelectionList<ControlList.Ent
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class CategoryEntry extends ControlList.Entry {
+    public class CategoryEntry extends KeyBindsList.Entry {
         private final String category;
         private final int width;
 
@@ -111,7 +111,7 @@ public class GuiControlList extends ContainerObjectSelectionList<ControlList.Ent
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class KeyEntry extends ControlList.Entry {
+    public class KeyEntry extends KeyBindsList.Entry {
         private final KeyMapping keyBinding;
         private final TranslatableComponent description;
         private final Button buttonSelect;
