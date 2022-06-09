@@ -12,7 +12,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public class PickIconScreen extends Screen {
     private int listScrollIndex = 0;
 
     public PickIconScreen() {
-        super(new TranslatableComponent("minemenu.iconScreen.title"));
+        super(Component.translatable("mine_menu.iconScreen.title"));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class PickIconScreen extends Screen {
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, new TranslatableComponent("gui.cancel"), (screen) -> ScreenStack.pop()));
-        this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, new TranslatableComponent("minemenu.pickIcon.search"));
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()));
+        this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
         this.textSearch.changeFocus(true);
     }

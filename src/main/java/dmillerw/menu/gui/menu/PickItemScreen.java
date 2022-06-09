@@ -8,7 +8,7 @@ import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +23,7 @@ public class PickItemScreen extends Screen {
     private int guiTop;
 
     public PickItemScreen() {
-        super(new TranslatableComponent("minemenu.itemScreen.title"));
+        super(Component.translatable("mine_menu.itemScreen.title"));
     }
 
     @Override

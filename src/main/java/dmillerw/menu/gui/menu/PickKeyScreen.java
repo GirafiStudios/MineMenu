@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -13,7 +13,7 @@ public class PickKeyScreen extends Screen {
     private GuiControlList controlList;
 
     public PickKeyScreen() {
-        super(new TranslatableComponent("minemenu.keyScreen.title"));
+        super(Component.translatable("mine_menu.keyScreen.title"));
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.gui.GuiUtils;
@@ -18,7 +18,7 @@ public class ItemButton extends ExtendedButton {
     public ItemStack icon;
 
     public ItemButton(int xPos, int yPos, int width, int height, @Nonnull ItemStack icon, OnPress handler) {
-        super(xPos, yPos, width, height, new TextComponent(""), handler);
+        super(xPos, yPos, width, height, Component.literal(""), handler);
         this.icon = icon;
     }
 

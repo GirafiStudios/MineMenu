@@ -8,14 +8,14 @@ import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.helper.AngleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class RadialMenuScreen extends Screen {
     public static final RadialMenuScreen INSTANCE = new RadialMenuScreen();
     public static boolean active = false;
 
     public RadialMenuScreen() {
-        super(new TranslatableComponent("minemenu.radialMenu.title"));
+        super(Component.translatable("mine_menu.radialMenu.title"));
     }
 
     public static void activate() {

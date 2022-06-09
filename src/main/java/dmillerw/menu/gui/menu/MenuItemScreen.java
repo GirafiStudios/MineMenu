@@ -17,8 +17,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
@@ -36,7 +34,7 @@ public class MenuItemScreen extends Screen {
     private Button buttonClickAction;
 
     public MenuItemScreen(int slot, MenuItem menuItem) {
-        super(new TranslatableComponent("minemenu.itemScreen.title"));
+        super(Component.translatable("mine_menu.itemScreen.title"));
         this.slot = slot;
         EditSessionData.fromMenuItem(menuItem);
     }
@@ -59,7 +57,7 @@ public class MenuItemScreen extends Screen {
     public void init() {
         this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
 
-        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, new TranslatableComponent("gui.done"), (screen) -> {
+        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, Component.translatable("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
             }
@@ -73,8 +71,8 @@ public class MenuItemScreen extends Screen {
             MenuLoader.save(MineMenu.menuFile);
             Minecraft.getInstance().setScreen(null);
         }));
-        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, new TranslatableComponent("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)));
-        addRenderableWidget(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, new TextComponent("Delete"), (screen) -> {
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)));
+        addRenderableWidget(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, Component.translatable("gui.delete"), (screen) -> {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
@@ -84,17 +82,17 @@ public class MenuItemScreen extends Screen {
         }));
         addRenderableWidget(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
 
-        Component string = new TextComponent("Action");
+        Component string = Component.translatable("mine_menu.action");
         if (EditSessionData.clickAction != null) {
             if (EditSessionData.clickAction instanceof ClickActionCommand) {
-                string = new TextComponent("Command");
+                string = Component.translatable("mine_menu.command");
             } else if (EditSessionData.clickAction instanceof ClickActionKey) {
-                string = new TextComponent("Keybind");
+                string = Component.translatable("mine_menu.keybind");
             }
         }
         addRenderableWidget(this.buttonClickAction = new Button(this.width / 2 - 20, this.height / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
 
-        this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, new TranslatableComponent("minemenu.menuItem.title"));
+        this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
         this.textTitle.setMaxLength(32767);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 

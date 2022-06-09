@@ -2,7 +2,7 @@ package dmillerw.menu.data.click;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class ClickActionCommand implements ClickAction.IClickAction {
     public final String command;
@@ -26,7 +26,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
 
         if (clipboard) {
             mc.keyboardHandler.setClipboard(parsedCommand);
-            player.displayClientMessage(new TranslatableComponent("Command copied to clipboard"), true);
+            player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
         } else {
             player.chat(parsedCommand);
         }

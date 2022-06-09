@@ -15,7 +15,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -113,12 +113,12 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
     @OnlyIn(Dist.CLIENT)
     public class KeyEntry extends KeyBindsList.Entry {
         private final KeyMapping keyBinding;
-        private final TranslatableComponent description;
+        private final Component description;
         private final Button buttonSelect;
 
         KeyEntry(KeyMapping keyBinding) {
             this.keyBinding = keyBinding;
-            this.description = new TranslatableComponent(keyBinding.getName());
+            this.description = Component.translatable(keyBinding.getName());
             this.buttonSelect = new Button(0, 0, 95, 18, description, (screen) -> {
                 ClickActionScreen.keyBinding = keyBinding;
                 ScreenStack.pop();

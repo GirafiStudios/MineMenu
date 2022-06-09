@@ -1,13 +1,6 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: false
-    }
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1+'
 }
-apply plugin: 'net.minecraftforge.gradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -52,4 +45,8 @@ jar {
             "Implementation-Version": "${version}"
         ])
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

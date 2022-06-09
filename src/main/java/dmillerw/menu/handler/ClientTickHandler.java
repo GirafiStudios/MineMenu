@@ -68,7 +68,7 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            renderText(event.getMatrixStack());
+            renderText(event.getPoseStack());
         }
     }
 
