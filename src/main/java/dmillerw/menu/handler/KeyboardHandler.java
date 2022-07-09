@@ -8,11 +8,9 @@ import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,12 +19,6 @@ import java.util.List;
 @EventBusSubscriber(modid = MineMenu.MOD_ID, value = Dist.CLIENT)
 public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
-    private static final KeyMapping WHEEL = new KeyMapping("key.open_menu", GLFW.GLFW_KEY_R, "key.categories.misc");
-
-    public static void register() {
-        ClientRegistry.registerKeyBinding(WHEEL);
-    }
-
     private static boolean lastWheelState = false;
     private static final List<KeyMapping> FIRED_KEYS = new ArrayList<>();
     private static final List<KeyMapping> TOGGLED_KEYS = new ArrayList<>();
@@ -67,7 +59,7 @@ public class KeyboardHandler {
         }
 
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        boolean wheelKeyPressed = WHEEL.getKey().getValue() >= 0 ? InputConstants.isKeyDown(handle, WHEEL.getKey().getValue()) : InputConstants.isKeyDown(handle, WHEEL.getKey().getValue() + 100);
+        boolean wheelKeyPressed = MineMenuKeyMappings.WHEEL.getKey().getValue() >= 0 ? InputConstants.isKeyDown(handle, MineMenuKeyMappings.WHEEL.getKey().getValue()) : InputConstants.isKeyDown(handle, MineMenuKeyMappings.WHEEL.getKey().getValue() + 100);
 
         if (wheelKeyPressed != lastWheelState) {
             if (ConfigHandler.GENERAL.toggle.get()) {

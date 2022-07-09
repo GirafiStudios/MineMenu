@@ -2,7 +2,6 @@ package dmillerw.menu;
 
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ConfigHandler;
-import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -37,7 +36,6 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
 
     private void setupClient(FMLClientSetupEvent event) {
         KeyReflectionHelper.gatherFields();
-        KeyboardHandler.register();
 
         if (!menuFolder.exists()) {
             menuFolder.mkdir();

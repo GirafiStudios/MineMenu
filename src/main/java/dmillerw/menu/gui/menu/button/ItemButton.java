@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ public class ItemButton extends ExtendedButton {
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int k = this.getYImage(this.isHovered);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            GuiUtils.drawContinuousTexturedBox(poseStack, WIDGETS_LOCATION, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
+            ScreenUtils.blitWithBorder(poseStack, WIDGETS_LOCATION, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
             this.renderBg(poseStack, Minecraft.getInstance(), mouseX, mouseY);
 
             if (this.icon.isEmpty()) {

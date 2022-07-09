@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -57,12 +57,8 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public static void onRenderOverlay(RenderGameOverlayEvent event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.LAYER && RadialMenuScreen.active) {
-            event.setCanceled(true);
-        }
-
-        if (!(event instanceof RenderGameOverlayEvent.Post) || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+    public static void onRenderOverlay(RenderGuiOverlayEvent event) {
+        if (!(event instanceof RenderGuiOverlayEvent.Post)) {
             return;
         }
 
