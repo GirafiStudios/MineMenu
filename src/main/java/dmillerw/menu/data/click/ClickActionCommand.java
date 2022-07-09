@@ -28,7 +28,8 @@ public class ClickActionCommand implements ClickAction.IClickAction {
             mc.keyboardHandler.setClipboard(parsedCommand);
             player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
         } else {
-            player.chat(parsedCommand);
+            parsedCommand = parsedCommand.replaceAll("^/+", "");
+            player.command(parsedCommand);
         }
     }
 
