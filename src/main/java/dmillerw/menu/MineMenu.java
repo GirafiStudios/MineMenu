@@ -5,6 +5,7 @@ import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.handler.KeyboardHandler;
 import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -26,7 +27,7 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
     public MineMenu() {
         final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::setupCommon);
-        modBus.addListener(this::setupClient);
+        modBus.addListener(EventPriority.LOWEST,this::setupClient);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.spec);
     }
@@ -46,7 +47,11 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
         if (!menuFile.exists()) {
             MenuLoader.save(menuFile);
         }
-        MenuLoader.load(menuFile);
+        //Load the keybinding later, since it may not being fully registered during this time
+        event.enqueueWork(()->{
+            MenuLoader.load(menuFile);
+        });
+
 
         //((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
     }
