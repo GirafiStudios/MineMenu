@@ -77,7 +77,7 @@ public class PickItemScreen extends Screen {
 
             if (pair != null) {
                 TextureAtlasSprite sprite = this.getMinecraft().getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
-                RenderSystem.setShaderTexture(0, sprite.atlas().location());
+                RenderSystem.setShaderTexture(0, sprite.atlasLocation());
                 blit(matrixStack, this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
@@ -115,7 +115,6 @@ public class PickItemScreen extends Screen {
 
     @Override
     public void removed() {
-        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

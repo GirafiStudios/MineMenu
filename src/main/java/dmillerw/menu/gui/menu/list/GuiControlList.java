@@ -119,17 +119,17 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         KeyEntry(KeyMapping keyBinding) {
             this.keyBinding = keyBinding;
             this.description = Component.translatable(keyBinding.getName());
-            this.buttonSelect = new Button(0, 0, 95, 18, description, (screen) -> {
+            this.buttonSelect = Button.builder(description, (screen) -> {
                 ClickActionScreen.keyBinding = keyBinding;
                 ScreenStack.pop();
-            });
+            }).bounds(0, 0, 95, 18).build();
         }
 
         @Override
         public void render(@Nonnull PoseStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
             GuiControlList.this.mc.font.drawShadow(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
-            this.buttonSelect.x = p_230432_4_ + 105;
-            this.buttonSelect.y = p_230432_3_;
+            this.buttonSelect.setX(p_230432_4_ + 105);
+            this.buttonSelect.setY(p_230432_3_);
             this.buttonSelect.setMessage(this.keyBinding.getTranslatedKeyMessage());
             this.buttonSelect.renderButton(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
         }

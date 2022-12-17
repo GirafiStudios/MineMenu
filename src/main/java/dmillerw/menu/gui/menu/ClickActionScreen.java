@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.client.gui.ModListScreen;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 import org.lwjgl.glfw.GLFW;
 
@@ -76,9 +77,7 @@ public class ClickActionScreen extends Screen {
             mode = EditSessionData.clickAction != null ? EditSessionData.clickAction.getClickAction().ordinal() : 0;
         }
 
-        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
-
-        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 150, 20, Component.translatable("gui.done"), (screen) -> {
+        addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
             if (mode == 0) {
                 EditSessionData.clickAction = !textCommand.getValue().trim().isEmpty() ? new ClickActionCommand(textCommand.getValue().trim(), clipboard) : null;
             } else if (mode == 1 && ClickActionScreen.keyBinding != null) {
@@ -89,9 +88,10 @@ public class ClickActionScreen extends Screen {
                 EditSessionData.clickAction = !(textCategory.getValue().trim().isEmpty()) ? new ClickActionCategory(textCategory.getValue().trim()) : null;
             }
             ScreenStack.pop();
-        }));
+        }).bounds(this.width / 2 - 4 - 150, this.height - 60, 150, 20).build());
 
-        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4, this.height - 60, 150, 20, Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()));
+
+        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 + 4, this.height - 60, 150, 20).build());
 
         Component commandString;
         if (EditSessionData.clickAction instanceof ClickActionCommand) {
@@ -99,10 +99,10 @@ public class ClickActionScreen extends Screen {
         } else {
             commandString = Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send");
         }
-        addRenderableWidget(this.commandClipboardButton = new Button(this.width / 2 - 75, 80, 150, 20, commandString, (screen) -> {
+        addRenderableWidget(this.commandClipboardButton = Button.builder(commandString, (screen) -> {
             clipboard = !clipboard;
             commandClipboardButton.setMessage(Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send"));
-        }));
+        }).bounds(this.width / 2 - 75, 80, 150, 20).build());
 
         Component keyString;
         if (ClickActionScreen.keyBinding != null) {
@@ -114,7 +114,7 @@ public class ClickActionScreen extends Screen {
                 keyString = Component.translatable("mine_menu.selectKey");
             }
         }
-        addRenderableWidget(this.keybindButton = new Button(this.width / 2 - 75, 50, 150, 20, keyString, (screen) -> ScreenStack.push(new PickKeyScreen())));
+        addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
 
         Component keyToggleString;
         if (EditSessionData.clickAction instanceof ClickActionKey) {
@@ -122,10 +122,10 @@ public class ClickActionScreen extends Screen {
         } else {
             keyToggleString = Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press");
         }
-        addRenderableWidget(this.keybindToggleButton = new Button(this.width / 2 - 75, 80, 150, 20, keyToggleString, (screen) -> {
+        addRenderableWidget(this.keybindToggleButton = Button.builder(keyToggleString, (screen) -> {
             toggle = !toggle;
             keybindToggleButton.setMessage(Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press"));
-        }));
+        }).bounds(this.width / 2 - 75, 80, 150, 20).build());
 
         Component itemString;
         if (!ClickActionScreen.item.isEmpty()) {
@@ -137,7 +137,7 @@ public class ClickActionScreen extends Screen {
                 itemString = Component.translatable("mine_menu.selectSlot");
             }
         }
-        addRenderableWidget(this.selectItemButton = new Button(this.width / 2 - 75, 50, 150, 20, itemString, (screen) -> ScreenStack.push(new PickItemScreen())));
+        addRenderableWidget(this.selectItemButton = Button.builder(itemString, (screen) -> ScreenStack.push(new PickItemScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
 
         addRenderableWidget(this.modeCommand = new ItemButton(this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER), (screen) -> {
             // Command
@@ -232,7 +232,6 @@ public class ClickActionScreen extends Screen {
 
     @Override
     public void removed() {
-        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -287,13 +286,13 @@ public class ClickActionScreen extends Screen {
                 break;
         }
         GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, header);
-        if (mouseX > modeCommand.x && mouseX < modeCommand.x + modeCommand.getWidth() && mouseY > modeCommand.y && mouseY < modeCommand.y + modeCommand.getWidth()) {
+        if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
             this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);
-        } else if (mouseX > modeKeybinding.x && mouseX < modeKeybinding.x + modeKeybinding.getWidth() && mouseY > modeKeybinding.y && mouseY < modeKeybinding.y + modeKeybinding.getWidth()) {
+        } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {
             this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText()), mouseX, mouseY);
-        } else if (mouseX > modeUseItem.x && mouseX < modeUseItem.x + modeUseItem.getWidth() && mouseY > modeUseItem.y && mouseY < modeUseItem.y + modeUseItem.getWidth()) {
+        } else if (mouseX > modeUseItem.getX() && mouseX < modeUseItem.getX() + modeUseItem.getWidth() && mouseY > modeUseItem.getY() && mouseY < modeUseItem.getY() + modeUseItem.getWidth()) {
             this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText()), mouseX, mouseY);
-        } else if (mouseX > modeCategory.x && mouseX < modeCategory.x + modeCategory.getWidth() && mouseY > modeCategory.y && mouseY < modeCategory.y + modeCategory.getWidth()) {
+        } else if (mouseX > modeCategory.getX() && mouseX < modeCategory.getX() + modeCategory.getWidth() && mouseY > modeCategory.getY() && mouseY < modeCategory.getY() + modeCategory.getWidth()) {
             this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_category").getVisualOrderText()), mouseX, mouseY);
         }
     }
