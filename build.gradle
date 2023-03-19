@@ -15,6 +15,8 @@ archivesBaseName = "MineMenu"
 
 minecraft {
     mappings channel: 'official', version: project.minecraft_version
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	
     runs {
         client {
             workingDirectory project.file('run')

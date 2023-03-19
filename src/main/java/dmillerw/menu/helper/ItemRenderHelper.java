@@ -16,7 +16,7 @@ public class ItemRenderHelper {
         y -= 8;
 
         if (!stack.isEmpty()) {
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, x, y);
+            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(poseStack, stack, x, y);
         }
         poseStack.popPose();
     }

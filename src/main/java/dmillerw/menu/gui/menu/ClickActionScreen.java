@@ -209,12 +209,12 @@ public class ClickActionScreen extends Screen {
 
         this.textCommand = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.clickAction_command"));
         this.textCommand.setMaxLength(32767);
-        this.textCommand.changeFocus(true);
+        this.textCommand.setFocused(true);
         this.textCommand.setValue((EditSessionData.clickAction instanceof ClickActionCommand) ? ((ClickActionCommand) EditSessionData.clickAction).command : "");
 
         this.textCategory = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable( "mine_menu.clickAction.category"));
         this.textCategory.setMaxLength(32767);
-        this.textCategory.changeFocus(true);
+        this.textCategory.setFocused(true);
         this.textCategory.setValue((EditSessionData.clickAction instanceof ClickActionCategory) ? ((ClickActionCategory) EditSessionData.clickAction).category : "");
 
         this.modeCommand.active = mode != 0;

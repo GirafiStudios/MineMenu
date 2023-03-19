@@ -79,7 +79,6 @@ public class ClientTickHandler {
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
 
@@ -139,7 +138,6 @@ public class ClientTickHandler {
         }
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
 
         poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
@@ -207,7 +205,6 @@ public class ClientTickHandler {
                 // Background
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                RenderSystem.disableTexture();
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
                 Tesselator tessellator = Tesselator.getInstance();
@@ -225,7 +222,6 @@ public class ClientTickHandler {
                 bufferBuilder.vertex(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.end();
-                RenderSystem.enableTexture();
                 RenderSystem.disableBlend();
 
                 // Text

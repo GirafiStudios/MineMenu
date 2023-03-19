@@ -68,7 +68,7 @@ public class PickIconScreen extends Screen {
         addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 - 75, this.height - 60 + 12, 150, 20).build());
         this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
-        this.textSearch.changeFocus(true);
+        this.textSearch.setFocused(true);
     }
 
     @Override
