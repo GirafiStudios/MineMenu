@@ -16,7 +16,7 @@ if (System.getenv().BUILD_NUMBER) {
     ext.buildnumber = ".B" + System.getenv().BUILD_NUMBER
 }
 
-version = "${minecraft_version}-${mod_version}"
+version = "${minecraft_version}-${mod_version}${buildnumber}"
 group = "dmillerw.menu"
 archivesBaseName = "MineMenu"
 
