@@ -9,8 +9,7 @@ import javax.annotation.Nonnull;
 
 public class ItemRenderHelper {
 
-    public static void renderItem(int x, int y, @Nonnull ItemStack stack) {
-        PoseStack poseStack = RenderSystem.getModelViewStack();
+    public static void renderItem(PoseStack poseStack, int x, int y, @Nonnull ItemStack stack) {
         poseStack.pushPose();
         x -= 8;
         y -= 8;

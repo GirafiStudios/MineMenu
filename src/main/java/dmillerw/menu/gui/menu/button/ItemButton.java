@@ -3,8 +3,6 @@ package dmillerw.menu.gui.menu.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.helper.ItemRenderHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +33,7 @@ public class ItemButton extends ExtendedButton {
             if (this.icon.isEmpty()) {
                 this.icon = new ItemStack(Blocks.STONE);
             }
-            ItemRenderHelper.renderItem(this.getX() + this.width / 2, this.getY() + this.height / 2, icon);
+            ItemRenderHelper.renderItem(poseStack, this.getX() + this.width / 2, this.getY() + this.height / 2, icon);
         }
     }
 }

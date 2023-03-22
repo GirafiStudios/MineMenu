@@ -43,20 +43,6 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            Minecraft mc = Minecraft.getInstance();
-
-            if (mc.level != null && !mc.options.hideGui && !mc.isPaused()) {
-                if (RadialMenuScreen.active) {
-                    renderButtonBackgrounds();
-                    renderItems();
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent event) {
         if (!(event instanceof RenderGuiOverlayEvent.Post)) {
             return;
@@ -64,7 +50,9 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            renderText(event.getPoseStack());
+            renderButtonBackgrounds();
+            renderItems();
+            //renderText(event.getPoseStack());
         }
     }
 
@@ -75,12 +63,12 @@ public class ClientTickHandler {
         poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
         RenderSystem.applyModelViewMatrix();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -147,7 +135,7 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
-        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
+        //poseStack.translate(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -164,7 +152,7 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(Math.toRadians(angle)));
             drawY = (length * Math.sin(Math.toRadians(angle)));
 
-            ItemRenderHelper.renderItem((int) drawY, (int) drawX, stack);
+            ItemRenderHelper.renderItem(poseStack, (int) drawY, (int) drawX, stack);
         }
 
         poseStack.popPose();

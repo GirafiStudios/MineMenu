@@ -47,7 +47,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
             if (!keybinding.getName().equalsIgnoreCase("key.open_menu")) {
                 if (!category.equals(lastCategory)) {
                     lastCategory = category;
-                    this.addEntry(new CategoryEntry(category));
+                    this.addEntry(new CategoryEntry(Component.translatable(category)));
                 }
 
                 int width = mc.font.width(I18n.get(keybinding.getName()));
@@ -72,10 +72,10 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
     @OnlyIn(Dist.CLIENT)
     public class CategoryEntry extends KeyBindsList.Entry {
-        final String name;
+        final Component name;
         private final int width;
 
-        public CategoryEntry(String name) {
+        public CategoryEntry(Component name) {
             this.name = name;
             this.width = GuiControlList.this.mc.font.width(this.name);
         }

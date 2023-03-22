@@ -84,10 +84,10 @@ public class PickItemScreen extends Screen {
 
         if (!stack.isEmpty()) {
             if (scale) {
-                poseStack.scale(2, 2, 2);
-                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
+                poseStack.scale(1.5F, 1.5F, 1.5F);
+                ItemRenderHelper.renderItem(poseStack, (int) ((this.guiLeft + x) / 1.5D) + 6, (int) ((this.guiTop + y) / 1.5D) + 6, stack);
             } else {
-                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
+                ItemRenderHelper.renderItem(poseStack, this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
 
