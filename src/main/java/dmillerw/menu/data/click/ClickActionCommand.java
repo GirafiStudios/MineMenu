@@ -22,14 +22,16 @@ public class ClickActionCommand implements ClickAction.IClickAction {
     public void onClicked() {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
-        String parsedCommand = command.replace("@p", player.getName().getString());
+        if (player != null) {
+            String parsedCommand = command.replace("@p", player.getName().getString());
 
-        if (clipboard) {
-            mc.keyboardHandler.setClipboard(parsedCommand);
-            player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
-        } else {
-            parsedCommand = parsedCommand.replaceAll("^/+", "");
-            player.connection.sendCommand(parsedCommand);
+            if (clipboard) {
+                mc.keyboardHandler.setClipboard(parsedCommand);
+                player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
+            } else {
+                parsedCommand = parsedCommand.replaceAll("^/+", "");
+                player.connection.sendCommand(parsedCommand);
+            }
         }
     }
 

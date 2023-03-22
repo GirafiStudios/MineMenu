@@ -1,6 +1,5 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
@@ -158,23 +157,22 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
-        this.renderBackground(matrixStack);
+    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
+        this.renderBackground(poseStack);
 
-        this.textSearch.render(matrixStack, mouseX, mouseY, partial);
+        this.textSearch.render(poseStack, mouseX, mouseY, partial);
 
-        super.render(matrixStack, mouseX, mouseY, partial);
+        super.render(poseStack, mouseX, mouseY, partial);
 
-        GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Select an Icon:");
+        GuiRenderHelper.renderHeaderAndFooter(poseStack, this, 25, 20, 5, "Select an Icon:");
 
-        drawList(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
+        drawList(poseStack, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
 
-    private void drawList(int x, int y, int mx, int my) {
+    private void drawList(PoseStack poseStack, int x, int y, int mx, int my) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;
-        PoseStack poseStack = RenderSystem.getModelViewStack();
 
         for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
             int drawX = i % MAX_COLUMN;

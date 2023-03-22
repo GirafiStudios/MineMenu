@@ -50,9 +50,10 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
+            PoseStack poseStack = event.getPoseStack();
             renderButtonBackgrounds();
-            renderItems();
-            //renderText(event.getPoseStack());
+            renderItems(poseStack);
+            renderText(poseStack);
         }
     }
 
@@ -131,11 +132,10 @@ public class ClientTickHandler {
         RenderSystem.applyModelViewMatrix();
     }
 
-    private static void renderItems() {
+    private static void renderItems(PoseStack poseStack) {
         Minecraft mc = Minecraft.getInstance();
-        PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
-        //poseStack.translate(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), 0);
+        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -158,7 +158,7 @@ public class ClientTickHandler {
         poseStack.popPose();
     }
 
-    private static void renderText(PoseStack matrixStack) {
+    private static void renderText(PoseStack poseStack) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
         Font fontRenderer = mc.font;
@@ -213,7 +213,7 @@ public class ClientTickHandler {
                 RenderSystem.disableBlend();
 
                 // Text
-                fontRenderer.drawShadow(matrixStack, string, drawX, drawY, 0xFFFFFF, false);
+                fontRenderer.drawShadow(poseStack, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }
