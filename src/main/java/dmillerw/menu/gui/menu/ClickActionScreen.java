@@ -7,6 +7,8 @@ import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.button.ItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -264,11 +266,11 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
-        this.renderBackground(matrixStack);
-        this.textCommand.render(matrixStack, mouseX, mouseY, partial);
-        this.textCategory.render(matrixStack, mouseX, mouseY, partial);
-        super.render(matrixStack, mouseX, mouseY, partial);
+    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+        this.renderBackground(guiGraphics);
+        this.textCommand.render(guiGraphics, mouseX, mouseY, partial);
+        this.textCategory.render(guiGraphics, mouseX, mouseY, partial);
+        super.render(guiGraphics, mouseX, mouseY, partial);
         String header = "";
         switch (mode) {
             case 0:
@@ -284,15 +286,15 @@ public class ClickActionScreen extends Screen {
                 header = "Enter a category";
                 break;
         }
-        GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, header);
+        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, header);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeUseItem.getX() && mouseX < modeUseItem.getX() + modeUseItem.getWidth() && mouseY > modeUseItem.getY() && mouseY < modeUseItem.getY() + modeUseItem.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeCategory.getX() && mouseX < modeCategory.getX() + modeCategory.getWidth() && mouseY > modeCategory.getY() && mouseY < modeCategory.getY() + modeCategory.getWidth()) {
-            this.renderTooltip(matrixStack, Collections.singletonList(Component.translatable("mine_menu.clickAction_category").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_category").getVisualOrderText()), mouseX, mouseY);
         }
     }
 }

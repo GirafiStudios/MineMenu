@@ -3,7 +3,7 @@ package dmillerw.menu.gui.menu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
@@ -60,10 +60,10 @@ public class PickKeyScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
-        this.controlList.render(matrixStack, mouseX, mouseY, partialTicks);
-        GuiComponent.drawCenteredString(matrixStack, this.font, "Select a Key:", this.width / 2, 8, 16777215);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        this.controlList.render(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.drawCenteredString(this.font, "Select a Key:", this.width / 2, 8, 16777215);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

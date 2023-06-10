@@ -37,7 +37,7 @@ public class PacketUseItem {
 
                 player.setItemSlot(slot, slotStack);
                 ItemStack heldItem = player.getItemInHand(hand);
-                InteractionResultHolder<ItemStack> useStack = heldItem.use(player.level, player, hand);
+                InteractionResultHolder<ItemStack> useStack = heldItem.use(player.level(), player, hand);
                 if (useStack.getResult() == InteractionResult.SUCCESS) {
                     player.getInventory().items.set(message.slot, useStack.getObject());
                 }

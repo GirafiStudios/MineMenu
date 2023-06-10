@@ -1,5 +1,6 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1+'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -11,25 +12,33 @@ if (System.getenv().BUILD_NUMBER) {
 
 version = "${minecraft_version}-${mod_version}${buildnumber}"
 group = "dmillerw.menu"
-archivesBaseName = "MineMenu"
+
+base {
+    archivesName = "MineMenu"
+}
 
 minecraft {
     mappings channel: 'official', version: project.minecraft_version
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-	
+	enableIdeaPrepareRuns = true
+	copyIdeResources = true
+	generateRunFolders = true
+
     runs {
         client {
             workingDirectory project.file('run')
+			
             mods {
-                minemenu {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
         server {
             workingDirectory project.file('run')
+
             mods {
-                minemenu {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -41,11 +50,20 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 
-jar {
-    manifest {
-        attributes([
-            "Implementation-Version": "${version}"
-        ])
+def resourceTargets = ['META-INF/mods.toml']
+def replaceProperties = [
+        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version: forge_version, forge_version_range: forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_version: mod_version,
+]
+
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
     }
 }
 

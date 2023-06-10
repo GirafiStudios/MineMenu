@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -34,40 +35,36 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        GuiRenderHelper.renderHeaderAndFooter(poseStack, this, 25, 20, 5, "Pick an Item:");
-        RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/container/inventory.png"));
-        this.blit(poseStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
+    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Pick an Item:");
+        guiGraphics.blit(new ResourceLocation("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
 
         // Draw inventory contents
         if (this.getMinecraft().player != null) {
-            poseStack.pushPose();
             for (int i1 = 0; i1 < this.getMinecraft().player.inventoryMenu.slots.size(); ++i1) {
                 Slot slot = this.getMinecraft().player.inventoryMenu.slots.get(i1);
                 if (mouseX - guiLeft >= slot.x && mouseX - guiLeft <= slot.x + 16 && mouseY - guiTop >= slot.y && mouseY - guiTop <= slot.y + 16) {
                     mousedOver = slot;
                 } else {
-                    this.drawSlot(poseStack, slot, false);
+                    this.drawSlot(guiGraphics, slot, false);
                 }
             }
             if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
-                poseStack.pushPose();
-                drawSlot(poseStack, mousedOver, true);
-                poseStack.popPose();
-                renderTooltip(poseStack, mousedOver.getItem(), mouseX, mouseY);
+                drawSlot(guiGraphics, mousedOver, true);
+                guiGraphics.renderTooltip(this.font, mousedOver.getItem(), mouseX, mouseY);
             }
-            poseStack.popPose();
         }
     }
 
-    private void drawSlot(@Nonnull PoseStack poseStack, Slot slot, boolean scale) {
+    private void drawSlot(@Nonnull GuiGraphics guiGraphics, Slot slot, boolean scale) {
         int x = slot.x;
         int y = slot.y;
         ItemStack stack = slot.getItem();
+        PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
         poseStack.translate(0.0F, 0.0F, 100.0F);
@@ -78,19 +75,18 @@ public class PickItemScreen extends Screen {
             if (pair != null) {
                 TextureAtlasSprite sprite = this.getMinecraft().getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
                 RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-                blit(poseStack, this.guiLeft + x, this.guiTop + y, 0, 16, 16, sprite);
+                guiGraphics.blit(this.guiLeft + x, this.guiTop + y, 0, 16, 16, sprite);
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
                 poseStack.scale(1.5F, 1.5F, 1.5F);
-                ItemRenderHelper.renderItem(poseStack, (int) ((this.guiLeft + x) / 1.5D) + 6, (int) ((this.guiTop + y) / 1.5D) + 6, stack);
+                ItemRenderHelper.renderItem(guiGraphics, (int) ((this.guiLeft + x) / 1.5D) + 6, (int) ((this.guiTop + y) / 1.5D) + 6, stack);
             } else {
-                ItemRenderHelper.renderItem(poseStack, this.guiLeft + x + 8, this.guiTop + y + 8, stack);
+                ItemRenderHelper.renderItem(guiGraphics, this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
-
         poseStack.popPose();
     }
 

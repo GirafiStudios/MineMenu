@@ -12,6 +12,7 @@ import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -50,10 +51,10 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            PoseStack poseStack = event.getPoseStack();
+            GuiGraphics guiGraphics = event.getGuiGraphics();
             renderButtonBackgrounds();
-            renderItems(poseStack);
-            renderText(poseStack);
+            renderItems(guiGraphics);
+            renderText(guiGraphics);
         }
     }
 
@@ -132,8 +133,9 @@ public class ClientTickHandler {
         RenderSystem.applyModelViewMatrix();
     }
 
-    private static void renderItems(PoseStack poseStack) {
+    private static void renderItems(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
 
@@ -152,13 +154,12 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(Math.toRadians(angle)));
             drawY = (length * Math.sin(Math.toRadians(angle)));
 
-            ItemRenderHelper.renderItem(poseStack, (int) drawY, (int) drawX, stack);
+            ItemRenderHelper.renderItem(guiGraphics, (int) drawY, (int) drawX, stack);
         }
-
         poseStack.popPose();
     }
 
-    private static void renderText(PoseStack poseStack) {
+    private static void renderText(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
         Font fontRenderer = mc.font;
@@ -213,7 +214,7 @@ public class ClientTickHandler {
                 RenderSystem.disableBlend();
 
                 // Text
-                fontRenderer.drawShadow(poseStack, string, drawX, drawY, 0xFFFFFF, false);
+                guiGraphics.drawString(Minecraft.getInstance().font, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }

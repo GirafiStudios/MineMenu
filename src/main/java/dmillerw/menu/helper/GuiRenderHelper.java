@@ -2,15 +2,16 @@ package dmillerw.menu.helper;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 
 public class GuiRenderHelper {
 
-    public static void renderHeaderAndFooter(PoseStack matrixStack, Screen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
-        matrixStack.pushPose();
+    public static void renderHeaderAndFooter(GuiGraphics guiGraphics, Screen base, int headerHeight, int footerHeight, int shadowDepth, String headerText) {
+        PoseStack poseStack = guiGraphics.pose();
 
+        poseStack.pushPose();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(770, 771, 0, 1);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
@@ -43,13 +44,12 @@ public class GuiRenderHelper {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
 
-        matrixStack.popPose();
-
-        matrixStack.pushPose();
-
-        RenderSystem.setShaderTexture(0, GuiComponent.BACKGROUND_LOCATION);
+        RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
+        poseStack.popPose();
+
+        poseStack.pushPose();
         float f = 32F;
 
         // HEADER
@@ -74,8 +74,8 @@ public class GuiRenderHelper {
 
         tessellator.end();
 
-        matrixStack.popPose();
+        poseStack.popPose();
 
-        GuiComponent.drawCenteredString(matrixStack, base.getMinecraft().font, headerText, base.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(base.getMinecraft().font, headerText, base.width / 2, 8, 16777215);
     }
 }

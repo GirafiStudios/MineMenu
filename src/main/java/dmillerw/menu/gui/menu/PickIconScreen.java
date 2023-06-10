@@ -6,6 +6,7 @@ import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.helper.GuiRenderHelper;
 import dmillerw.menu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -157,19 +158,19 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        this.renderBackground(poseStack);
+    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+        this.renderBackground(guiGraphics);
 
-        this.textSearch.render(poseStack, mouseX, mouseY, partial);
+        this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
 
-        super.render(poseStack, mouseX, mouseY, partial);
+        super.render(guiGraphics, mouseX, mouseY, partial);
 
-        GuiRenderHelper.renderHeaderAndFooter(poseStack, this, 25, 20, 5, "Select an Icon:");
+        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Select an Icon:");
 
-        drawList(poseStack, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
+        drawList(guiGraphics, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
 
-    private void drawList(PoseStack poseStack, int x, int y, int mx, int my) {
+    private void drawList(GuiGraphics guiGraphics, int x, int y, int mx, int my) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;
@@ -179,7 +180,6 @@ public class PickIconScreen extends Screen {
             int drawY = i / MAX_COLUMN;
 
             if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
-                poseStack.pushPose();
 
                 boolean scaled = false;
                 int actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
@@ -194,19 +194,19 @@ public class PickIconScreen extends Screen {
                 }
 
                 if (!scaled) {
-                    ItemRenderHelper.renderItem(poseStack, actualDrawX, actualDrawY, stacks.get(i));
+                    ItemRenderHelper.renderItem(guiGraphics, actualDrawX, actualDrawY, stacks.get(i));
                 }
 
-                poseStack.popPose();
             } else {
                 break;
             }
         }
 
         if (!highlighted.isEmpty()) {
+            PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.scale(2, 2, 2);
-            ItemRenderHelper.renderItem(poseStack, highlightedX, highlightedY, highlighted);
+            ItemRenderHelper.renderItem(guiGraphics, highlightedX, highlightedY, highlighted);
             poseStack.popPose();
         }
     }
