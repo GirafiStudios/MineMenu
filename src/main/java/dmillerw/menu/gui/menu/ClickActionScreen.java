@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class ClickActionScreen extends Screen {
-    @Nonnull
     public static ItemStack item;
     public static KeyMapping keyBinding;
     private static boolean toggle = false;

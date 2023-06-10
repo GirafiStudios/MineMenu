@@ -93,6 +93,7 @@ public class MenuItemScreen extends Screen {
 
         this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
         this.textTitle.setMaxLength(32767);
+        this.textTitle.setFocused(true);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
 
         this.buttonPickIcon.icon = EditSessionData.icon;
@@ -113,7 +114,7 @@ public class MenuItemScreen extends Screen {
             EditSessionData.title = textTitle.getValue().trim();
             return true;
         }
-        return false;
+        return true;
     }
 
     @Override
