@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -46,6 +47,10 @@ public class ClientTickHandler {
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent event) {
         if (!(event instanceof RenderGuiOverlayEvent.Post)) {
+            return;
+        }
+
+        if (!(event.getOverlay().id().equals(VanillaGuiOverlay.PLAYER_LIST.id()))) {
             return;
         }
 
