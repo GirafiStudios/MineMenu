@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.RadialMenuScreen;
-import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,22 +26,19 @@ public class KeyboardHandler {
     private KeyboardHandler() {
     }
 
-    public void fireKey(KeyMapping key) {
-        FIRED_KEYS.add(key);
-        KeyMapping.set(key.getKey(), true);
-        KeyReflectionHelper.setPressTime(key, 1);
-
+    public void fireKey(KeyMapping keyMapping) {
+        FIRED_KEYS.add(keyMapping);
+        keyMapping.setDown(true);
         ignoreNextTick = true;
     }
 
-    public void toggleKey(KeyMapping key) {
-        if (!TOGGLED_KEYS.contains(key)) {
-            TOGGLED_KEYS.add(key);
-            KeyMapping.set(key.getKey(), true);
-            KeyReflectionHelper.setPressTime(key, 1);
+    public void toggleKey(KeyMapping keyMapping) {
+        if (!TOGGLED_KEYS.contains(keyMapping)) {
+            TOGGLED_KEYS.add(keyMapping);
+            keyMapping.setDown(true);
         } else {
-            TOGGLED_KEYS.remove(key);
-            KeyMapping.set(key.getKey(), false);
+            TOGGLED_KEYS.remove(keyMapping);
+            keyMapping.setDown(false);
         }
         ignoreNextTick = true;
     }
@@ -117,7 +113,7 @@ public class KeyboardHandler {
         }
 
         for (KeyMapping keyBinding : TOGGLED_KEYS) {
-            KeyReflectionHelper.setPressTime(keyBinding, 1);
+            KeyMapping.click(keyBinding.getKey());
         }
     }
 }
