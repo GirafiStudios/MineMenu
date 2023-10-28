@@ -14,6 +14,7 @@ public class GuiRenderHelper {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(770, 771, 0, 1);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.disableTexture();
 
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
@@ -40,6 +41,7 @@ public class GuiRenderHelper {
 
         tessellator.end();
 
+        RenderSystem.enableTexture();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
 

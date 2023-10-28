@@ -43,6 +43,20 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            Minecraft mc = Minecraft.getInstance();
+
+            if (mc.level != null && !mc.options.hideGui && !mc.isPaused()) {
+                if (RadialMenuScreen.active) {
+                    renderButtonBackgrounds();
+                    renderItems();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent event) {
         if (!(event instanceof RenderGuiOverlayEvent.Post)) {
             return;
@@ -50,10 +64,7 @@ public class ClientTickHandler {
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            PoseStack poseStack = event.getPoseStack();
-            renderButtonBackgrounds();
-            renderItems(poseStack);
-            renderText(poseStack);
+            renderText(event.getPoseStack());
         }
     }
 
@@ -64,12 +75,13 @@ public class ClientTickHandler {
         poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
         RenderSystem.applyModelViewMatrix();
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -127,13 +139,15 @@ public class ClientTickHandler {
         }
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
 
         poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
     }
 
-    private static void renderItems(PoseStack poseStack) {
+    private static void renderItems() {
         Minecraft mc = Minecraft.getInstance();
+        PoseStack poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
         poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
 
@@ -152,13 +166,13 @@ public class ClientTickHandler {
             drawX = (length * Math.cos(Math.toRadians(angle)));
             drawY = (length * Math.sin(Math.toRadians(angle)));
 
-            ItemRenderHelper.renderItem(poseStack, (int) drawY, (int) drawX, stack);
+            ItemRenderHelper.renderItem((int) drawY, (int) drawX, stack);
         }
 
         poseStack.popPose();
     }
 
-    private static void renderText(PoseStack poseStack) {
+    private static void renderText(PoseStack matrixStack) {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
         Font fontRenderer = mc.font;
@@ -193,6 +207,7 @@ public class ClientTickHandler {
                 // Background
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                RenderSystem.disableTexture();
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
                 Tesselator tessellator = Tesselator.getInstance();
@@ -210,10 +225,11 @@ public class ClientTickHandler {
                 bufferBuilder.vertex(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
 
                 tessellator.end();
+                RenderSystem.enableTexture();
                 RenderSystem.disableBlend();
 
                 // Text
-                fontRenderer.drawShadow(poseStack, string, drawX, drawY, 0xFFFFFF, false);
+                fontRenderer.drawShadow(matrixStack, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }

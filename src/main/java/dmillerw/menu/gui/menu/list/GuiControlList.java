@@ -16,7 +16,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,7 +44,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
             if (!keybinding.getName().equalsIgnoreCase("key.open_menu")) {
                 if (!category.equals(lastCategory)) {
                     lastCategory = category;
-                    this.addEntry(new CategoryEntry(Component.translatable(category)));
+                    this.addEntry(new CategoryEntry(category));
                 }
 
                 int width = mc.font.width(I18n.get(keybinding.getName()));
@@ -70,23 +69,28 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
     @OnlyIn(Dist.CLIENT)
     public class CategoryEntry extends KeyBindsList.Entry {
-        final Component name;
+        private final String category;
         private final int width;
 
-        public CategoryEntry(Component name) {
-            this.name = name;
-            this.width = GuiControlList.this.mc.font.width(this.name);
+        CategoryEntry(String category) {
+            this.category = I18n.get(category);
+            this.width = GuiControlList.this.mc.font.width(this.category);
         }
 
         @Override
         public void render(@Nonnull PoseStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.font.draw(matrixStack, this.name, (float) (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (float) (p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
+            GuiControlList.this.mc.font.draw(matrixStack, this.category, (float) (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (float) (p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
         }
 
         @Override
         @Nonnull
         public List<? extends GuiEventListener> children() {
             return Collections.emptyList();
+        }
+
+        @Override
+        public boolean changeFocus(boolean changeFocus) {
+            return false;
         }
 
         @Override
@@ -100,39 +104,34 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
                 @Override
                 public void updateNarration(@Nonnull NarrationElementOutput output) {
-                    output.add(NarratedElementType.TITLE, CategoryEntry.this.name);
+                    output.add(NarratedElementType.TITLE, CategoryEntry.this.category);
                 }
             });
-        }
-
-        @Override
-        public void refreshEntry() {
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     public class KeyEntry extends KeyBindsList.Entry {
-        private final KeyMapping key;
-        private final Component name;
+        private final KeyMapping keyBinding;
+        private final Component description;
         private final Button buttonSelect;
 
         KeyEntry(KeyMapping keyBinding) {
-            this.key = keyBinding;
-            this.name = Component.translatable(keyBinding.getName());
-            this.buttonSelect = Button.builder(name, (screen) -> {
+            this.keyBinding = keyBinding;
+            this.description = Component.translatable(keyBinding.getName());
+            this.buttonSelect = new Button(0, 0, 95, 18, description, (screen) -> {
                 ClickActionScreen.keyBinding = keyBinding;
                 ScreenStack.pop();
-            }).bounds(0, 0, 95, 18).build();
-            this.refreshEntry();
+            });
         }
 
         @Override
         public void render(@Nonnull PoseStack matrixStack, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            GuiControlList.this.mc.font.drawShadow(matrixStack, this.name, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
-            this.buttonSelect.setX(p_230432_4_ + 105);
-            this.buttonSelect.setY(p_230432_3_);
-            this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            this.buttonSelect.renderWidget(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
+            GuiControlList.this.mc.font.drawShadow(matrixStack, this.description, (float) (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (float) (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
+            this.buttonSelect.x = p_230432_4_ + 105;
+            this.buttonSelect.y = p_230432_3_;
+            this.buttonSelect.setMessage(this.keyBinding.getTranslatedKeyMessage());
+            this.buttonSelect.renderButton(matrixStack, p_230432_7_, p_230432_8_, p_230432_10_);
         }
 
         @Override
@@ -155,20 +154,6 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         @Override
         public boolean mouseReleased(double x, double y, int button) {
             return buttonSelect.mouseReleased(x, y, button);
-        }
-
-        @Override
-        protected void refreshEntry() {
-            this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            MutableComponent mutablecomponent = Component.empty();
-            if (!this.key.isUnbound()) {
-                for(KeyMapping keymapping : GuiControlList.this.minecraft.options.keyMappings) {
-                    if ((keymapping != this.key && this.key.same(keymapping)) || keymapping.hasKeyModifierConflict(this.key)) {
-                        mutablecomponent.append(Component.translatable(keymapping.getName()));
-                    }
-                }
-            }
-
         }
     }
 }

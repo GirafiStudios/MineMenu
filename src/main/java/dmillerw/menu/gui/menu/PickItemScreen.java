@@ -34,64 +34,65 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        GuiRenderHelper.renderHeaderAndFooter(poseStack, this, 25, 20, 5, "Pick an Item:");
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Pick an Item:");
         RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/container/inventory.png"));
-        this.blit(poseStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
+        this.blit(matrixStack, guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
 
         // Draw inventory contents
         if (this.getMinecraft().player != null) {
-            poseStack.pushPose();
+            matrixStack.pushPose();
             for (int i1 = 0; i1 < this.getMinecraft().player.inventoryMenu.slots.size(); ++i1) {
                 Slot slot = this.getMinecraft().player.inventoryMenu.slots.get(i1);
                 if (mouseX - guiLeft >= slot.x && mouseX - guiLeft <= slot.x + 16 && mouseY - guiTop >= slot.y && mouseY - guiTop <= slot.y + 16) {
                     mousedOver = slot;
                 } else {
-                    this.drawSlot(poseStack, slot, false);
+                    this.drawSlot(matrixStack, slot, false);
                 }
             }
             if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
-                poseStack.pushPose();
-                drawSlot(poseStack, mousedOver, true);
-                poseStack.popPose();
-                renderTooltip(poseStack, mousedOver.getItem(), mouseX, mouseY);
+                matrixStack.pushPose();
+                drawSlot(matrixStack, mousedOver, true);
+                matrixStack.popPose();
+                renderTooltip(matrixStack, mousedOver.getItem(), mouseX, mouseY);
             }
-            poseStack.popPose();
+            matrixStack.popPose();
         }
     }
 
-    private void drawSlot(@Nonnull PoseStack poseStack, Slot slot, boolean scale) {
+    private void drawSlot(@Nonnull PoseStack matrixStack, Slot slot, boolean scale) {
         int x = slot.x;
         int y = slot.y;
         ItemStack stack = slot.getItem();
 
-        poseStack.pushPose();
-        poseStack.translate(0.0F, 0.0F, 100.0F);
+        this.setBlitOffset(100);
+        itemRenderer.blitOffset = 100.0F;
 
         if (stack.isEmpty()) {
             Pair<ResourceLocation, ResourceLocation> pair = slot.getNoItemIcon();
 
             if (pair != null) {
                 TextureAtlasSprite sprite = this.getMinecraft().getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
-                RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-                blit(poseStack, this.guiLeft + x, this.guiTop + y, 0, 16, 16, sprite);
+                RenderSystem.setShaderTexture(0, sprite.atlas().location());
+                blit(matrixStack, this.guiLeft + x, this.guiTop + y, this.getBlitOffset(), 16, 16, sprite);
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
-                poseStack.scale(1.5F, 1.5F, 1.5F);
-                ItemRenderHelper.renderItem(poseStack, (int) ((this.guiLeft + x) / 1.5D) + 6, (int) ((this.guiTop + y) / 1.5D) + 6, stack);
+                matrixStack.scale(2, 2, 2);
+                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             } else {
-                ItemRenderHelper.renderItem(poseStack, this.guiLeft + x + 8, this.guiTop + y + 8, stack);
+                ItemRenderHelper.renderItem(this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
 
-        poseStack.popPose();
+        itemRenderer.blitOffset = 0.0F;
+        this.setBlitOffset(0);
     }
 
     @Override
@@ -114,6 +115,7 @@ public class PickItemScreen extends Screen {
 
     @Override
     public void removed() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

@@ -2,9 +2,7 @@ package dmillerw.menu;
 
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ConfigHandler;
-import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +15,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import java.io.File;
 
 @Mod(value = MineMenu.MOD_ID)
-public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
+public class MineMenu {
     public static final String MOD_ID = "minemenu";
     public static final String MOD_NAME = "MineMenu";
     public static File menuFolder = new File(FMLPaths.GAMEDIR.get().toFile(), MOD_ID);
@@ -26,7 +24,7 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
     public MineMenu() {
         final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::setupCommon);
-        modBus.addListener(EventPriority.LOWEST, this::setupMenuLoader);
+        modBus.addListener(this::setupClient);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.spec);
     }
@@ -35,9 +33,7 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
         PacketHandler.initialize();
     }
 
-    private void setupMenuLoader(FMLClientSetupEvent event) {
-        KeyReflectionHelper.gatherFields();
-
+    private void setupClient(FMLClientSetupEvent event) {
         if (!menuFolder.exists()) {
             menuFolder.mkdir();
         }
@@ -45,6 +41,6 @@ public class MineMenu /*implements ISelectiveResourceReloadListener*/ {
         if (!menuFile.exists()) {
             MenuLoader.save(menuFile);
         }
-        event.enqueueWork(() -> MenuLoader.load(menuFile));
+        MenuLoader.load(menuFile);
     }
 }

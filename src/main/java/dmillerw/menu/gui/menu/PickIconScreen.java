@@ -1,5 +1,6 @@
 package dmillerw.menu.gui.menu;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
@@ -48,7 +49,10 @@ public class PickIconScreen extends Screen {
         for (Item registryItem : ForgeRegistries.ITEMS) {
             ItemStack stack = new ItemStack(registryItem);
             if (!stack.isEmpty() && stack != null) {
-                list.add(stack);
+                Item item = stack.getItem();
+                if (item.getItemCategory() != null) {
+                    item.fillItemCategory(item.getItemCategory(), list);
+                }
             }
         }
     }
@@ -61,18 +65,20 @@ public class PickIconScreen extends Screen {
 
     @Override
     public void init() {
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 - 75, this.height - 60 + 12, 150, 20).build());
+        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 - 75, this.height - 60 + 12, 150, 20, Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()));
         this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
-        this.textSearch.setFocused(true);
+        this.textSearch.changeFocus(true);
     }
 
     @Override
     public void removed() {
-
+        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -157,22 +163,23 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partial) {
-        this.renderBackground(poseStack);
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
+        this.renderBackground(matrixStack);
 
-        this.textSearch.render(poseStack, mouseX, mouseY, partial);
+        this.textSearch.render(matrixStack, mouseX, mouseY, partial);
 
-        super.render(poseStack, mouseX, mouseY, partial);
+        super.render(matrixStack, mouseX, mouseY, partial);
 
-        GuiRenderHelper.renderHeaderAndFooter(poseStack, this, 25, 20, 5, "Select an Icon:");
+        GuiRenderHelper.renderHeaderAndFooter(matrixStack, this, 25, 20, 5, "Select an Icon:");
 
-        drawList(poseStack, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
+        drawList(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
 
-    private void drawList(PoseStack poseStack, int x, int y, int mx, int my) {
+    private void drawList(int x, int y, int mx, int my) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;
+        PoseStack poseStack = RenderSystem.getModelViewStack();
 
         for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
             int drawX = i % MAX_COLUMN;
@@ -194,7 +201,7 @@ public class PickIconScreen extends Screen {
                 }
 
                 if (!scaled) {
-                    ItemRenderHelper.renderItem(poseStack, actualDrawX, actualDrawY, stacks.get(i));
+                    ItemRenderHelper.renderItem(actualDrawX, actualDrawY, stacks.get(i));
                 }
 
                 poseStack.popPose();
@@ -206,7 +213,7 @@ public class PickIconScreen extends Screen {
         if (!highlighted.isEmpty()) {
             poseStack.pushPose();
             poseStack.scale(2, 2, 2);
-            ItemRenderHelper.renderItem(poseStack, highlightedX, highlightedY, highlighted);
+            ItemRenderHelper.renderItem(highlightedX, highlightedY, highlighted);
             poseStack.popPose();
         }
     }
