@@ -3,6 +3,7 @@ package dmillerw.menu;
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ConfigHandler;
 import dmillerw.menu.network.PacketHandler;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -24,7 +25,7 @@ public class MineMenu {
     public MineMenu() {
         final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::setupCommon);
-        modBus.addListener(this::setupClient);
+        modBus.addListener(EventPriority.LOWEST, this::setupClient);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.spec);
     }
@@ -41,6 +42,6 @@ public class MineMenu {
         if (!menuFile.exists()) {
             MenuLoader.save(menuFile);
         }
-        MenuLoader.load(menuFile);
+        event.enqueueWork(() -> MenuLoader.load(menuFile));
     }
 }
