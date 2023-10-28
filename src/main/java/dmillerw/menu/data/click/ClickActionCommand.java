@@ -3,6 +3,7 @@ package dmillerw.menu.data.click;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.client.ClientCommandHandler;
 
 public class ClickActionCommand implements ClickAction.IClickAction {
     public final String command;
@@ -29,9 +30,12 @@ public class ClickActionCommand implements ClickAction.IClickAction {
                 mc.keyboardHandler.setClipboard(parsedCommand);
                 player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
             } else {
-                parsedCommand = parsedCommand.replaceAll("^/+", "");
-                player.connection.sendCommand(parsedCommand);
-            }
+                if (parsedCommand.startsWith("//")) { //Special Case for World Edit //commands
+                    parsedCommand = parsedCommand.replace("//", "/");
+                } else {
+                    parsedCommand = parsedCommand.replaceAll("^/+", "");
+                }
+                player.connection.sendUnsignedCommand(parsedCommand);}
         }
     }
 
