@@ -113,7 +113,7 @@ public class KeyboardHandler {
         }
 
         for (KeyMapping keyBinding : TOGGLED_KEYS) {
-            KeyMapping.click(keyBinding);
+            KeyMapping.click(keyBinding.getKey());
         }
     }
 }
