@@ -3,7 +3,6 @@ package dmillerw.menu.gui.menu.button;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.helper.ItemRenderHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -23,18 +22,18 @@ public class ItemButton extends ExtendedButton {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (this.visible) {
-            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            int k = this.getYImage(this.isHovered);
+            super.renderWidget(poseStack, mouseX, mouseY, partial);
+            this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+            int k = !this.active ? 0 : (this.isHoveredOrFocused() ? 2 : 1);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            ScreenUtils.blitWithBorder(poseStack, WIDGETS_LOCATION, this.x, this.y, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.getBlitOffset());
-            this.renderBg(poseStack, Minecraft.getInstance(), mouseX, mouseY);
+            ScreenUtils.blitWithBorder(poseStack, WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, 0);
 
             if (this.icon.isEmpty()) {
                 this.icon = new ItemStack(Blocks.STONE);
             }
-            ItemRenderHelper.renderItem(this.x + this.width / 2, this.y + this.height / 2, icon);
+            ItemRenderHelper.renderItem(poseStack, this.getX() + this.width / 2, this.getY() + this.height / 2, icon);
         }
     }
 }

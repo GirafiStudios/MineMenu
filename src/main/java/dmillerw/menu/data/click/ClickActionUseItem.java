@@ -27,12 +27,14 @@ public class ClickActionUseItem implements ClickAction.IClickAction {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
 
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
+        if (player != null) {
+            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                ItemStack stack = player.getInventory().getItem(i);
 
-            if (!stack.isEmpty() && this.stack.sameItem(stack)) {
-                stack.use(player.level, player, InteractionHand.MAIN_HAND);
-                PacketHandler.CHANNEL.sendToServer(new PacketUseItem(i));
+                if (!stack.isEmpty() && this.stack.sameItem(stack)) {
+                    stack.use(player.level, player, InteractionHand.MAIN_HAND);
+                    PacketHandler.CHANNEL.sendToServer(new PacketUseItem(i));
+                }
             }
         }
     }

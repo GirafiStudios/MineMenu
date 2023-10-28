@@ -55,9 +55,7 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public void init() {
-        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
-
-        addRenderableWidget(this.buttonConfirm = new Button(this.width / 2 - 4 - 150, this.height - 60, 100, 20, Component.translatable("gui.done"), (screen) -> {
+        addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
             }
@@ -70,16 +68,16 @@ public class MenuItemScreen extends Screen {
             }
             MenuLoader.save(MineMenu.menuFile);
             Minecraft.getInstance().setScreen(null);
-        }));
-        addRenderableWidget(this.buttonCancel = new Button(this.width / 2 + 4 + 50, this.height - 60, 100, 20, Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)));
-        addRenderableWidget(this.buttonDelete = new Button(this.width / 2 - 50, this.height - 60, 100, 20, Component.translatable("gui.delete"), (screen) -> {
+        }).bounds(this.width / 2 - 4 - 150, this.height - 60, 100, 20).build());
+        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)).bounds(this.width / 2 + 4 + 50, this.height - 60, 100, 20).build());
+        addRenderableWidget(this.buttonDelete = Button.builder(Component.translatable("gui.delete"), (screen) -> {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
                 MenuLoader.save(MineMenu.menuFile);
                 Minecraft.getInstance().setScreen(null);
             }
-        }));
+        }).bounds(this.width / 2 - 50, this.height - 60, 100, 20).build());
         addRenderableWidget(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));
 
         Component string = Component.translatable("mine_menu.action");
@@ -90,7 +88,7 @@ public class MenuItemScreen extends Screen {
                 string = Component.translatable("mine_menu.keybind");
             }
         }
-        addRenderableWidget(this.buttonClickAction = new Button(this.width / 2 - 20, this.height / 2, 100, 20, string, (screen) -> ScreenStack.push(new ClickActionScreen())));
+        addRenderableWidget(this.buttonClickAction = Button.builder(string, (screen) -> ScreenStack.push(new ClickActionScreen())).bounds(this.width / 2 - 20, this.height / 2, 100, 20).build());
 
         this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
         this.textTitle.setMaxLength(32767);
@@ -101,7 +99,6 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public void removed() {
-        this.getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
