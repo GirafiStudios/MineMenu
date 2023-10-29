@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.menu.RadialMenu;
 import dmillerw.menu.gui.RadialMenuScreen;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +21,6 @@ public class KeyboardHandler {
     public static final KeyboardHandler INSTANCE = new KeyboardHandler();
     private static boolean lastWheelState = false;
     private static final List<KeyMapping> FIRED_KEYS = new ArrayList<>();
-    private static final List<KeyMapping> TOGGLED_KEYS = new ArrayList<>();
     private static boolean ignoreNextTick = false;
 
     private KeyboardHandler() {
@@ -28,25 +28,18 @@ public class KeyboardHandler {
 
     public void fireKey(KeyMapping keyMapping) {
         FIRED_KEYS.add(keyMapping);
-        keyMapping.setDown(true);
-
+        activateKeybind(keyMapping, true);
         ignoreNextTick = true;
     }
 
     public void toggleKey(KeyMapping keyMapping) {
-        if (!TOGGLED_KEYS.contains(keyMapping)) {
-            TOGGLED_KEYS.add(keyMapping);
-            keyMapping.setDown(true);
-        } else {
-            TOGGLED_KEYS.remove(keyMapping);
-            keyMapping.setDown(false);
-        }
+        activateKeybind(keyMapping, true);
         ignoreNextTick = true;
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
+        if (event.phase == TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT) {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
@@ -101,20 +94,14 @@ public class KeyboardHandler {
         Iterator<KeyMapping> iterator = FIRED_KEYS.iterator();
         while (iterator.hasNext()) {
             KeyMapping keyBinding = iterator.next();
-            KeyMapping.set(keyBinding.getKey(), false);
+            activateKeybind(keyBinding, false);
             iterator.remove();
         }
+    }
 
-        iterator = TOGGLED_KEYS.iterator();
-        while (iterator.hasNext()) {
-            KeyMapping keyBinding = iterator.next();
-            if ((keyBinding.getKey().getValue() >= 0 ? keyBinding.consumeClick() : InputConstants.isKeyDown(handle, keyBinding.getKey().getValue() + 100)) || mc.screen != null) {
-                iterator.remove();
-            }
-        }
-
-        for (KeyMapping keyBinding : TOGGLED_KEYS) {
-            KeyMapping.click(keyBinding.getKey());
-        }
+    public static void activateKeybind(KeyMapping keyMapping, boolean setDown) {
+        //if (keyMapping.getCategory().equals("key.categories.movement"))
+            keyMapping.setDown(setDown);
+        KeyReflectionHelper.setClickCount(keyMapping, 1);
     }
 }

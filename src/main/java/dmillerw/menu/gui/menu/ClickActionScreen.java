@@ -26,8 +26,8 @@ public class ClickActionScreen extends Screen {
     @Nonnull
     public static ItemStack item;
     public static KeyMapping keyBinding;
-    private static boolean toggle = false;
-    private static boolean clipboard = false;
+    private boolean toggle;
+    private boolean clipboard;
     private EditBox textCommand;
     private EditBox textCategory;
     private ExtendedButton modeCommand;
@@ -122,8 +122,9 @@ public class ClickActionScreen extends Screen {
         } else {
             keyToggleString = Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press");
         }
-        addRenderableWidget(this.keybindToggleButton = new Button(this.width / 2 - 75, 80, 150, 20, keyToggleString, (screen) -> {
+        addRenderableWidget(this.keybindToggleButton = new Button(this.width / 2 - 75, 80, 150, 20, keyToggleString, (button) -> {
             toggle = !toggle;
+            ClickActionKey.toggle = toggle;
             keybindToggleButton.setMessage(Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press"));
         }));
 
