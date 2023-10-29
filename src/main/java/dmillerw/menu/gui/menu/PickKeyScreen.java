@@ -1,6 +1,5 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.list.GuiControlList;
 import net.minecraft.client.gui.GuiGraphics;

@@ -1,6 +1,5 @@
 package dmillerw.menu.gui.menu;
 
-import com.blamejared.controlling.client.NewKeyBindsList;
 import dmillerw.menu.data.click.*;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
@@ -17,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
+import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class ClickActionScreen extends Screen {
+    public static final boolean IS_CONTROLLING_LOADED = ModList.get().isLoaded("controlling");
     public static ItemStack item;
     public static KeyMapping keyBinding;
     private static boolean toggle = false;
@@ -113,7 +114,11 @@ public class ClickActionScreen extends Screen {
                 keyString = Component.translatable("mine_menu.selectKey");
             }
         }
-        addRenderableWidget(this.keybindButton = Button.builder(keyString, (button) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+        if (IS_CONTROLLING_LOADED) {
+            addRenderableWidget(this.keybindButton = Button.builder(keyString, (button) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+        } else {
+            addRenderableWidget(this.keybindButton = Button.builder(keyString, (button) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+        }
 
         Component keyToggleString;
         if (EditSessionData.clickAction instanceof ClickActionKey) {

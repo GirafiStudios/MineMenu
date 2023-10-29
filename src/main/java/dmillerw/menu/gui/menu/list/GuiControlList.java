@@ -79,8 +79,8 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics guiGraphics, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (p_230432_3_ + p_230432_6_ - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
+        public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (x + rowWidth - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
         }
 
         @Override
@@ -127,12 +127,12 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics guiGraphics, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (p_230432_4_ + 90 - GuiControlList.this.maxWidth), (p_230432_3_ + p_230432_6_ / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
-            this.buttonSelect.setX(p_230432_4_ + 105);
-            this.buttonSelect.setY(p_230432_3_);
+        public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (y + 90 - GuiControlList.this.maxWidth), (x + rowWidth / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
+            this.buttonSelect.setX(y + 105);
+            this.buttonSelect.setY(x);
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            this.buttonSelect.renderWidget(guiGraphics, p_230432_7_, p_230432_8_, p_230432_10_);
+            this.buttonSelect.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
         @Override
