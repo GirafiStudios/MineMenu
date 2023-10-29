@@ -1,12 +1,13 @@
 package dmillerw.menu.data.click;
 
 import dmillerw.menu.handler.KeyboardHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
 public class ClickActionKey implements ClickAction.IClickAction {
     public final String key;
-    public boolean toggle;
+    public static boolean toggle;
 
     public ClickActionKey(String key, boolean toggle) {
         this.key = key;
@@ -48,8 +49,8 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public void onRemoved() {
         KeyMapping keyBinding = getKeyBinding();
         if (keyBinding != null) {
-            KeyMapping.set(keyBinding.getKey(), false);
+            keyBinding.setDown(false);
+            KeyReflectionHelper.setClickCount(keyBinding, 0);
         }
-        toggle = !toggle;
     }
 }

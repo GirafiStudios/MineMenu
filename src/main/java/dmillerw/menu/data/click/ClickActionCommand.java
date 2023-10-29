@@ -37,6 +37,6 @@ public class ClickActionCommand implements ClickAction.IClickAction {
 
     @Override
     public void onRemoved() {
-        clipboard = !clipboard;
+
     }
 }
