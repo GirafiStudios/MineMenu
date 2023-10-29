@@ -1,6 +1,5 @@
 package dmillerw.menu.gui.menu;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.MineMenu;
 import dmillerw.menu.data.click.ClickActionCommand;
 import dmillerw.menu.data.click.ClickActionKey;

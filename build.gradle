@@ -5,6 +5,13 @@ plugins {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+repositories {
+  maven { 
+    name = "Controlling"
+    url = "https://maven.blamejared.com" 
+  }
+}
+
 ext.buildnumber=""
 if (System.getenv().BUILD_NUMBER) {
     ext.buildnumber = ".B" + System.getenv().BUILD_NUMBER
@@ -27,6 +34,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 			
             mods {
                 "${mod_id}" {
@@ -36,6 +45,8 @@ minecraft {
         }
         server {
             workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             mods {
                 "${mod_id}" {
@@ -48,6 +59,9 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly fg.deobf("com.blamejared.controlling:Controlling-forge-${minecraft_version}:${controlling_version}")
+    runtimeOnly fg.deobf("com.blamejared.controlling:Controlling-forge-${minecraft_version}:${controlling_version}")
+    implementation fg.deobf("com.blamejared.searchables:Searchables-forge-${minecraft_version}:${searchables_version}")
 }
 
 def resourceTargets = ['META-INF/mods.toml']

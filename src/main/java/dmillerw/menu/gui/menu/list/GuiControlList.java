@@ -1,7 +1,6 @@
 package dmillerw.menu.gui.menu.list;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dmillerw.menu.gui.ScreenStack;
 import dmillerw.menu.gui.menu.ClickActionScreen;
 import net.minecraft.client.KeyMapping;
