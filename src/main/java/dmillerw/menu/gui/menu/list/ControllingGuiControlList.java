@@ -33,7 +33,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
     public List<KeyBindsList.Entry> allEntries;
 
     public ControllingGuiControlList(Screen parent, Minecraft mc) {
-        super(mc, parent.width, parent.height, 45, parent.height - 55, 20);
+        super(mc, parent.width, parent.height, 45, parent.height - 25, 20);
         this.mc = mc;
         children().clear();
         allEntries = new ArrayList<>();

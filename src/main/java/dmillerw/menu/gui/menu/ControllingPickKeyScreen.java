@@ -47,7 +47,7 @@ public class ControllingPickKeyScreen extends Screen {
         int leftX = centerX - Button.DEFAULT_WIDTH - groupPadding;
         int rightX = centerX + groupPadding;
 
-        int bottomY = this.height - 29;
+        int bottomY = this.height + 1;
         int rowSpacing = 24;
         int topRowY = bottomY - rowSpacing;
 
