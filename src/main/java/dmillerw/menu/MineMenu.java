@@ -2,6 +2,7 @@ package dmillerw.menu;
 
 import dmillerw.menu.data.json.MenuLoader;
 import dmillerw.menu.handler.ConfigHandler;
+import dmillerw.menu.helper.KeyReflectionHelper;
 import dmillerw.menu.network.PacketHandler;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -31,6 +32,7 @@ public class MineMenu {
     }
 
     private void setupCommon(FMLCommonSetupEvent event) {
+        KeyReflectionHelper.gatherFields();
         PacketHandler.initialize();
     }
 

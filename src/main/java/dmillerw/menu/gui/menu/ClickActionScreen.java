@@ -91,7 +91,7 @@ public class ClickActionScreen extends Screen {
         }).bounds(this.width / 2 - 4 - 150, this.height - 60, 150, 20).build());
 
 
-        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (button) -> ScreenStack.pop()).bounds(this.width / 2 + 4, this.height - 60, 150, 20).build());
+        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 + 4, this.height - 60, 150, 20).build());
 
         Component commandString;
         if (EditSessionData.clickAction instanceof ClickActionCommand) {
@@ -99,7 +99,7 @@ public class ClickActionScreen extends Screen {
         } else {
             commandString = Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send");
         }
-        addRenderableWidget(this.commandClipboardButton = Button.builder(commandString, (button) -> {
+        addRenderableWidget(this.commandClipboardButton = Button.builder(commandString, (screen) -> {
             clipboard = !clipboard;
             commandClipboardButton.setMessage(Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send"));
         }).bounds(this.width / 2 - 75, 80, 150, 20).build());
@@ -115,9 +115,9 @@ public class ClickActionScreen extends Screen {
             }
         }
         if (IS_CONTROLLING_LOADED) {
-            addRenderableWidget(this.keybindButton = Button.builder(keyString, (button) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+            addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
         } else {
-            addRenderableWidget(this.keybindButton = Button.builder(keyString, (button) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+            addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
         }
 
         Component keyToggleString;
@@ -126,8 +126,9 @@ public class ClickActionScreen extends Screen {
         } else {
             keyToggleString = Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press");
         }
-        addRenderableWidget(this.keybindToggleButton = Button.builder(keyToggleString, (button) -> {
+        addRenderableWidget(this.keybindToggleButton = Button.builder(keyToggleString, (screen) -> {
             toggle = !toggle;
+            ClickActionKey.toggle = toggle;
             keybindToggleButton.setMessage(Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press"));
         }).bounds(this.width / 2 - 75, 80, 150, 20).build());
 
@@ -141,9 +142,9 @@ public class ClickActionScreen extends Screen {
                 itemString = Component.translatable("mine_menu.selectSlot");
             }
         }
-        addRenderableWidget(this.selectItemButton = Button.builder(itemString, (button) -> ScreenStack.push(new PickItemScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+        addRenderableWidget(this.selectItemButton = Button.builder(itemString, (screen) -> ScreenStack.push(new PickItemScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
 
-        addRenderableWidget(this.modeCommand = new ItemButton(this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER), (button) -> {
+        addRenderableWidget(this.modeCommand = new ItemButton(this.width / 2 - 55, this.height - 90, 20, 20, new ItemStack(Items.PAPER), (screen) -> {
             // Command
             mode = 0;
 
@@ -160,7 +161,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = false;
         }));
 
-        addRenderableWidget(this.modeKeybinding = new ItemButton(this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.OAK_BUTTON), (button) -> {
+        addRenderableWidget(this.modeKeybinding = new ItemButton(this.width / 2 - 25, this.height - 90, 20, 20, new ItemStack(Blocks.OAK_BUTTON), (screen) -> {
             // Keybinding
             mode = 1;
 
@@ -177,7 +178,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = true;
         }));
 
-        addRenderableWidget(this.modeUseItem = new ItemButton(this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD), (button) -> {
+        addRenderableWidget(this.modeUseItem = new ItemButton(this.width / 2 + 5, this.height - 90, 20, 20, new ItemStack(Items.DIAMOND_SWORD), (screen) -> {
             // Select item
             mode = 2;
 
@@ -194,7 +195,7 @@ public class ClickActionScreen extends Screen {
             keybindToggleButton.visible = false;
         }));
 
-        addRenderableWidget(this.modeCategory = new ItemButton(this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST), (button) -> {
+        addRenderableWidget(this.modeCategory = new ItemButton(this.width / 2 + 35, this.height - 90, 20, 20, new ItemStack(Blocks.CHEST), (screen) -> {
             // Category
             mode = 3;
 
