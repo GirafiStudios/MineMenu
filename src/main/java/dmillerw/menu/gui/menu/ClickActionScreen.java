@@ -3,6 +3,7 @@ package dmillerw.menu.gui.menu;
 import dmillerw.menu.data.click.*;
 import dmillerw.menu.data.session.EditSessionData;
 import dmillerw.menu.gui.ScreenStack;
+import dmillerw.menu.gui.controlling.ControllingPickKeyScreen;
 import dmillerw.menu.gui.menu.button.ItemButton;
 import dmillerw.menu.helper.GuiRenderHelper;
 import net.minecraft.client.KeyMapping;

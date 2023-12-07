@@ -1,4 +1,4 @@
-package dmillerw.menu.gui.menu.list;
+package dmillerw.menu.gui.controlling;
 
 import com.blamejared.controlling.platform.Services;
 import com.google.common.collect.ImmutableList;
@@ -59,7 +59,6 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
                 addEntry(new ControllingGuiControlList.KeyEntry(keybinding, component));
             }
         }
-
     }
 
     public List<KeyBindsList.Entry> getAllEntries() {
@@ -127,16 +126,14 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
         @Override
         protected void refreshEntry() {
         }
+
+        public Component getName() {
+            return name;
+        }
     }
 
     public class KeyEntry extends KeyBindsList.Entry {
-        /**
-         * The keybinding specified for this KeyEntry
-         */
         private final KeyMapping key;
-        /**
-         * The localized key description for this KeyEntry
-         */
         private final Component keyDesc;
         private boolean hasCollision;
         private final Component categoryName;
@@ -224,6 +221,18 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
                 tooltip.append(CommonComponents.NEW_LINE);
                 tooltip.append(Component.translatable("controls.keybinds.duplicateKeybinds", duplicates));
             }
+        }
+
+        public KeyMapping getKey() {
+            return key;
+        }
+
+        public Component getCategoryName() {
+            return categoryName;
+        }
+
+        public Component getKeyDesc() {
+            return keyDesc;
         }
     }
 }

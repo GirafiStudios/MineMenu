@@ -21,3 +21,10 @@ license="MIT"
     versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.minemenu]]
+   modId="controlling"
+   mandatory=false
+   versionRange="[12.0.0,13.0.0)"
+   ordering="NONE"
+   side="BOTH"

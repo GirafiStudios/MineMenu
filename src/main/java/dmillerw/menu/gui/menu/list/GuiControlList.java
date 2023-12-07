@@ -168,7 +168,10 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
                     }
                 }
             }
+        }
 
+        public KeyMapping getKey() {
+            return this.key;
         }
     }
 }

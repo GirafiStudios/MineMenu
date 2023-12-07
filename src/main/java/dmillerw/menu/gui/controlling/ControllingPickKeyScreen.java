@@ -1,12 +1,11 @@
-package dmillerw.menu.gui.menu;
+package dmillerw.menu.gui.controlling;
 
 import com.blamejared.controlling.ControllingConstants;
-import com.blamejared.controlling.api.DisplayMode;
-import com.blamejared.controlling.api.SortOrder;
+import com.blamejared.searchables.api.SearchableComponent;
+import com.blamejared.searchables.api.SearchableType;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.mojang.blaze3d.platform.InputConstants;
 import dmillerw.menu.gui.ScreenStack;
-import dmillerw.menu.gui.menu.list.ControllingGuiControlList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -19,18 +18,45 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+/**
+ * Mostly a copy of Controlling by Jaredlll08's PickKeyScreen. Most of this will not be needed in the future, when interface can be implemented
+ * Temporary workaround, until an interface for the CategoryEntry and KeyEntry in Controlling can be implemented in 1.20.3
+ */
 public class ControllingPickKeyScreen extends Screen {
     private ControllingGuiControlList controlList;
     private AutoCompletingEditBox<KeyBindsList.Entry> search;
-    private DisplayMode displayMode;
-    private SortOrder sortOrder = SortOrder.NONE;
+    private ControllingDisplayMode displayMode;
+    private ControllingSortOrder sortOrder = ControllingSortOrder.NONE;
     private Button buttonNone;
     private Button buttonSort;
+    public static final SearchableType<KeyBindsList.Entry> SEARCHABLE_KEYBINDINGS = new SearchableType.Builder<KeyBindsList.Entry>()
+            .component(SearchableComponent.create("category", entry -> {
+                if(entry instanceof ControllingGuiControlList.CategoryEntry cat) {
+                    return Optional.of(cat.getName().getString());
+                } else if(entry instanceof ControllingGuiControlList.KeyEntry key) {
+                    return Optional.of(key.getCategoryName().getString());
+                }
+                return Optional.empty();
+            }))
+            .component(SearchableComponent.create("key", entry -> {
+                if(entry instanceof ControllingGuiControlList.KeyEntry key) {
+                    return Optional.of(key.getKey().getTranslatedKeyMessage().getString());
+                }
+                return Optional.empty();
+            }))
+            .defaultComponent(SearchableComponent.create("name", entry -> {
+                if(entry instanceof ControllingGuiControlList.KeyEntry key) {
+                    return Optional.of(key.getKeyDesc().getString());
+                }
+                return Optional.empty();
+            }))
+            .build();
 
     public ControllingPickKeyScreen() {
         super(Component.translatable("mine_menu.keyScreen.title"));
@@ -52,7 +78,7 @@ public class ControllingPickKeyScreen extends Screen {
         int topRowY = bottomY - rowSpacing;
 
         Supplier<List<KeyBindsList.Entry>> listSupplier = () -> this.controlList.getAllEntries();
-        this.search = addRenderableWidget(new AutoCompletingEditBox<>(font, centerX - searchX / 2, 22, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), ControllingConstants.SEARCHABLE_KEYBINDINGS, listSupplier));
+        this.search = addRenderableWidget(new AutoCompletingEditBox<>(font, centerX - searchX / 2, 22, searchX, Button.DEFAULT_HEIGHT, search, Component.translatable("selectWorld.search"), SEARCHABLE_KEYBINDINGS, listSupplier));
         this.search.addResponder(this::filterKeys);
         this.addRenderableOnly(this.search.autoComplete());
 
@@ -66,7 +92,7 @@ public class ControllingPickKeyScreen extends Screen {
                 .bounds(rightX, topRowY, btnWidth, Button.DEFAULT_HEIGHT)
                 .build());
 
-        displayMode = DisplayMode.ALL;
+        displayMode = ControllingDisplayMode.ALL;
         setInitialFocus(this.search);
         // Trigger an initial auto complete
         this.search.moveCursor(0);
@@ -89,7 +115,7 @@ public class ControllingPickKeyScreen extends Screen {
     public void filterKeys(String lastSearch) {
         this.controlList.children().clear();
         this.controlList.setScrollAmount(0);
-        if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
+        if(lastSearch.isEmpty() && displayMode == ControllingDisplayMode.ALL && sortOrder == ControllingSortOrder.NONE) {
             this.controlList.children().addAll(this.controlList.getAllEntries());
             return;
         }
@@ -102,8 +128,8 @@ public class ControllingPickKeyScreen extends Screen {
             extraPredicate = displayMode.getPredicate();
             postConsumer = entries -> sortOrder.sort(entries);
         }
-        list.children()
-                .addAll(ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
+
+        list.children().addAll(SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
         postConsumer.accept(list.children());
     }
 
@@ -163,11 +189,11 @@ public class ControllingPickKeyScreen extends Screen {
     }
 
     private final Button.OnPress PRESS_NONE = btn -> {
-        if(displayMode == DisplayMode.NONE) {
+        if(displayMode == ControllingDisplayMode.NONE) {
             buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_NONE);
-            displayMode = DisplayMode.ALL;
+            displayMode = ControllingDisplayMode.ALL;
         } else {
-            displayMode = DisplayMode.NONE;
+            displayMode = ControllingDisplayMode.NONE;
             buttonNone.setMessage(ControllingConstants.COMPONENT_OPTIONS_SHOW_ALL);
         }
         filterKeys();
