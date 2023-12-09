@@ -20,28 +20,6 @@ public class GuiRenderHelper {
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuilder();
 
-        // HEADER - SHADOW
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-
-        bufferBuilder.vertex(0, headerHeight + shadowDepth, 0.0D).uv(0.0F, 1.0F).color(0, 0, 0, 0).endVertex();
-        bufferBuilder.vertex(base.width, headerHeight + shadowDepth, 0.0D).uv(1.0F, 1.0F).color(0, 0, 0, 0).endVertex();
-
-        bufferBuilder.vertex(base.width, headerHeight, 0.0D).uv(1.0F, 0.0F).color(0, 0, 0, 255).endVertex();
-        bufferBuilder.vertex(0, headerHeight, 0.0D).uv(0.0F, 0.0F).color(0, 0, 0, 255).endVertex();
-
-        tessellator.end();
-
-        // FOOTER - SHADOW
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-
-        bufferBuilder.vertex(0, base.height - footerHeight, 0.0D).uv(0.0F, 1.0F).color(0, 0, 0, 255).endVertex();
-        bufferBuilder.vertex(base.width, base.height - footerHeight, 0.0D).uv(1.0F, 1.0F).color(0, 0, 0, 255).endVertex();
-
-        bufferBuilder.vertex(base.width, base.height - footerHeight - shadowDepth, 0.0D).uv(1.0F, 0.0F).color(0, 0, 0, 0).endVertex();
-        bufferBuilder.vertex(0, base.height - footerHeight - shadowDepth, 0.0D).uv(0.0F, 0.0F).color(0, 0, 0, 0).endVertex();
-
-        tessellator.end();
-
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
 
@@ -77,6 +55,8 @@ public class GuiRenderHelper {
 
         poseStack.popPose();
 
+        poseStack.pushPose();
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, headerText, base.width / 2, 8, 16777215);
+        poseStack.popPose();
     }
 }

@@ -21,14 +21,13 @@ public class ItemButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         if (this.visible) {
             super.renderWidget(guiGraphics, mouseX, mouseY, partial);
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int k = !this.active ? 0 : (this.isHoveredOrFocused() ? 2 : 1);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             //ScreenUtils.blitWithBorder(guiGraphics, WIDGETS_LOCATION, this.getX(), this.getY(), 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, 0); //Old way
-            guiGraphics.blitSprite(SPRITES.get(this.active, this.isHoveredOrFocused()), this.getX(), this.getY(), this.getWidth(), this.getHeight());  //TODO Test if button renders correctly
 
 
             if (this.icon.isEmpty()) {

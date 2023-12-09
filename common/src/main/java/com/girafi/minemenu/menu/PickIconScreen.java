@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
@@ -55,12 +53,6 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    @Nullable
-    public GuiEventListener getFocused() {
-        return this.textSearch;
-    }
-
-    @Override
     public void init() {
         stacks = NonNullList.create();
         this.reconstructList(stacks);
@@ -69,6 +61,7 @@ public class PickIconScreen extends Screen {
         this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
         this.textSearch.setFocused(true);
+        this.setInitialFocus(textSearch);
     }
 
     @Override
@@ -107,18 +100,22 @@ public class PickIconScreen extends Screen {
                         }
                     }
                 }
+                return true;
             }
+            return super.charTyped(key, keyCode);
         }
         return false;
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(int keycode, int i2, int i3) {
+        if (keycode == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
+        } else if (this.textSearch.keyPressed(keycode, i2, i3)) {
+            return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(keycode, i2, i3);
         }
     }
 
@@ -136,7 +133,7 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double wheel, double d) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double d, double wheel) {
         wheel = -wheel;
 
         if (wheel < 0) {
@@ -159,11 +156,8 @@ public class PickIconScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partial);
-
-        this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
-
         super.render(guiGraphics, mouseX, mouseY, partial);
+        this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
 
         GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Select an Icon:");
 
@@ -175,12 +169,14 @@ public class PickIconScreen extends Screen {
         int highlightedX = 0;
         int highlightedY = 0;
 
+        int amountOfRowsThatFits = ((this.minecraft.getWindow().getGuiScaledHeight() - 150) / 16);
+        amountOfRowsThatFits = amountOfRowsThatFits > 7 ? amountOfRowsThatFits - 6 : amountOfRowsThatFits;
+
         for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
             int drawX = i % MAX_COLUMN;
             int drawY = i / MAX_COLUMN;
 
-            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
-
+            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= amountOfRowsThatFits) {
                 boolean scaled = false;
                 int actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
                 int actualDrawY = (y + drawY * 20);
@@ -217,7 +213,10 @@ public class PickIconScreen extends Screen {
             int drawX = i % MAX_COLUMN;
             int drawY = i / MAX_COLUMN;
 
-            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= MAX_ROW) {
+            int amountOfRowsThatFits = ((this.minecraft.getWindow().getGuiScaledHeight() - 150) / 16);
+            amountOfRowsThatFits = amountOfRowsThatFits > 7 ? amountOfRowsThatFits - 6 : amountOfRowsThatFits;
+
+            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= amountOfRowsThatFits) {
                 float actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
                 float actualDrawY = (y + drawY * 20);
                 actualDrawY -= 20 * listScrollIndex;

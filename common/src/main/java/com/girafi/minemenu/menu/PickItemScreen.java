@@ -37,7 +37,6 @@ public class PickItemScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         Minecraft mc = this.minecraft;
         GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Pick an Item:");

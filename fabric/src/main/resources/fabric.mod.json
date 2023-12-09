@@ -9,11 +9,11 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://minecraft.curseforge.com/projects/ping",
-        "sources": "https://github.com/dmillerw/Ping/issues"
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/minemenu",
+        "sources": "https://github.com/GirafiStudios/MineMenu/issues"
     },
     "license": "${license}",
-    "icon": "assets/${mod_id}/logo.png",
+    "icon": "assets/${mod_id}/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [

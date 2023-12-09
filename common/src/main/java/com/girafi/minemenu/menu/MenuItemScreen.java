@@ -41,8 +41,6 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public void tick() {
-        //this.textTitle.tick();
-
         this.buttonConfirm.visible = EditSessionData.clickAction != null;
         this.buttonDelete.visible = RadialMenu.getActiveArray()[slot] != null;
     }
@@ -136,10 +134,9 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partial);
+        super.render(guiGraphics, mouseX, mouseY, partial);
         this.textTitle.render(guiGraphics, mouseX, mouseY, partial);
         guiGraphics.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
-        super.render(guiGraphics, mouseX, mouseY, partial);
         GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Modifying Menu Item #" + slot);
     }
 }

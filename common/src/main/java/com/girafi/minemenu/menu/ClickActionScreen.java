@@ -5,7 +5,6 @@ import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.button.ItemButton;
-import com.girafi.minemenu.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -23,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class ClickActionScreen extends Screen {
-    public static final boolean IS_CONTROLLING_LOADED = Services.PLATFORM.isModLoaded("controlling");
+    //public static final boolean IS_CONTROLLING_LOADED = Services.PLATFORM.isModLoaded("controlling");
     public static ItemStack item;
     public static KeyMapping keyBinding;
     private static boolean toggle = false;
@@ -47,12 +46,6 @@ public class ClickActionScreen extends Screen {
         ClickActionScreen.keyBinding = null;
         ClickActionScreen.item = ItemStack.EMPTY;
     }
-
-    /*@Override
-    public void tick() {
-        this.textCommand.tick();
-        this.textCategory.tick();
-    }*/
 
     @Override
     @Nullable
@@ -270,25 +263,16 @@ public class ClickActionScreen extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partial);
+        super.render(guiGraphics, mouseX, mouseY, partial);
         this.textCommand.render(guiGraphics, mouseX, mouseY, partial);
         this.textCategory.render(guiGraphics, mouseX, mouseY, partial);
-        super.render(guiGraphics, mouseX, mouseY, partial);
-        String header = "";
-        switch (mode) {
-            case 0:
-                header = "Enter a command";
-                break;
-            case 1:
-                header = "Select a key";
-                break;
-            case 2:
-                header = "Pick an item";
-                break;
-            case 3:
-                header = "Enter a category";
-                break;
-        }
+        String header = switch (mode) {
+            case 0 -> "Enter a command";
+            case 1 -> "Select a key";
+            case 2 -> "Pick an item";
+            case 3 -> "Enter a category";
+            default -> "";
+        };
         GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, header);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
             guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);

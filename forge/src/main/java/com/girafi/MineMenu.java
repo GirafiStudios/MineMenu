@@ -1,15 +1,17 @@
-package com.girafi.minemenu;
+package com.girafi;
 
+import com.girafi.minemenu.Constants;
+import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.util.Config;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 
 @Mod(Constants.MOD_ID)
 public class MineMenu {

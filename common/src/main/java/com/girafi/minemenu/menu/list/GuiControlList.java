@@ -152,7 +152,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
             MutableComponent mutablecomponent = Component.empty();
             if (!this.key.isUnbound()) {
-                for(KeyMapping keymapping : GuiControlList.this.minecraft.options.keyMappings) {
+                for (KeyMapping keymapping : GuiControlList.this.minecraft.options.keyMappings) {
                     if ((keymapping != this.key && this.key.same(keymapping)) /*|| keymapping.hasKeyModifierConflict(this.key)*/) {
                         mutablecomponent.append(Component.translatable(keymapping.getName()));
                     }
