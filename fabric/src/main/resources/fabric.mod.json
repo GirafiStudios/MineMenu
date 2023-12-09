@@ -20,9 +20,6 @@
             "com.girafi.minemenu.MineMenu"
         ]
     },
-    "mixins": [
-        "${mod_id}.fabric.mixins.json"
-    ],
     "depends": {
         "fabricloader": ">=0.14",
         "fabric-api": "*",
