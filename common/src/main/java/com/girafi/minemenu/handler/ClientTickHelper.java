@@ -108,7 +108,7 @@ public class ClientTickHelper {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            Item menuButton = BuiltInRegistries.ITEM.get(new ResourceLocation(Config.GENERAL.menuButtonIcon.get().toString()));
+            Item menuButton = BuiltInRegistries.ITEM.get(new ResourceLocation(Config.GENERAL.menuButtonIcon.get()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
             double angle = (ANGLE_PER_ITEM * i);
