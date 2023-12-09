@@ -5,6 +5,7 @@ import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.button.ItemButton;
+import com.girafi.minemenu.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -22,7 +23,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 public class ClickActionScreen extends Screen {
-    //public static final boolean IS_CONTROLLING_LOADED = Services.PLATFORM.isModLoaded("controlling");
+    public static final boolean IS_CONTROLLING_LOADED = Services.PLATFORM.isModLoaded("controlling");
     public static ItemStack item;
     public static KeyMapping keyBinding;
     private static boolean toggle = false;
@@ -106,7 +107,7 @@ public class ClickActionScreen extends Screen {
                 keyString = Component.translatable("mine_menu.selectKey");
             }
         }
-        //if (IS_CONTROLLING_LOADED) { //TODO Re-add Controlling support
+        //if (IS_CONTROLLING_LOADED) {
         //    addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
         //} else {
             addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
