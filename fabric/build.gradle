@@ -20,7 +20,7 @@ dependencies {
 	
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
 	modApi "mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}"
-    include "mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}"
+    modImplementation "mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}"
 }
 
 loom {
