@@ -1,0 +1,7 @@
+accessWidener v1 named
+accessible   method   net/minecraft/client/gui/screens/controls/KeyBindsList$Entry   refreshEntry   ()V
+accessible   method   net/minecraft/client/gui/components/AbstractButton   renderWidget   (Lnet/minecraft/client/gui/GuiGraphics;IIF)V
+accessible   field   net/minecraft/client/KeyMapping   key   Lcom/mojang/blaze3d/platform/InputConstants$Key;
+accessible   field   net/minecraft/client/gui/components/AbstractButton   SPRITES   Lnet/minecraft/client/gui/components/WidgetSprites;
+
+
