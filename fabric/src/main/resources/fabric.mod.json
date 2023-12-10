@@ -18,6 +18,9 @@
     "entrypoints": {
         "main": [
             "com.girafi.minemenu.MineMenu"
+        ],
+        "client": [
+            "com.girafi.minemenu.client.ClientHandler"
         ]
     },
     "depends": {

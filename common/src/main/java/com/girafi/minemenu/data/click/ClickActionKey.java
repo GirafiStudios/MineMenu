@@ -1,7 +1,6 @@
 package com.girafi.minemenu.data.click;
 
 import com.girafi.minemenu.handler.KeyboardHandlerHelper;
-import com.girafi.minemenu.helper.KeyReflectionHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
@@ -50,7 +49,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
         KeyMapping keyBinding = getKeyBinding();
         if (keyBinding != null) {
             keyBinding.setDown(false);
-            KeyReflectionHelper.setClickCount(keyBinding, 0);
+            keyBinding.clickCount = 0;
         }
     }
 }

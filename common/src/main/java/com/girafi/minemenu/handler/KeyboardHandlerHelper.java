@@ -1,10 +1,9 @@
 package com.girafi.minemenu.handler;
 
-import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
-import com.girafi.minemenu.helper.KeyReflectionHelper;
 import com.girafi.minemenu.util.Config;
+import com.girafi.minemenu.util.MineMenuKeybinds;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -41,7 +40,7 @@ public class KeyboardHandlerHelper {
         }
 
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        boolean wheelKeyPressed = MineMenuCommon.WHEEL.key.getValue() >= 0 ? InputConstants.isKeyDown(handle, MineMenuCommon.WHEEL.key.getValue()) : InputConstants.isKeyDown(handle, MineMenuCommon.WHEEL.key.getValue() + 100);
+        boolean wheelKeyPressed = MineMenuKeybinds.WHEEL.key.getValue() >= 0 ? InputConstants.isKeyDown(handle, MineMenuKeybinds.WHEEL.key.getValue()) : InputConstants.isKeyDown(handle, MineMenuKeybinds.WHEEL.key.getValue() + 100);
 
         if (wheelKeyPressed != lastWheelState) {
             if (Config.GENERAL.toggle.get()) {
@@ -94,6 +93,6 @@ public class KeyboardHandlerHelper {
     public static void activateKeybind(KeyMapping keyMapping, boolean setDown) {
         //if (keyMapping.getCategory().equals("key.categories.movement"))
         keyMapping.setDown(setDown);
-        KeyReflectionHelper.setClickCount(keyMapping, setDown ? 1 : 0);
+        keyMapping.clickCount = setDown ? 1 : 0;
     }
 }

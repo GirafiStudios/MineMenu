@@ -1,6 +1,7 @@
 package com.girafi.minemenu;
 
 import com.girafi.minemenu.util.Config;
+import com.girafi.minemenu.util.MineMenuKeybinds;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
@@ -19,16 +20,17 @@ public class MineMenu {
         modBus.addListener(EventPriority.LOWEST, this::loadMenuLoader);
         modBus.addListener(this::registerKeybind);
 
-        MineMenuCommon.loadCommon(FMLPaths.GAMEDIR.get().toFile());
+        MineMenuCommon.registerPackets();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.spec);
     }
 
     public void loadMenuLoader(final FMLClientSetupEvent event) {
+        MineMenuCommon.loadMenuJson(FMLPaths.GAMEDIR.get().toFile());
         MineMenuCommon.setupMenuLoader();
     }
 
     public void registerKeybind(RegisterKeyMappingsEvent event) {
-        event.register(MineMenuCommon.WHEEL);
+        event.register(MineMenuKeybinds.WHEEL);
     }
 }
