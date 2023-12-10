@@ -17,6 +17,7 @@ public class ClientHandler implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        MineMenuCommon.registerPackets();
         MineMenuCommon.loadMenuJson(FabricLoader.getInstance().getGameDir().toFile());
         MineMenuCommon.setupMenuLoader();
         KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.WHEEL);
