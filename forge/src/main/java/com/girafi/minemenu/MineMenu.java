@@ -1,5 +1,6 @@
 package com.girafi.minemenu;
 
+import com.girafi.minemenu.util.MineMenuKeybinds;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,7 +19,7 @@ public class MineMenu {
 
         MineMenuCommon.registerPackets();
 
-        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.spec);
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.spec); //TODO Uncomment before building Forge version
     }
 
     public void loadMenuLoader(final FMLClientSetupEvent event) {
@@ -27,6 +28,6 @@ public class MineMenu {
     }
 
     public void registerKeybind(RegisterKeyMappingsEvent event) {
-        event.register(MineMenuCommon.WHEEL);
+        event.register(MineMenuKeybinds.WHEEL);
     }
 }
