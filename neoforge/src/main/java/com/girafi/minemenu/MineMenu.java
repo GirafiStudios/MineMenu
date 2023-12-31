@@ -15,8 +15,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 @Mod(Constants.MOD_ID)
 public class MineMenu {
 
-    public MineMenu() {
-        final IEventBus modBus  = FMLJavaModLoadingContext.get().getModEventBus();
+    public MineMenu(IEventBus modBus) {
         modBus.addListener(EventPriority.LOWEST, this::loadMenuLoader);
         modBus.addListener(this::registerKeybind);
 

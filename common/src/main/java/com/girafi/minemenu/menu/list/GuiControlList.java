@@ -29,7 +29,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
     private int maxWidth = 0;
 
     public GuiControlList(Screen parent, Minecraft mc) {
-        super(mc, parent.width + 32, parent.height, 25, parent.height - 20, 20);
+        super(mc, parent.width + 32, parent.height - 20, 20, 20);
         this.mc = mc;
 
         KeyMapping[] keyBindings = Minecraft.getInstance().options.keyMappings;

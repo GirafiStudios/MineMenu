@@ -24,11 +24,11 @@
         ]
     },
     "depends": {
-        "fabricloader": ">=0.14",
+        "fabricloader": ">=0.15.3",
         "fabric-api": "*",
-        "minecraft": "1.20.2",
+        "minecraft": "~1.20.4",
         "java": ">=17",
-        "forgeconfigapiport": ">=9.1.2"
+        "forgeconfigapiport": ">=2.4.0"
     },
     "suggests": {
         "another-mod": "*"
