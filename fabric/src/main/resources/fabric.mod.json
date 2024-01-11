@@ -28,7 +28,7 @@
         "fabric-api": "*",
         "minecraft": "~1.20.4",
         "java": ">=17",
-        "forgeconfigapiport": ">=2.4.0"
+        "forgeconfigapiport": ">=2.4.1"
     },
     "suggests": {
         "another-mod": "*"

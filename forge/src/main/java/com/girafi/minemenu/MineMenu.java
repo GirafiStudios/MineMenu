@@ -2,10 +2,10 @@ package com.girafi.minemenu;
 
 import com.girafi.minemenu.util.Config;
 import com.girafi.minemenu.util.MineMenuKeybinds;
+import fuzs.forgeconfigapiport.forge.api.neoforge.v4.NeoForgeConfigRegistry;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -22,7 +22,7 @@ public class MineMenu {
 
         MineMenuCommon.registerPackets();
 
-        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.spec); //TODO Uncomment before building Forge version
+        NeoForgeConfigRegistry.INSTANCE.register(ModConfig.Type.COMMON, Config.spec);
     }
 
     public void loadMenuLoader(final FMLClientSetupEvent event) {
