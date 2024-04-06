@@ -11,7 +11,7 @@ public class KeyboardHandler {
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END || event.type != TickEvent.Type.CLIENT) {
+        if (event.phase == TickEvent.Phase.END) {
             return;
         }
         KeyboardHandlerHelper.onClientTick();
