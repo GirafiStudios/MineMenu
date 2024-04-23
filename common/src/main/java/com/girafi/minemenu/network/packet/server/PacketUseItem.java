@@ -36,9 +36,7 @@ public class PacketUseItem {
     }
 
     public static void handle(PacketContext<PacketUseItem> ctx) {
-        ServerPlayer player = ctx.sender();
-
-        if (player != null) {
+        if (ctx.sender() instanceof ServerPlayer player) {
             ItemStack slotStack = player.getInventory().getItem(ctx.message().slot);
             ItemStack heldSaved = player.getMainHandItem();
             InteractionHand hand = InteractionHand.MAIN_HAND;
