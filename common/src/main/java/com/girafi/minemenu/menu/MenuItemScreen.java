@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public class MenuItemScreen extends Screen {
     private final int slot;
@@ -58,6 +59,8 @@ public class MenuItemScreen extends Screen {
         addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
+            } else {
+                EditSessionData.title = this.textTitle.getValue();
             }
 
             if (EditSessionData.clickAction != null) {
@@ -113,10 +116,7 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public boolean charTyped(char key, int keycode) {
-        if (this.textTitle.charTyped(key, keycode)) {
-            EditSessionData.title = textTitle.getValue().trim();
-            return true;
-        }
+        this.textTitle.charTyped(key, keycode);
         return true;
     }
 
