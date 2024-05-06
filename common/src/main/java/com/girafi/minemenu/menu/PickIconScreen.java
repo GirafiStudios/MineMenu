@@ -1,10 +1,12 @@
 package com.girafi.minemenu.menu;
 
+import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -12,10 +14,14 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -24,9 +30,11 @@ public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
     private static final int MAX_ROW = 4; // Actually increased by one
     private EditBox textSearch;
+    private Button buttonDone;
     private Button buttonCancel;
     private NonNullList<ItemStack> stacks;
     private int listScrollIndex = 0;
+    private ItemStack iconStack = ItemStack.EMPTY;
 
     public PickIconScreen() {
         super(Component.translatable("mine_menu.iconScreen.title"));
@@ -34,8 +42,6 @@ public class PickIconScreen extends Screen {
 
     @Override
     public void tick() {
-        //this.textSearch.tick();
-
         if (textSearch.getValue().trim().isEmpty()) {
             this.reconstructList(stacks);
         }
@@ -57,11 +63,45 @@ public class PickIconScreen extends Screen {
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
-        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 - 75, this.height - 60 + 12, 150, 20).build());
+        addRenderableWidget(this.buttonDone = Button.builder(Component.translatable("gui.done"), (screen) -> {
+            String inputText = this.textSearch.getValue();
+            if (inputText.contains("{")) {
+                CompoundTag tag = new CompoundTag();
+                try {
+                    tag = TagParser.parseTag(inputText);
+                } catch (CommandSyntaxException e) {
+                    MineMenuCommon.LOGGER.info("Invalid item NBT");
+                    e.printStackTrace();
+                }
+                ItemStack tagStack = ItemStack.of(tag);
+
+                EditSessionData.icon = ItemStack.of(tag);
+
+                if (!tagStack.isEmpty() && tagStack != null) {
+                    EditSessionData.icon = tagStack;
+                    ScreenStack.pop();
+                }
+            } else {
+                Item textItem = BuiltInRegistries.ITEM.get(new ResourceLocation(inputText));
+                if (textItem == Items.AIR && textItem != null) {
+                    MineMenuCommon.LOGGER.warn("Invalid item");
+                } else {
+                    EditSessionData.icon = new ItemStack(textItem);
+                    ScreenStack.pop();
+                }
+            }
+        }).bounds(this.width / 2 - 150, this.height - 60 + 12, 150, 20).build());
+        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2, this.height - 60 + 12, 150, 20).build());
         this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
         this.textSearch.setFocused(true);
-        this.setInitialFocus(textSearch);
+        if (!EditSessionData.icon.isEmpty()) {
+            if (EditSessionData.icon.hasTag()) {
+                this.textSearch.setValue(EditSessionData.icon.save(EditSessionData.icon.getTag()).toString());
+            } else {
+                this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(EditSessionData.icon.getItem()).toString());
+            }
+        }
     }
 
     @Override
@@ -126,8 +166,8 @@ public class PickIconScreen extends Screen {
         ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
 
         if (!clicked.isEmpty()) {
-            EditSessionData.icon = clicked;
-            ScreenStack.pop();
+            this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(clicked.getItem()).toString());
+            this.iconStack = clicked;
         }
         return true;
     }

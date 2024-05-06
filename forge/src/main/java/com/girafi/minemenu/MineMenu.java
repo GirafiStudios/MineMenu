@@ -31,6 +31,6 @@ public class MineMenu {
     }
 
     public void registerKeybind(RegisterKeyMappingsEvent event) {
-        event.register(MineMenuKeybinds.WHEEL);
+        event.register(MineMenuKeybinds.RADIAL_MENU_OPEN);
     }
 }

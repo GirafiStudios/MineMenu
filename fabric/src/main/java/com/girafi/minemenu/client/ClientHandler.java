@@ -21,7 +21,7 @@ public class ClientHandler implements ClientModInitializer {
         MineMenuCommon.registerPackets();
         MineMenuCommon.loadMenuJson(FabricLoader.getInstance().getGameDir().toFile());
         ClientLifecycleEvents.CLIENT_STARTED.register((client -> MineMenuCommon.setupMenuLoader()));
-        KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.WHEEL);
+        KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.RADIAL_MENU_OPEN);
 
         ClientTickEvents.END_CLIENT_TICK.register((mc) -> {
             RadialMenu.tickTimer();
