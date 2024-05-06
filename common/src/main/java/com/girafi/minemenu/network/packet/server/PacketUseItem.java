@@ -36,29 +36,28 @@ public class PacketUseItem {
     }
 
     public static void handle(PacketContext<PacketUseItem> ctx) {
-        if (ctx.sender() instanceof ServerPlayer player) {
-            ItemStack slotStack = player.getInventory().getItem(ctx.message().slot);
-            ItemStack heldSaved = player.getMainHandItem();
-            InteractionHand hand = InteractionHand.MAIN_HAND;
-            EquipmentSlot slot = getSlotFromHand(hand);
+        ServerPlayer player = ctx.sender();
+        ItemStack slotStack = player.getInventory().getItem(ctx.message().slot);
+        ItemStack heldSaved = player.getMainHandItem();
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        EquipmentSlot slot = getSlotFromHand(hand);
 
-            player.setItemSlot(slot, slotStack);
-            ItemStack heldItem = player.getItemInHand(hand);
+        player.setItemSlot(slot, slotStack);
+        ItemStack heldItem = player.getItemInHand(hand);
 
-            UseOnContext useOnContext = new UseOnContext(player, hand, getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.SOURCE_ONLY));
-            if (heldItem.useOn(useOnContext) == InteractionResult.PASS) { //useOn check here, also does the actual interaction
-                InteractionResult use = heldItem.use(player.level(), player, hand).getResult();
-                if (use.consumesAction()) {
-                    if (heldItem.getItem() instanceof BucketItem) {
-                        player.getInventory().items.set(ctx.message().slot, new ItemStack(Items.BUCKET));
-                    }
+        UseOnContext useOnContext = new UseOnContext(player, hand, getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.SOURCE_ONLY));
+        if (heldItem.useOn(useOnContext) == InteractionResult.PASS) { //useOn check here, also does the actual interaction
+            InteractionResult use = heldItem.use(player.level(), player, hand).getResult();
+            if (use.consumesAction()) {
+                if (heldItem.getItem() instanceof BucketItem) {
+                    player.getInventory().items.set(ctx.message().slot, new ItemStack(Items.BUCKET));
                 }
             }
-
-            player.setItemSlot(slot, heldSaved); //Sets the heldStack to what it was before something was used, to prevent losing whatever the play have in their hand
-
-            player.inventoryMenu.sendAllDataToRemote();
         }
+
+        player.setItemSlot(slot, heldSaved); //Sets the heldStack to what it was before something was used, to prevent losing whatever the play have in their hand
+
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     public static BlockHitResult getPlayerPOVHitResult(Level p_41436_, Player p_41437_, ClipContext.Fluid p_41438_) {
