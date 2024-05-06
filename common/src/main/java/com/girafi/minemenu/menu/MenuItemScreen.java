@@ -1,8 +1,10 @@
 package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.MineMenuCommon;
+import com.girafi.minemenu.data.click.ClickActionCategory;
 import com.girafi.minemenu.data.click.ClickActionCommand;
 import com.girafi.minemenu.data.click.ClickActionKey;
+import com.girafi.minemenu.data.click.ClickActionUseItem;
 import com.girafi.minemenu.data.json.MenuLoader;
 import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
@@ -84,6 +86,10 @@ public class MenuItemScreen extends Screen {
                 string = Component.translatable("mine_menu.command");
             } else if (EditSessionData.clickAction instanceof ClickActionKey) {
                 string = Component.translatable("mine_menu.keybind");
+            } else if (EditSessionData.clickAction instanceof ClickActionUseItem) {
+                string = Component.translatable("mine_menu.useItem");
+            } else if (EditSessionData.clickAction instanceof ClickActionCategory) {
+                string = Component.translatable("mine_menu.category");
             }
         }
         addRenderableWidget(this.buttonClickAction = Button.builder(string, (screen) -> ScreenStack.push(new ClickActionScreen())).bounds(this.width / 2 - 20, this.height / 2, 100, 20).build());

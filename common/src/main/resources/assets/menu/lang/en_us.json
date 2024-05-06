@@ -10,6 +10,8 @@
   "mine_menu.action": "Action",
   "mine_menu.command": "Command",
   "mine_menu.keybind": "Keybind",
+  "mine_menu.useItem": "Use Item",
+  "mine_menu.category": "Category",
   "mine_menu.clickAction_command": "Click Action: Command",
   "mine_menu.clickAction_keybinding": "Click Action: KeyBinding",
   "mine_menu.clickAction_useItem": "Click Action: Use Item",
