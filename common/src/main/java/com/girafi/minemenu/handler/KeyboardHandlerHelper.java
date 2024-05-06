@@ -7,6 +7,7 @@ import com.girafi.minemenu.util.MineMenuKeybinds;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,46 +41,48 @@ public class KeyboardHandlerHelper {
         }
 
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        boolean wheelKeyPressed = MineMenuKeybinds.WHEEL.key.getValue() >= 0 ? InputConstants.isKeyDown(handle, MineMenuKeybinds.WHEEL.key.getValue()) : InputConstants.isKeyDown(handle, MineMenuKeybinds.WHEEL.key.getValue() + 100);
-
-        if (wheelKeyPressed != lastWheelState) {
-            if (Config.GENERAL.toggle.get()) {
-                if (wheelKeyPressed) {
-                    if (RadialMenuScreen.active) {
-                        if (Config.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
-                        }
-                        RadialMenuScreen.deactivate();
-                    } else {
-                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                            RadialMenu.resetCategory();
-                            RadialMenu.resetTimer();
-                            RadialMenuScreen.activate();
+        int keycode = MineMenuKeybinds.RADIAL_MENU_OPEN.key.getValue();
+        if (keycode >= 0) {
+            boolean radialMenuKeyDown = (MineMenuKeybinds.RADIAL_MENU_OPEN.matchesMouse(keycode) ? GLFW.glfwGetMouseButton(handle, keycode) == 1 : InputConstants.isKeyDown(handle, keycode));
+            if (radialMenuKeyDown != lastWheelState) {
+                if (Config.GENERAL.toggle.get()) {
+                    if (radialMenuKeyDown) {
+                        if (RadialMenuScreen.active) {
+                            if (Config.GENERAL.releaseToSelect.get()) {
+                                RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
+                            }
+                            RadialMenuScreen.deactivate();
+                        } else {
+                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                                RadialMenu.resetCategory();
+                                RadialMenu.resetTimer();
+                                RadialMenuScreen.activate();
+                            }
                         }
                     }
-                }
-            } else {
-                if (wheelKeyPressed != RadialMenuScreen.active) {
-                    if (wheelKeyPressed) {
-                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                            RadialMenu.resetCategory();
-                            RadialMenu.resetTimer();
-                            RadialMenuScreen.activate();
+                } else {
+                    if (radialMenuKeyDown != RadialMenuScreen.active) {
+                        if (radialMenuKeyDown) {
+                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                                RadialMenu.resetCategory();
+                                RadialMenu.resetTimer();
+                                RadialMenuScreen.activate();
+                            }
+                        } else {
+                            if (Config.GENERAL.releaseToSelect.get()) {
+                                RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
+                            }
+                            RadialMenuScreen.deactivate();
                         }
-                    } else {
-                        if (Config.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
-                        }
-                        RadialMenuScreen.deactivate();
                     }
                 }
             }
-        }
-        lastWheelState = wheelKeyPressed;
+            lastWheelState = radialMenuKeyDown;
 
-        if (ignoreNextTick) {
-            ignoreNextTick = false;
-            return;
+            if (ignoreNextTick) {
+                ignoreNextTick = false;
+                return;
+            }
         }
 
         Iterator<KeyMapping> iterator = FIRED_KEYS.iterator();
