@@ -44,6 +44,8 @@ dependencies {
 
 	implementation "mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}"		
     jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: '[1.0.1, 5.0.0)'
+    implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
+    implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
 // NeoGradle compiles the game, but we don't want to add our common code to the game's code

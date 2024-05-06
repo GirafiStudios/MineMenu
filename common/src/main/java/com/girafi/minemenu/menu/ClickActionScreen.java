@@ -3,6 +3,7 @@ package com.girafi.minemenu.menu;
 import com.girafi.minemenu.data.click.*;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
+import com.girafi.minemenu.gui.controlling.ControllingPickKeyScreen;
 import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.button.ItemButton;
 import com.girafi.minemenu.platform.Services;
@@ -107,11 +108,11 @@ public class ClickActionScreen extends Screen {
                 keyString = Component.translatable("mine_menu.selectKey");
             }
         }
-        //if (IS_CONTROLLING_LOADED) {
-        //    addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
-        //} else {
+        if (IS_CONTROLLING_LOADED) {
+            addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new ControllingPickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
+        } else {
             addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
-        //}
+        }
 
         Component keyToggleString;
         if (EditSessionData.clickAction instanceof ClickActionKey) {

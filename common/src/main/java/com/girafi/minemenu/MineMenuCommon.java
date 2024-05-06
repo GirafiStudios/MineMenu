@@ -3,7 +3,6 @@ package com.girafi.minemenu;
 import com.girafi.minemenu.data.json.MenuLoader;
 import com.girafi.minemenu.network.packet.server.PacketUseItem;
 import commonnetwork.api.Network;
-import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
