@@ -1,7 +1,6 @@
 package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.list.GuiControlList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -62,8 +61,7 @@ public class PickKeyScreen extends Screen {
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
         super.render(guiGraphics, x, y, partialTicks);
-        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Select a Key:");
         this.controlList.render(guiGraphics, x, y, partialTicks);
-        //guiGraphics.drawCenteredString(this.font, "Select a Key:", this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Select a key", this.width / 2, 8, 16777215);
     }
 }

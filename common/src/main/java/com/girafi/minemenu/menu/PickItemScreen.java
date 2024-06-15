@@ -1,7 +1,6 @@
 package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,8 +37,8 @@ public class PickItemScreen extends Screen {
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, 16777215);
         Minecraft mc = this.minecraft;
-        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Pick an Item:");
         guiGraphics.blit(ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;

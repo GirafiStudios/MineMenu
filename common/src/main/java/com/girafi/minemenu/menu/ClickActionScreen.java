@@ -3,7 +3,6 @@ package com.girafi.minemenu.menu;
 import com.girafi.minemenu.data.click.*;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.button.ItemButton;
 import com.girafi.minemenu.platform.Services;
 import net.minecraft.client.KeyMapping;
@@ -253,12 +252,12 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(int key, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (key == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(key, p_keyPressed_2_, p_keyPressed_3_);
         }
     }
 
@@ -274,7 +273,7 @@ public class ClickActionScreen extends Screen {
             case 3 -> "Enter a category";
             default -> "";
         };
-        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, header);
+        guiGraphics.drawCenteredString(this.font, header, this.width / 2, 8, 16777215);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
             guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);
         } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {

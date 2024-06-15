@@ -163,12 +163,7 @@ public class ControllingPickKeyScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.controlList.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(this.font, "Select a Key:", this.width / 2, 8, 16777215);
-    }
-
-    @Override
-    public void renderBackground(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderDirtBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, "Select a key", this.width / 2, 8, 16777215);
     }
 
     private final Button.OnPress PRESS_NONE = btn -> {

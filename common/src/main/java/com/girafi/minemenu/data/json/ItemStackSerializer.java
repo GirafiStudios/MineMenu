@@ -44,6 +44,6 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
             }
         }
 
-        return stackTag == null ? ItemStack.EMPTY : ItemStack.parse(Minecraft.getInstance().player.registryAccess(), stackTag).orElse(ItemStack.EMPTY);
+        return stackTag == null ? ItemStack.EMPTY : /*ItemStack.parse(Minecraft.getInstance().player.registryAccess(), stackTag).orElse(*/ItemStack.EMPTY; //TODO Uncomment and fix
     }
 }

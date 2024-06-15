@@ -10,7 +10,6 @@ import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.menu.button.ItemButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -141,7 +140,7 @@ public class MenuItemScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         super.render(guiGraphics, mouseX, mouseY, partial);
         this.textTitle.render(guiGraphics, mouseX, mouseY, partial);
+        guiGraphics.drawCenteredString(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, 16777215);
         guiGraphics.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
-        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Modifying Menu Item #" + slot);
     }
 }

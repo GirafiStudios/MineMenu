@@ -3,7 +3,6 @@ package com.girafi.minemenu.menu;
 import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -201,8 +200,7 @@ public class PickIconScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         super.render(guiGraphics, mouseX, mouseY, partial);
         this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
-
-        GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Select an Icon:");
+        guiGraphics.drawCenteredString(this.font, "Select an Icon:", this.width / 2, 8, 16777215);
 
         drawList(guiGraphics, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
