@@ -3,17 +3,14 @@ package com.girafi.minemenu.handler;
 import com.girafi.minemenu.Constants;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class KeyboardHandler {
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            return;
-        }
+    public static void onClientTick(ClientTickEvent.Pre event) {
         KeyboardHandlerHelper.onClientTick();
     }
 }

@@ -18,22 +18,23 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix4fStack;
 import org.lwjgl.opengl.GL11;
 
 public class ClientTickHelper {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
-    private static final double OUTER_RADIUS = 80;
-    private static final double INNER_RADIUS = 60;
+    private static final float OUTER_RADIUS = 80;
+    private static final float INNER_RADIUS = 60;
 
     public static void renderButtonBackgrounds() {
         Minecraft mc = Minecraft.getInstance();
-        PoseStack poseStack = RenderSystem.getModelViewStack();
-        poseStack.pushPose();
-        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
+        Matrix4fStack matrix = RenderSystem.getModelViewStack();
+        matrix.pushMatrix();
+        matrix.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
         RenderSystem.applyModelViewMatrix();
 
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuilder();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
@@ -57,10 +58,8 @@ public class ClientTickHelper {
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
 
-            double innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (130F);
-            double outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (130F);
-
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+            float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (130F);
+            float outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (130F);
 
             float r, g, b, alpha;
 
@@ -76,27 +75,28 @@ public class ClientTickHelper {
                 alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            double x1 = Math.cos(currAngle) * innerRadius;
-            double x2 = Math.cos(currAngle) * outerRadius;
-            double x3 = Math.cos(nextAngle) * outerRadius;
-            double x4 = Math.cos(nextAngle) * innerRadius;
+            float x1 = (float) (Math.cos(currAngle) * innerRadius);
+            float x2 = (float) (Math.cos(currAngle) * outerRadius);
+            float x3 = (float) Math.cos(nextAngle) * outerRadius;
+            float x4 = (float) Math.cos(nextAngle) * innerRadius;
 
-            double y1 = Math.sin(currAngle) * innerRadius;
-            double y2 = Math.sin(currAngle) * outerRadius;
-            double y3 = Math.sin(nextAngle) * outerRadius;
-            double y4 = Math.sin(nextAngle) * innerRadius;
+            float y1 = (float) Math.sin(currAngle) * innerRadius;
+            float y2 = (float) Math.sin(currAngle) * outerRadius;
+            float y3 = (float) Math.sin(nextAngle) * outerRadius;
+            float y4 = (float) Math.sin(nextAngle) * innerRadius;
 
-            bufferBuilder.vertex(x1, y1, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(x2, y2, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(x3, y3, 0).color(r, g, b, alpha).endVertex();
-            bufferBuilder.vertex(x4, y4, 0).color(r, g, b, alpha).endVertex();
-
-            tessellator.end();
+            bufferBuilder.addVertex(x1, y1, 0).setColor(r, g, b, alpha);
+            bufferBuilder.addVertex(x2, y2, 0).setColor(r, g, b, alpha);
+            bufferBuilder.addVertex(x3, y3, 0).setColor(r, g, b, alpha);
+            bufferBuilder.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
         }
+
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
 
-        poseStack.popPose();
+        matrix.popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -108,7 +108,7 @@ public class ClientTickHelper {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            Item menuButton = BuiltInRegistries.ITEM.get(new ResourceLocation(Config.GENERAL.menuButtonIcon.get()));
+            Item menuButton = BuiltInRegistries.ITEM.get(ResourceLocation.parse(Config.GENERAL.menuButtonIcon.get()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
             double angle = (ANGLE_PER_ITEM * i);
@@ -164,20 +164,19 @@ public class ClientTickHelper {
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
                 Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tessellator.getBuilder();
-                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+                BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
                 float r = (float) Config.VISUAL.menuRed.get() / (float) 255;
                 float g = (float) Config.VISUAL.menuGreen.get() / (float) 255;
                 float b = (float) Config.VISUAL.menuBlue.get() / (float) 255;
                 float alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
 
-                bufferBuilder.vertex(drawX - padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.vertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.vertex(drawX + drawWidth + padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
-                bufferBuilder.vertex(drawX - padding, drawY - padding, 0).color(r, g, b, alpha).endVertex();
+                bufferBuilder.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY - padding, 0).setColor(r, g, b, alpha);
+                bufferBuilder.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
 
-                tessellator.end();
+                BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
                 RenderSystem.disableBlend();
 
                 // Text

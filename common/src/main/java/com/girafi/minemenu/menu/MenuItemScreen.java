@@ -25,7 +25,6 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Locale;
 
 public class MenuItemScreen extends Screen {
     private final int slot;

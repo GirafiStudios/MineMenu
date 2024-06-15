@@ -3,6 +3,7 @@ package com.girafi.minemenu.data.json;
 import com.girafi.minemenu.Constants;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
 
-        object.add("stack", new JsonPrimitive(String.valueOf(src.save(new CompoundTag()))));
+        object.add("stack", new JsonPrimitive(String.valueOf(src.save(Minecraft.getInstance().player.registryAccess()))));
 
         return object;
     }
@@ -42,6 +43,7 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
                 }
             }
         }
-        return stackTag == null ? ItemStack.EMPTY : ItemStack.of(stackTag);
+
+        return stackTag == null ? ItemStack.EMPTY : ItemStack.parse(Minecraft.getInstance().player.registryAccess(), stackTag).orElse(ItemStack.EMPTY);
     }
 }

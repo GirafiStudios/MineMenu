@@ -1,3 +1,4 @@
+/*
 package com.girafi.minemenu.gui.controlling;
 
 import com.blamejared.controlling.ControllingConstants;
@@ -24,9 +25,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+*/
 /**
  * Mostly a copy of Controlling by Jaredlll08's NewKeyBindsScreen.
- */
+ *//*
+
 public class ControllingPickKeyScreen extends Screen {
     private ControllingGuiControlList controlList;
     private AutoCompletingEditBox<KeyBindsList.Entry> search;
@@ -120,7 +123,9 @@ public class ControllingPickKeyScreen extends Screen {
 
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
-        if (!search.isFocused() /*&& this.selectedKey == null*/) {
+        if (!search.isFocused() */
+/*&& this.selectedKey == null*//*
+) {
             if (hasControlDown()) {
                 if (InputConstants.isKeyDown(Minecraft.getInstance()
                         .getWindow()
@@ -135,7 +140,8 @@ public class ControllingPickKeyScreen extends Screen {
             search.setFocused(false);
             return true;
         }
-        /*if(this.selectedKey != null) {
+        */
+/*if(this.selectedKey != null) {
             if(key == 256) {
                 Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.UNKNOWN);
             } else {
@@ -147,7 +153,8 @@ public class ControllingPickKeyScreen extends Screen {
             this.lastKeySelection = Util.getMillis();
             this.this.controlList.resetMappingAndUpdateButtons();
             return true;
-        } else {*/
+        } else {*//*
+
         return super.keyPressed(key, scancode, mods);
         //}
     }
@@ -180,4 +187,4 @@ public class ControllingPickKeyScreen extends Screen {
         btn.setMessage(sortOrder.getDisplay());
         filterKeys();
     };
-}
+}*/

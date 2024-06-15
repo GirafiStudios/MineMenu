@@ -40,7 +40,7 @@ public class PickItemScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         Minecraft mc = this.minecraft;
         GuiRenderHelper.renderHeaderAndFooter(guiGraphics, this, 25, 20, 5, "Pick an Item:");
-        guiGraphics.blit(new ResourceLocation("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
+        guiGraphics.blit(ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
 
         Slot mousedOver = null;
 

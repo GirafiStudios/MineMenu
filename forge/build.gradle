@@ -1,6 +1,6 @@
 plugins {
-    id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'multiloader-loader'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
 
 base {
@@ -69,26 +69,16 @@ sourceSets.each {
 jarJar.enable()
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    compileOnly project(":common")
 
-    compileOnly fg.deobf("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}")
-	implementation fg.deobf(group: 'mysticdrew', name: 'common-networking-forge', version: "${common_networking}-${minecraft_version}")	
-    jarJar group: 'mysticdrew', name: 'common-networking-forge', version: '[1.0.1, 5.0.0)'
+	implementation fg.deobf(group: 'mysticdrew', name: 'common-networking-forge', version: "${common_networking}-${minecraft_version}")	{ transitive false }
+    jarJar group: 'mysticdrew', name: 'common-networking-forge', version: '[1.0.10, 5.0.0)'
     implementation fg.deobf("fuzs.forgeconfigapiport:forgeconfigapiport-forge:${forge_config_api_port}")
-    jarJar group: 'fuzs.forgeconfigapiport', name: 'forgeconfigapiport-forge', version: '[20.4.1, 30.0.0)'
-    implementation fg.deobf("com.blamejared.controlling:Controlling-forge-${minecraft_version}:${controlling}")
-    implementation fg.deobf("com.blamejared.searchables:Searchables-forge-${minecraft_version}:${searchables}")
-}
+    jarJar group: 'fuzs.forgeconfigapiport', name: 'forgeconfigapiport-forge', version: '[21.0.0, 30.0.0)'
+    //implementation fg.deobf("com.blamejared.controlling:Controlling-forge-${minecraft_version}:${controlling}")
+    //implementation fg.deobf("com.blamejared.searchables:Searchables-forge-${minecraft_version}:${searchables}")
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":common").sourceSets.main.resources
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+ 
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 jar.finalizedBy('reobfJar')

@@ -20,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class PacketUseItem {
-    public static final ResourceLocation CHANNEL = new ResourceLocation(Constants.MOD_ID, "packet_use_item");
+    public static final ResourceLocation CHANNEL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "packet_use_item");
     private int slot;
 
     public PacketUseItem(int slot) {

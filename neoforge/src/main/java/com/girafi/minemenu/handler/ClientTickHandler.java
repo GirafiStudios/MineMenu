@@ -7,29 +7,27 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class ClientTickHandler {
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            RadialMenu.tickTimer();
+    public static void onClientTick(ClientTickEvent.Post event) {
+        RadialMenu.tickTimer();
 
-            Minecraft mc = Minecraft.getInstance();
-            if ((mc.level == null || mc.isPaused()) && RadialMenuScreen.active) {
-                RadialMenuScreen.deactivate();
-            }
+        Minecraft mc = Minecraft.getInstance();
+        if ((mc.level == null || mc.isPaused()) && RadialMenuScreen.active) {
+            RadialMenuScreen.deactivate();
         }
     }
 
     @SubscribeEvent
-    public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
-        if (!(event.getOverlay().id().equals(VanillaGuiOverlay.PLAYER_LIST.id()))) {
+    public static void onRenderOverlay(RenderGuiLayerEvent.Post event) {
+        if (!(event.getName().equals(VanillaGuiLayers.TAB_LIST))) {
             return;
         }
 

@@ -1,7 +1,6 @@
 plugins {
-    id 'idea'
-    id 'net.neoforged.gradle.userdev' version '7.0.57'
-    id 'java-library'
+    id 'multiloader-loader'
+    id 'net.neoforged.gradle.userdev' version '7.0.142'
 }
 
 base {
@@ -40,27 +39,11 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 jarJar.enable()
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
-    compileOnly project(":common")
 
-	implementation "mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}"		
-    jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: '[1.0.1, 5.0.0)'
-    implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
-    implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
-}
-
-// NeoGradle compiles the game, but we don't want to add our common code to the game's code
-Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
-
-tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
-    source(project(":common").sourceSets.main.allSource)
-}
-
-tasks.named("sourcesJar", Jar) {
-    from(project(":common").sourceSets.main.allSource)
-}
-
-tasks.withType(ProcessResources).matching(notNeoTask).configureEach {
-    from project(":common").sourceSets.main.resources
+	implementation ("mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}") { transitive false }		
+    jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: '[1.0.10, 5.0.0)'
+    //implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
+    //implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
 tasks.jarJar.configure {

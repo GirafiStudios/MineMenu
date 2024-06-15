@@ -1,3 +1,4 @@
+/*
 package com.girafi.minemenu.gui.controlling;
 
 import com.blamejared.controlling.api.entries.ICategoryEntry;
@@ -163,7 +164,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
             this.buttonSelect.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
 
-            if (this.hasCollision) { //TODO Test
+            if (this.hasCollision) {
                 int markerWidth = 3;
                 int minX = this.buttonSelect.getX() - 6;
                 guiGraphics.fill(minX, y + 2, minX + markerWidth, y + rowWidth + 2, ChatFormatting.RED.getColor() | -16777216);
@@ -185,18 +186,22 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
-            /*if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
+            */
+/*if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
-            }*/
+            }*//*
+
             return this.buttonSelect.mouseClicked(mouseX, mouseY, buttonId);
         }
 
 
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
-            /*if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
+            */
+/*if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
-            }*/
+            }*//*
+
             return this.buttonSelect.mouseReleased(mouseX, mouseY, buttonId);
         }
 
@@ -250,4 +255,4 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
             return null;
         }
     }
-}
+}*/

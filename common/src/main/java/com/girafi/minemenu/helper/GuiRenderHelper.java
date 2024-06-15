@@ -18,12 +18,12 @@ public class GuiRenderHelper {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuilder();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.disableBlend();
 
-        RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
+        RenderSystem.setShaderTexture(0, Screen.MENU_BACKGROUND);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         poseStack.popPose();
@@ -32,26 +32,25 @@ public class GuiRenderHelper {
         float f = 32F;
 
         // HEADER
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.vertex(0, headerHeight, 0.0D).uv(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex((double) 0 + base.width, headerHeight, 0.0D).uv(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.addVertex(0, headerHeight, 0.0F).setUv(0.0F, ((float) headerHeight / f)).setColor(64, 64, 64, 255);
+        bufferBuilder.addVertex(base.width, headerHeight, 0.0F).setUv(((float) base.width / f), ((float) headerHeight / f)).setColor(64, 64, 64, 255);
 
-        bufferBuilder.vertex((double) 0 + base.width, 0, 0.0D).uv(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex(0, 0, 0.0D).uv(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.addVertex(base.width, 0, 0.0F).setUv(((float) base.width / f), ((float) 0 / f)).setColor(64, 64, 64, 255);
+        bufferBuilder.addVertex(0, 0, 0.0F).setUv(0.0F, ((float) 0 / f)).setColor(64, 64, 64, 255);
 
-        tessellator.end();
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
         // FOOTER
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
-        bufferBuilder.vertex(0, base.height, 0.0D).uv(0.0F, ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex((double) 0 + base.width, base.height, 0.0D).uv(((float) base.width / f), ((float) headerHeight / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.addVertex(0, base.height, 0.0F).setUv(0.0F, ((float) headerHeight / f)).setColor(64, 64, 64, 255);
+        bufferBuilder.addVertex(base.width, base.height, 0.0F).setUv(((float) base.width / f), ((float) headerHeight / f)).setColor(64, 64, 64, 255);
 
-        bufferBuilder.vertex((double) 0 + base.width, (double) base.height - footerHeight, 0.0D).uv(((float) base.width / f), ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex(0, (double) base.height - footerHeight, 0.0D).uv(0.0F, ((float) 0 / f)).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.addVertex(base.width, base.height - footerHeight, 0.0F).setUv(((float) base.width / f), ((float) 0 / f)).setColor(64, 64, 64, 255);
+        bufferBuilder.addVertex(0, base.height - footerHeight, 0.0F).setUv(0.0F, ((float) 0 / f)).setColor(64, 64, 64, 255);
 
-        tessellator.end();
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
         poseStack.popPose();
 

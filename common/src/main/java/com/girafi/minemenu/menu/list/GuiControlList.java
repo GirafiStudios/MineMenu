@@ -13,7 +13,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -107,6 +107,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         private final Button buttonSelect;
 
         KeyEntry(KeyMapping keyBinding) {
+            super();
             this.key = keyBinding;
             this.name = Component.translatable(keyBinding.getName());
             this.buttonSelect = Button.builder(name, (screen) -> {
@@ -122,7 +123,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
             this.buttonSelect.setX(y + 105);
             this.buttonSelect.setY(x);
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            this.buttonSelect.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
         @Override
