@@ -67,7 +67,7 @@ public class MenuItemScreen extends Screen {
                 }
                 RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
             }
-            MenuLoader.save(MineMenuCommon.menuFile);
+            MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
             Minecraft.getInstance().setScreen(null);
         }).bounds(this.width / 2 - 4 - 150, this.height - 60, 100, 20).build());
         addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)).bounds(this.width / 2 + 4 + 50, this.height - 60, 100, 20).build());
@@ -75,7 +75,7 @@ public class MenuItemScreen extends Screen {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
-                MenuLoader.save(MineMenuCommon.menuFile);
+                MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
                 Minecraft.getInstance().setScreen(null);
             }
         }).bounds(this.width / 2 - 50, this.height - 60, 100, 20).build());

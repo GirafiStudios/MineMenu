@@ -3,6 +3,7 @@ package com.girafi.minemenu;
 import com.girafi.minemenu.data.json.MenuLoader;
 import com.girafi.minemenu.network.packet.server.PacketUseItem;
 import commonnetwork.api.Network;
+import net.minecraft.core.RegistryAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,14 +23,14 @@ public class MineMenuCommon {
         Network.registerPacket(PacketUseItem.CHANNEL, PacketUseItem.class, PacketUseItem::encode, PacketUseItem::decode, PacketUseItem::handle);
     }
 
-    public static void setupMenuLoader() {
+    public static void setupMenuLoader(RegistryAccess registryAccess) {
         if (!menuFolder.exists()) {
             menuFolder.mkdir();
         }
 
         if (!menuFile.exists()) {
-            MenuLoader.save(menuFile);
+            MenuLoader.save(registryAccess, menuFile);
         }
-        MenuLoader.load(menuFile);
+        MenuLoader.load(registryAccess, menuFile);
     }
 }

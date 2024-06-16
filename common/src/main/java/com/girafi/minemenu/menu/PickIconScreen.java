@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -35,7 +34,6 @@ public class PickIconScreen extends Screen {
     private Button buttonCancel;
     private NonNullList<ItemStack> stacks;
     private int listScrollIndex = 0;
-    private ItemStack iconStack = ItemStack.EMPTY;
 
     public PickIconScreen() {
         super(Component.translatable("mine_menu.iconScreen.title"));
@@ -64,6 +62,8 @@ public class PickIconScreen extends Screen {
         stacks = NonNullList.create();
         this.reconstructList(stacks);
 
+        RegistryAccess registryAccess = this.minecraft.level.registryAccess();
+
         addRenderableWidget(this.buttonDone = Button.builder(Component.translatable("gui.done"), (screen) -> {
             String inputText = this.textSearch.getValue();
             if (inputText.contains("{")) {
@@ -74,10 +74,7 @@ public class PickIconScreen extends Screen {
                     MineMenuCommon.LOGGER.info("Invalid item NBT");
                     e.printStackTrace();
                 }
-                RegistryAccess registryAccess = this.minecraft.level.registryAccess();
                 ItemStack tagStack = ItemStack.parseOptional(registryAccess, tag);
-
-                EditSessionData.icon = ItemStack.parseOptional(registryAccess, tag);
 
                 if (!tagStack.isEmpty() && tagStack != null) {
                     EditSessionData.icon = tagStack;
@@ -97,13 +94,9 @@ public class PickIconScreen extends Screen {
         this.textSearch = new EditBox(this.font, this.width / 2 - 150, 40, 300, 20, Component.translatable("mine_menu.pickIcon.search"));
         this.textSearch.setMaxLength(32767);
         this.textSearch.setFocused(true);
+
         if (!EditSessionData.icon.isEmpty()) {
-            if (EditSessionData.icon.has(DataComponents.DAMAGE)) {
-                //Test string: {components:{"minecraft:enchantments":{levels:{"minecraft:efficiency":5,"minecraft:fortune":3,"minecraft:unbreaking":3}}},count:1,id:"minecraft:netherite_pickaxe"}
-                this.textSearch.setValue(EditSessionData.icon.save(Minecraft.getInstance().level.registryAccess()).toString());
-            } else {
-                this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(EditSessionData.icon.getItem()).toString());
-            }
+            this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(EditSessionData.icon.getItem()).toString());
         }
     }
 
@@ -169,7 +162,6 @@ public class PickIconScreen extends Screen {
 
         if (!clicked.isEmpty()) {
             this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(clicked.getItem()).toString());
-            this.iconStack = clicked;
         }
         return true;
     }

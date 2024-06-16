@@ -41,13 +41,17 @@ dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 
 	implementation ("mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}") { transitive false }		
-    jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: '[1.0.10, 5.0.0)'
+    jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: "${common_networking}-${minecraft_version}"
     //implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
     //implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
-tasks.jarJar.configure {
-    archiveClassifier.set("")
+tasks.named('jar') {
+    archiveClassifier = "slim"
+}
+
+tasks.named('jarJar') {
+    archiveClassifier = ''
 }
 
 tasks.named("build").configure {

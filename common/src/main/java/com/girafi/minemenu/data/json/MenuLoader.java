@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -17,17 +18,18 @@ import java.io.*;
 import java.util.Map;
 
 public class MenuLoader {
-    private static final Gson GSON;
+    private static Gson GSON;
 
-    static {
+    public static void setGson(RegistryAccess registryAccess) {
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer());
+        builder.registerTypeAdapter(ItemStack.class, new ItemStackSerializer(registryAccess));
         builder.registerTypeAdapter(ClickAction.IClickAction.class, new ClickActionSerializer());
         GSON = builder.create();
     }
 
-    public static void load(File file) {
+    public static void load(RegistryAccess registryAccess, File file) {
+        setGson(registryAccess);
         try {
             JsonElement element = GSON.fromJson(new FileReader(file), JsonElement.class);
 
@@ -87,7 +89,8 @@ public class MenuLoader {
         }
     }
 
-    public static void save(File file) {
+    public static void save(RegistryAccess registryAccess, File file) {
+        setGson(registryAccess);
         if (file.exists()) {
             file.delete();
         }
