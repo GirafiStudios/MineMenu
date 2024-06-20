@@ -21,8 +21,8 @@ dependencies {
     implementation ("mysticdrew:common-networking-common:${common_networking}-${minecraft_version}") { transitive false }
     implementation "fuzs.forgeconfigapiport:forgeconfigapiport-common:${forge_config_api_port}"	
     implementation ("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api_port}") { transitive false }
-    //implementation "com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}"
-    //implementation "com.blamejared.searchables:Searchables-common-${minecraft_version}:${searchables}"
+    implementation "com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}"
+    implementation "com.blamejared.searchables:Searchables-common-${minecraft_version}:${searchables}"
 }
 
 configurations {

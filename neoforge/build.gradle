@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.gradle.userdev' version '7.0.142'
+    id 'net.neoforged.gradle.userdev' version '7.0.145'
 }
 
 base {
@@ -42,8 +42,8 @@ dependencies {
 
 	implementation ("mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}") { transitive false }		
     jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: "${common_networking}-${minecraft_version}"
-    //implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
-    //implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
+    implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
+    implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
 tasks.named('jar') {

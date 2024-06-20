@@ -1,4 +1,3 @@
-/*
 package com.girafi.minemenu.gui.controlling;
 
 import com.blamejared.controlling.ControllingConstants;
@@ -6,14 +5,13 @@ import com.blamejared.controlling.api.DisplayMode;
 import com.blamejared.controlling.api.SortOrder;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.girafi.minemenu.gui.ScreenStack;
-import com.girafi.minemenu.helper.GuiRenderHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -25,11 +23,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
-*/
 /**
  * Mostly a copy of Controlling by Jaredlll08's NewKeyBindsScreen.
- *//*
-
+ */
 public class ControllingPickKeyScreen extends Screen {
     private ControllingGuiControlList controlList;
     private AutoCompletingEditBox<KeyBindsList.Entry> search;
@@ -123,9 +119,7 @@ public class ControllingPickKeyScreen extends Screen {
 
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
-        if (!search.isFocused() */
-/*&& this.selectedKey == null*//*
-) {
+        if (!search.isFocused() /*&& this.selectedKey == null*/) {
             if (hasControlDown()) {
                 if (InputConstants.isKeyDown(Minecraft.getInstance()
                         .getWindow()
@@ -140,8 +134,7 @@ public class ControllingPickKeyScreen extends Screen {
             search.setFocused(false);
             return true;
         }
-        */
-/*if(this.selectedKey != null) {
+        /*if(this.selectedKey != null) {
             if(key == 256) {
                 Services.PLATFORM.setKey(options, this.selectedKey, InputConstants.UNKNOWN);
             } else {
@@ -153,8 +146,7 @@ public class ControllingPickKeyScreen extends Screen {
             this.lastKeySelection = Util.getMillis();
             this.this.controlList.resetMappingAndUpdateButtons();
             return true;
-        } else {*//*
-
+        } else {*/
         return super.keyPressed(key, scancode, mods);
         //}
     }
@@ -163,7 +155,7 @@ public class ControllingPickKeyScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.controlList.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(this.font, "Select a key", this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Select a Key:", this.width / 2, 8, 16777215);
     }
 
     private final Button.OnPress PRESS_NONE = btn -> {
@@ -182,4 +174,4 @@ public class ControllingPickKeyScreen extends Screen {
         btn.setMessage(sortOrder.getDisplay());
         filterKeys();
     };
-}*/
+}

@@ -19,8 +19,8 @@ dependencies {
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
 	modApi ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
     include ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
-    //modImplementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
-    //modImplementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
+    modImplementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
+    modImplementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
 }
 
 loom {

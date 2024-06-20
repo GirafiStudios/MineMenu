@@ -1,8 +1,9 @@
-/*
 package com.girafi.minemenu.gui.controlling;
 
 import com.blamejared.controlling.api.entries.ICategoryEntry;
 import com.blamejared.controlling.api.entries.IKeyEntry;
+import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
+import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
 import com.blamejared.controlling.platform.Services;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.ClickActionScreen;
@@ -18,7 +19,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyBindsList.Entry> {
     private final Minecraft mc;
@@ -162,7 +164,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
             this.buttonSelect.setX(x + 105);
             this.buttonSelect.setY(y);
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            this.buttonSelect.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTicks);
 
             if (this.hasCollision) {
                 int markerWidth = 3;
@@ -186,10 +188,9 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonId) {
-            */
-/*if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
+            if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
-            }*//*
+            }
 
             return this.buttonSelect.mouseClicked(mouseX, mouseY, buttonId);
         }
@@ -197,10 +198,9 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
 
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int buttonId) {
-            */
-/*if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
+            if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, mouseX, mouseY, buttonId).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
                 return true;
-            }*//*
+            }
 
             return this.buttonSelect.mouseReleased(mouseX, mouseY, buttonId);
         }
@@ -255,4 +255,4 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
             return null;
         }
     }
-}*/
+}
