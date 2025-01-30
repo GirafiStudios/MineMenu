@@ -48,16 +48,4 @@ dependencies {
     implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
-tasks.named('jar') {
-    archiveClassifier = "slim"
-}
-
-tasks.named('jarJar') {
-    archiveClassifier = ''
-}
-
-tasks.named("build").configure {
-    dependsOn("jarJar")
-}
-
 sourceSets.main.resources { srcDir 'src/generated/resources' }
