@@ -41,7 +41,6 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
     public ControllingGuiControlList(Screen parent, Minecraft mc) {
         super(mc, parent.width + 20, parent.height - 70, 45, 20);
         this.mc = mc;
-        this.setY(48);
         children().clear();
         allEntries = new ArrayList<>();
         KeyMapping[] bindings = ArrayUtils.clone(mc.options.keyMappings);
