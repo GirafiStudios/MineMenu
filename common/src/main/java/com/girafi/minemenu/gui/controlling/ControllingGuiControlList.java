@@ -4,6 +4,7 @@ import com.blamejared.controlling.api.entries.ICategoryEntry;
 import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
+import com.blamejared.controlling.client.NewKeyBindsList;
 import com.blamejared.controlling.platform.Services;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.ClickActionScreen;
@@ -40,6 +41,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
     public ControllingGuiControlList(Screen parent, Minecraft mc) {
         super(mc, parent.width + 20, parent.height - 70, 45, 20);
         this.mc = mc;
+        this.setY(48);
         children().clear();
         allEntries = new ArrayList<>();
         KeyMapping[] bindings = ArrayUtils.clone(mc.options.keyMappings);
@@ -78,11 +80,6 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
         allEntries.add(ent);
         this.children().add(ent);
         return this.children().size() - 1;
-    }
-
-    @Override
-    protected int getScrollbarPosition() {
-        return super.getScrollbarPosition() + 15 + 20;
     }
 
     @Override

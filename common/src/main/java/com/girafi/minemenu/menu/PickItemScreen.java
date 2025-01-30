@@ -8,6 +8,8 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +41,7 @@ public class PickItemScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, 16777215);
         Minecraft mc = this.minecraft;
-        guiGraphics.blit(ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE);
+        guiGraphics.blit(RenderType::guiTextured, ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
 
         Slot mousedOver = null;
 
@@ -70,12 +72,10 @@ public class PickItemScreen extends Screen {
         poseStack.translate(0.0F, 0.0F, 100.0F);
 
         if (stack.isEmpty()) {
-            Pair<ResourceLocation, ResourceLocation> pair = slot.getNoItemIcon();
+            ResourceLocation slotNoItemIcon = slot.getNoItemIcon();
 
-            if (pair != null) {
-                TextureAtlasSprite sprite = this.minecraft.getTextureAtlas(pair.getFirst()).apply(pair.getSecond());
-                RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-                guiGraphics.blit(this.guiLeft + x, this.guiTop + y, 0, 16, 16, sprite);
+            if (slotNoItemIcon != null) {
+                guiGraphics.blitSprite(RenderType::guiTextured, slotNoItemIcon, this.guiLeft + x, this.guiTop + y, 0, 16, 16);
             }
         }
 

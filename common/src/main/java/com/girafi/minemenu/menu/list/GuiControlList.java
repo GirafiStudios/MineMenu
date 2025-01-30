@@ -31,6 +31,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
     public GuiControlList(Screen parent, Minecraft mc) {
         super(mc, parent.width + 32, parent.height - 20, 20, 20);
         this.mc = mc;
+        this.setY(28);
 
         KeyMapping[] keyBindings = Minecraft.getInstance().options.keyMappings;
         Arrays.sort(keyBindings);
@@ -53,11 +54,6 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
                 this.addEntry(new KeyEntry(keybinding));
             }
         }
-    }
-
-    @Override
-    protected int getScrollbarPosition() {
-        return super.getScrollbarPosition() + 15;
     }
 
     public class CategoryEntry extends KeyBindsList.Entry {

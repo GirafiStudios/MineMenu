@@ -6,6 +6,9 @@ import com.girafi.minemenu.gui.RadialMenuScreen;
 import com.girafi.minemenu.helper.AngleHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.girafi.minemenu.util.Config;
+import com.mojang.blaze3d.ProjectionType;
+import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -13,11 +16,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.lwjgl.opengl.GL11;
 
@@ -31,14 +35,13 @@ public class ClientTickHelper {
         Matrix4fStack matrix = RenderSystem.getModelViewStack();
         matrix.pushMatrix();
         matrix.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
-        RenderSystem.applyModelViewMatrix();
 
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(CoreShaders.RENDERTYPE_GUI_OVERLAY);
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -97,7 +100,6 @@ public class ClientTickHelper {
         RenderSystem.disableBlend();
 
         matrix.popMatrix();
-        RenderSystem.applyModelViewMatrix();
     }
 
     public static void renderItems(GuiGraphics guiGraphics) {
@@ -108,7 +110,7 @@ public class ClientTickHelper {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            Item menuButton = BuiltInRegistries.ITEM.get(ResourceLocation.parse(Config.GENERAL.menuButtonIcon.get()));
+            Item menuButton = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(Config.GENERAL.menuButtonIcon.get()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
             double angle = (ANGLE_PER_ITEM * i);
@@ -161,7 +163,7 @@ public class ClientTickHelper {
                 // Background
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                RenderSystem.setShader(CoreShaders.RENDERTYPE_GUI_OVERLAY);
 
                 Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);

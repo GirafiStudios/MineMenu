@@ -47,7 +47,7 @@ public class PacketUseItem {
 
         UseOnContext useOnContext = new UseOnContext(player, hand, getPlayerPOVHitResult(player.level(), player, ClipContext.Fluid.SOURCE_ONLY));
         if (heldItem.useOn(useOnContext) == InteractionResult.PASS) { //useOn check here, also does the actual interaction
-            InteractionResult use = heldItem.use(player.level(), player, hand).getResult();
+            InteractionResult use = heldItem.use(player.level(), player, hand);
             if (use.consumesAction()) {
                 if (heldItem.getItem() instanceof BucketItem) {
                     player.getInventory().items.set(ctx.message().slot, new ItemStack(Items.BUCKET));

@@ -81,7 +81,7 @@ public class PickIconScreen extends Screen {
                     ScreenStack.pop();
                 }
             } else {
-                Item textItem = BuiltInRegistries.ITEM.get(ResourceLocation.parse(inputText));
+                Item textItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(inputText));
                 if (textItem == Items.AIR && textItem != null) {
                     MineMenuCommon.LOGGER.warn("Invalid item");
                 } else {
