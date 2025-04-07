@@ -4,7 +4,6 @@ import com.blamejared.controlling.api.entries.ICategoryEntry;
 import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.api.events.IKeyEntryMouseClickedEvent;
 import com.blamejared.controlling.api.events.IKeyEntryMouseReleasedEvent;
-import com.blamejared.controlling.client.NewKeyBindsList;
 import com.blamejared.controlling.platform.Services;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.ClickActionScreen;
