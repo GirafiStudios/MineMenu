@@ -50,7 +50,7 @@ public class PacketUseItem {
             InteractionResult use = heldItem.use(player.level(), player, hand);
             if (use.consumesAction()) {
                 if (heldItem.getItem() instanceof BucketItem) {
-                    player.getInventory().items.set(ctx.message().slot, new ItemStack(Items.BUCKET));
+                    player.getInventory().getNonEquipmentItems().set(ctx.message().slot, new ItemStack(Items.BUCKET));
                 }
             }
         }

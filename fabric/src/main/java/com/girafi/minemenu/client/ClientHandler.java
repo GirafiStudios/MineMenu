@@ -36,7 +36,7 @@ public class ClientHandler implements ClientModInitializer {
         HudRenderCallback.EVENT.register((guiGraphics, delta) -> {
             Minecraft mc = Minecraft.getInstance();
             if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-                ClientTickHelper.renderButtonBackgrounds();
+                ClientTickHelper.renderButtonBackgrounds(guiGraphics);
                 ClientTickHelper.renderItems(guiGraphics);
                 ClientTickHelper.renderText(guiGraphics);
             }

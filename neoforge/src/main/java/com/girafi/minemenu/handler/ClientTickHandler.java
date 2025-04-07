@@ -34,7 +34,7 @@ public class ClientTickHandler {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
             GuiGraphics guiGraphics = event.getGuiGraphics();
-            ClientTickHelper.renderButtonBackgrounds();
+            ClientTickHelper.renderButtonBackgrounds(guiGraphics);
             ClientTickHelper.renderItems(guiGraphics);
             ClientTickHelper.renderText(guiGraphics);
         }

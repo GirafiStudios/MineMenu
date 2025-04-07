@@ -69,12 +69,12 @@ public class PickIconScreen extends Screen {
             if (inputText.contains("{")) {
                 CompoundTag tag = new CompoundTag();
                 try {
-                    tag = TagParser.parseTag(inputText);
+                    tag = TagParser.parseCompoundFully(inputText);
                 } catch (CommandSyntaxException e) {
                     MineMenuCommon.LOGGER.info("Invalid item NBT");
                     e.printStackTrace();
                 }
-                ItemStack tagStack = ItemStack.parseOptional(registryAccess, tag);
+                ItemStack tagStack = ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
 
                 if (!tagStack.isEmpty() && tagStack != null) {
                     EditSessionData.icon = tagStack;

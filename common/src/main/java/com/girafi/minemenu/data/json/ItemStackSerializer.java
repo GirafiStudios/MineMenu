@@ -42,13 +42,13 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
 
             if (key.equals("stack")) {
                 try {
-                    stackTag = TagParser.parseTag(element.getAsString());
+                    stackTag = TagParser.parseCompoundFully (element.getAsString());
                 } catch (CommandSyntaxException e) {
                     Constants.LOG.error(e);
                 }
             }
         }
 
-        return stackTag == null ? ItemStack.EMPTY : ItemStack.parseOptional(this.registryAccess, stackTag);
+        return stackTag == null ? ItemStack.EMPTY : ItemStack.parse(this.registryAccess, stackTag).orElse(ItemStack.EMPTY);
     }
 }

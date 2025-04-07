@@ -6,42 +6,38 @@ import com.girafi.minemenu.gui.RadialMenuScreen;
 import com.girafi.minemenu.helper.AngleHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.girafi.minemenu.util.Config;
-import com.mojang.blaze3d.ProjectionType;
-import com.mojang.blaze3d.platform.GlConst;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-import org.lwjgl.opengl.GL11;
 
 public class ClientTickHelper {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final float OUTER_RADIUS = 80;
     private static final float INNER_RADIUS = 60;
 
-    public static void renderButtonBackgrounds() {
+    public static void renderButtonBackgrounds(GuiGraphics guiGraphics) { //TODO Doesn't render???
         Minecraft mc = Minecraft.getInstance();
-        Matrix4fStack matrix = RenderSystem.getModelViewStack();
-        matrix.pushMatrix();
-        matrix.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        poseStack.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
 
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.setShader(CoreShaders.RENDERTYPE_GUI_OVERLAY);
+        MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+        RenderType guiOverlay = RenderType.guiOverlay();
+        VertexConsumer vertexConsumer = buffer.getBuffer(guiOverlay);
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+        //RenderSystem.disableCull();
+        //RenderSystem.setShader(CoreShaders.RENDERTYPE_GUI_OVERLAY);
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -88,18 +84,20 @@ public class ClientTickHelper {
             float y3 = (float) Math.sin(nextAngle) * outerRadius;
             float y4 = (float) Math.sin(nextAngle) * innerRadius;
 
-            bufferBuilder.addVertex(x1, y1, 0).setColor(r, g, b, alpha);
-            bufferBuilder.addVertex(x2, y2, 0).setColor(r, g, b, alpha);
-            bufferBuilder.addVertex(x3, y3, 0).setColor(r, g, b, alpha);
-            bufferBuilder.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
+            vertexConsumer.addVertex(x1, y1, 0).setColor(r, g, b, alpha);
+            vertexConsumer.addVertex(x2, y2, 0).setColor(r, g, b, alpha);
+            vertexConsumer.addVertex(x3, y3, 0).setColor(r, g, b, alpha);
+            vertexConsumer.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
         }
 
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        buffer.endBatch(guiOverlay);
 
-        RenderSystem.enableCull();
-        RenderSystem.disableBlend();
+        //BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
-        matrix.popMatrix();
+        //RenderSystem.enableCull();
+        //RenderSystem.disableBlend();
+
+        poseStack.popPose();
     }
 
     public static void renderItems(GuiGraphics guiGraphics) {
@@ -161,25 +159,18 @@ public class ClientTickHelper {
                 float padding = 5F;
 
                 // Background
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                RenderSystem.setShader(CoreShaders.RENDERTYPE_GUI_OVERLAY);
-
-                Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+                MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+                VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.guiOverlay());
 
                 float r = (float) Config.VISUAL.menuRed.get() / (float) 255;
                 float g = (float) Config.VISUAL.menuGreen.get() / (float) 255;
                 float b = (float) Config.VISUAL.menuBlue.get() / (float) 255;
                 float alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
 
-                bufferBuilder.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY - padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
-
-                BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-                RenderSystem.disableBlend();
+                vertexConsumer.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+                vertexConsumer.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+                vertexConsumer.addVertex(drawX + drawWidth + padding, drawY - padding, 0).setColor(r, g, b, alpha);
+                vertexConsumer.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
 
                 // Text
                 guiGraphics.drawString(Minecraft.getInstance().font, string, drawX, drawY, 0xFFFFFF, false);
