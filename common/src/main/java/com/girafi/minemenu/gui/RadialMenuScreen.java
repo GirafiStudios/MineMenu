@@ -7,9 +7,11 @@ import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,8 +21,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix4fStack;
 
 import javax.annotation.Nonnull;
 
@@ -130,14 +134,16 @@ public class RadialMenuScreen extends Screen {
 
     public static void renderButtonBackgrounds(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix4fStack matrix = RenderSystem.getModelViewStack();
+        Camera camera = mc.gameRenderer.getMainCamera();
 
-        poseStack.pushPose();
-        poseStack.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
 
-        MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource;
-        RenderType guiOverlay = RenderType.guiOverlay();
-        VertexConsumer vertexConsumer = buffer.getBuffer(guiOverlay);
+        matrix.pushMatrix();
+        float guiX = guiGraphics.guiWidth() * 0.5F;
+        float guiY = guiGraphics.guiHeight() * 0.5F;
+
+        MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.gui());
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -174,22 +180,25 @@ public class RadialMenuScreen extends Screen {
                 alpha = Config.VISUAL.menuAlpha.get();
             }
 
-            float x1 = (float) (Math.cos(currAngle) * innerRadius);
-            float x2 = (float) (Math.cos(currAngle) * outerRadius);
-            float x3 = (float) Math.cos(nextAngle) * outerRadius;
-            float x4 = (float) Math.cos(nextAngle) * innerRadius;
+            float x1 = (float) (Math.cos(currAngle) * innerRadius) + guiX;
+            float x2 = (float) (Math.cos(currAngle) * outerRadius) + guiX;
+            float x3 = (float) (Math.cos(nextAngle) * outerRadius) + guiX;
+            float x4 = (float) (Math.cos(nextAngle) * innerRadius) + guiX;
 
-            float y1 = (float) Math.sin(currAngle) * innerRadius;
-            float y2 = (float) Math.sin(currAngle) * outerRadius;
-            float y3 = (float) Math.sin(nextAngle) * outerRadius;
-            float y4 = (float) Math.sin(nextAngle) * innerRadius;
+            float y1 = (float) (Math.sin(currAngle) * innerRadius) + guiY;
+            float y2 = (float) (Math.sin(currAngle) * outerRadius) + guiY;
+            float y3 = (float) (Math.sin(nextAngle) * outerRadius) + guiY;
+            float y4 = (float) (Math.sin(nextAngle) * innerRadius) + guiY;
 
+            //guiGraphics.fill(RenderType.gui(), (int) x1, (int) y1, (int) x2, (int) y2, ARGB.color(alpha, r, g, b));
+            //guiGraphics.fill(RenderType.gui(), (int) x3, (int) y3, (int) x4, (int) y4, ARGB.color(alpha, r, g, b));
             vertexConsumer.addVertex(x1, y1, 0).setColor(r, g, b, alpha);
             vertexConsumer.addVertex(x2, y2, 0).setColor(r, g, b, alpha);
             vertexConsumer.addVertex(x3, y3, 0).setColor(r, g, b, alpha);
-            vertexConsumer.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
+            //vertexConsumer.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
+
         }
-        poseStack.popPose();
+        matrix.popMatrix();
     }
 
     public static void renderItems(GuiGraphics guiGraphics) {

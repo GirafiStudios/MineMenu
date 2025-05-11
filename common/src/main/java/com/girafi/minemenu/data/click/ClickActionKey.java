@@ -1,6 +1,6 @@
 package com.girafi.minemenu.data.click;
 
-import com.girafi.minemenu.handler.KeyboardHandlerHelper;
+import com.girafi.minemenu.helper.KeyboardHandlerHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 

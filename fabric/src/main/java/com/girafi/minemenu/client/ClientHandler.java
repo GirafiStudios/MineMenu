@@ -3,7 +3,7 @@ package com.girafi.minemenu.client;
 import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
-import com.girafi.minemenu.handler.KeyboardHandlerHelper;
+import com.girafi.minemenu.helper.KeyboardHandlerHelper;
 import com.girafi.minemenu.util.MineMenuKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

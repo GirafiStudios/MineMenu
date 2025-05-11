@@ -1,4 +1,4 @@
-package com.girafi.minemenu.handler;
+package com.girafi.minemenu.helper;
 
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
