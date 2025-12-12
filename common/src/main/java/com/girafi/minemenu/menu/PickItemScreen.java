@@ -2,18 +2,21 @@ package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class PickItemScreen extends Screen {
     private static final int XSIZE = 176;
@@ -35,9 +38,9 @@ public class PickItemScreen extends Screen {
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, -1);
         Minecraft mc = this.minecraft;
-        guiGraphics.blit(RenderType::guiTextured, ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
 
         Slot mousedOver = null;
 
@@ -53,7 +56,7 @@ public class PickItemScreen extends Screen {
             }
             if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
                 drawSlot(guiGraphics, mousedOver, true);
-                guiGraphics.renderTooltip(this.font, mousedOver.getItem(), mouseX, mouseY);
+                guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(mousedOver.getItem().getItemName().getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         }
     }
@@ -62,28 +65,26 @@ public class PickItemScreen extends Screen {
         int x = slot.x;
         int y = slot.y;
         ItemStack stack = slot.getItem();
-        PoseStack poseStack = guiGraphics.pose();
-
-        poseStack.pushPose();
-        poseStack.translate(0.0F, 0.0F, 100.0F);
 
         if (stack.isEmpty()) {
             ResourceLocation slotNoItemIcon = slot.getNoItemIcon();
 
             if (slotNoItemIcon != null) {
-                guiGraphics.blitSprite(RenderType::guiTextured, slotNoItemIcon, this.guiLeft + x, this.guiTop + y, 0, 16, 16);
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotNoItemIcon, this.guiLeft + x, this.guiTop + y, 0, 16, 16);
             }
         }
 
         if (!stack.isEmpty()) {
             if (scale) {
-                poseStack.scale(1.5F, 1.5F, 1.5F);
+                Matrix3x2fStack ps = guiGraphics.pose();
+                ps.pushMatrix();
+                ps.scale(1.5F, 1.5F);
                 ItemRenderHelper.renderItem(guiGraphics, (int) ((this.guiLeft + x) / 1.5D) + 6, (int) ((this.guiTop + y) / 1.5D) + 6, stack);
+                ps.popMatrix();
             } else {
                 ItemRenderHelper.renderItem(guiGraphics, this.guiLeft + x + 8, this.guiTop + y + 8, stack);
             }
         }
-        poseStack.popPose();
     }
 
     @Override

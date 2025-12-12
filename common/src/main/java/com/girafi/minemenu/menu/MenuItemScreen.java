@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class MenuItemScreen extends Screen {
     private final int slot;
@@ -47,12 +45,6 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    @Nullable
-    public GuiEventListener getFocused() {
-        return this.textTitle;
-    }
-
-    @Override
     public void init() {
         addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
             if (EditSessionData.title.isEmpty()) {
@@ -67,7 +59,7 @@ public class MenuItemScreen extends Screen {
                 }
                 RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
             }
-            MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
+            MenuLoader.save(MineMenuCommon.menuFile);
             Minecraft.getInstance().setScreen(null);
         }).bounds(this.width / 2 - 4 - 150, this.height - 60, 100, 20).build());
         addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)).bounds(this.width / 2 + 4 + 50, this.height - 60, 100, 20).build());
@@ -75,7 +67,7 @@ public class MenuItemScreen extends Screen {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
-                MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
+                MenuLoader.save(MineMenuCommon.menuFile);
                 Minecraft.getInstance().setScreen(null);
             }
         }).bounds(this.width / 2 - 50, this.height - 60, 100, 20).build());
@@ -97,8 +89,8 @@ public class MenuItemScreen extends Screen {
 
         this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
         this.textTitle.setMaxLength(32767);
-        this.textTitle.setFocused(true);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
+        this.addRenderableWidget(this.textTitle);
 
         this.buttonPickIcon.icon = EditSessionData.icon;
     }
@@ -140,7 +132,7 @@ public class MenuItemScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         super.render(guiGraphics, mouseX, mouseY, partial);
         this.textTitle.render(guiGraphics, mouseX, mouseY, partial);
-        guiGraphics.drawCenteredString(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, 16777215);
-        guiGraphics.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, -1);
+        guiGraphics.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, -1);
     }
 }

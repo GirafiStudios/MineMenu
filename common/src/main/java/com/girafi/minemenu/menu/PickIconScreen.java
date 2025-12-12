@@ -4,7 +4,6 @@ import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +14,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,9 +22,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
@@ -74,7 +76,7 @@ public class PickIconScreen extends Screen {
                     MineMenuCommon.LOGGER.info("Invalid item NBT");
                     e.printStackTrace();
                 }
-                ItemStack tagStack = ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
+                ItemStack tagStack = ItemStack.CODEC.parse(NbtOps.INSTANCE, tag).result().orElse(ItemStack.EMPTY);
 
                 if (!tagStack.isEmpty() && tagStack != null) {
                     EditSessionData.icon = tagStack;
@@ -130,7 +132,7 @@ public class PickIconScreen extends Screen {
                 } else {
                     this.reconstructList(temp);
                     for (ItemStack stack : temp) {
-                        if (stack.getHoverName().getString().toLowerCase().contains(textSearch.getValue().toLowerCase())) {
+                        if (stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(textSearch.getValue().toLowerCase(Locale.ROOT))) {
                             stacks.add(stack);
                         }
                     }
@@ -192,7 +194,7 @@ public class PickIconScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         super.render(guiGraphics, mouseX, mouseY, partial);
         this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
-        guiGraphics.drawCenteredString(this.font, "Select an Icon:", this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Select an Icon:", this.width / 2, 8, -1);
 
         drawList(guiGraphics, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
@@ -232,11 +234,11 @@ public class PickIconScreen extends Screen {
         }
 
         if (!highlighted.isEmpty()) {
-            PoseStack poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            poseStack.scale(2, 2, 2);
+            Matrix3x2fStack ms = guiGraphics.pose();
+            ms.pushMatrix();
+            ms.scale(2, 2, ms);
             ItemRenderHelper.renderItem(guiGraphics, highlightedX, highlightedY, highlighted);
-            poseStack.popPose();
+            ms.popMatrix();
         }
     }
 

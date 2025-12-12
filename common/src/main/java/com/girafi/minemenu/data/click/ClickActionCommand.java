@@ -34,7 +34,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
                 } else {
                     parsedCommand = parsedCommand.replaceAll("^/+", "");
                 }
-                player.connection.sendUnsignedCommand(parsedCommand);}
+                player.connection.sendCommand(parsedCommand);}
         }
     }
 

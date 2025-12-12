@@ -62,6 +62,6 @@ public class PickKeyScreen extends Screen {
     public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTicks) {
         super.render(guiGraphics, x, y, partialTicks);
         this.controlList.render(guiGraphics, x, y, partialTicks);
-        guiGraphics.drawCenteredString(this.font, "Select a key", this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, "Select a key", this.width / 2, 8, -1);
     }
 }

@@ -96,7 +96,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
 
         @Override
         public void render(GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(ControllingGuiControlList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, 16777215);
+            guiGraphics.drawString(ControllingGuiControlList.this.mc.font, this.name, Objects.requireNonNull(minecraft.screen).width / 2 - this.labelWidth / 2, y + rowWidth - 9 - 1, -1);
         }
 
         @Override
@@ -155,7 +155,7 @@ public class ControllingGuiControlList extends ContainerObjectSelectionList<KeyB
         public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int y, int x, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
             //Services.EVENT.fireKeyEntryRenderEvent(this, guiGraphics, slotIndex, y, x, rowLeft, rowWidth, mouseX, mouseY, hovered, partialTicks);
             int length = Math.max(0, x + 90 - ControllingGuiControlList.this.maxListLabelWidth);
-            guiGraphics.drawString(ControllingGuiControlList.this.mc.font, this.keyDesc, length, y + rowWidth / 2 - 9 / 2, 16777215);
+            guiGraphics.drawString(ControllingGuiControlList.this.mc.font, this.keyDesc, length, y + rowWidth / 2 - 9 / 2, -1);
             this.buttonSelect.setX(x + 105);
             this.buttonSelect.setY(y);
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());

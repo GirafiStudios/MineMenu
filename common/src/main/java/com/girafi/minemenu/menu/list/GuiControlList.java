@@ -67,7 +67,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
         @Override
         public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (x + rowWidth - GuiControlList.this.mc.font.lineHeight - 1), 16777215);
+            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (x + rowWidth - GuiControlList.this.mc.font.lineHeight - 1), -1);
         }
 
         @Override
@@ -115,7 +115,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
         @Override
         public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (y + 90 - GuiControlList.this.maxWidth), (x + rowWidth / 2 - GuiControlList.this.mc.font.lineHeight / 2), 16777215);
+            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (y + 90 - GuiControlList.this.maxWidth), (x + rowWidth / 2 - GuiControlList.this.mc.font.lineHeight / 2), -1);
             this.buttonSelect.setX(y + 105);
             this.buttonSelect.setY(x);
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());

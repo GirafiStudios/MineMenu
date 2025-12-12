@@ -29,8 +29,8 @@ public class MineMenuCommon {
         }
 
         if (!menuFile.exists()) {
-            MenuLoader.save(registryAccess, menuFile);
+            MenuLoader.save(menuFile);
         }
-        MenuLoader.load(registryAccess, menuFile);
+        MenuLoader.load(menuFile);
     }
 }

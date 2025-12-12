@@ -12,6 +12,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.List;
 
 public class ClickActionScreen extends Screen {
     public static final boolean IS_CONTROLLING_LOADED = Services.PLATFORM.isModLoaded("controlling");
@@ -274,15 +276,15 @@ public class ClickActionScreen extends Screen {
             case 3 -> "Enter a category";
             default -> "";
         };
-        guiGraphics.drawCenteredString(this.font, header, this.width / 2, 8, 16777215);
+        guiGraphics.drawCenteredString(this.font, header, this.width / 2, 8, -1);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
-            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_command").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_command").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {
-            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeUseItem.getX() && mouseX < modeUseItem.getX() + modeUseItem.getWidth() && mouseY > modeUseItem.getY() && mouseY < modeUseItem.getY() + modeUseItem.getWidth()) {
-            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeCategory.getX() && mouseX < modeCategory.getX() + modeCategory.getWidth() && mouseY > modeCategory.getY() && mouseY < modeCategory.getY() + modeCategory.getWidth()) {
-            guiGraphics.renderTooltip(this.font, Collections.singletonList(Component.translatable("mine_menu.clickAction_category").getVisualOrderText()), mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_category").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 }
