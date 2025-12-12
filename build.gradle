@@ -1,4 +1,5 @@
 plugins {
+    id 'git-changelog'
     // see https://fabricmc.net/develop/ for new versions
     id 'fabric-loom' version '1.14-SNAPSHOT' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
