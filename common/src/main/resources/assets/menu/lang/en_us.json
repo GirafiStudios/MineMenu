@@ -23,5 +23,25 @@
   "mine_menu.pickIcon.search": "MineMenu Pick Icon Search",
   "mine_menu.keyScreen.title": "MineMenu Key Screen",
   "mine_menu.radialMenu.title": "MineMenu Radial Menu",
-  "gui.delete": "Delete"
+  "gui.delete": "Delete",
+
+  "_comment": "Config",
+  "ping.configuration.general.button": "General",
+  "ping.configuration.title": "Ping Configuration",
+  "ping.configuration.section.ping.common.toml.title": "Ping Configuration",
+  "minemenu.configuration.general": "General Settings",
+  "minemenu.configuration.toggle": "Toggle",
+  "minemenu.configuration.rightClickToEdit": "Right-Click to edit",
+  "minemenu.configuration.releaseToSelect": "Release to select",
+  "minemenu.configuration.menuAnimation": "Radial Menu Animation",
+  "minemenu.configuration.menuButtonIcon": "Default button icon",
+  "minemenu.configuration.visual.button": "Visual",
+  "minemenu.configuration.visual": "Visual Settings",
+  "minemenu.configuration.visual.tooltip": "Configure Mine Menu Visual Settings",
+  "minemenu.configuration.menu": "Menu Colors",
+  "minemenu.configuration.alpha": "Alpha",
+  "minemenu.configuration.red": "Red",
+  "minemenu.configuration.green": "Green",
+  "minemenu.configuration.blue": "Blue",
+  "minemenu.configuration.select": "Menu"
 }
