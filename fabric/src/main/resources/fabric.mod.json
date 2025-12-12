@@ -24,10 +24,10 @@
         ]
     },
     "depends": {
-        "fabricloader": ">=0.16.10",
+        "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
-        "minecraft": "~1.21.5",
-        "java": ">=21",
+        "minecraft": "~${minecraft_version}",
+        "java": ">=${java_version}",
         "forgeconfigapiport": ">=21.5.0"
     }
 }

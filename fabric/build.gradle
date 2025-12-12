@@ -1,13 +1,13 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
+    id 'net.darkhax.curseforgegradle' version '1.1.+'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 base {
     archivesName = "${mod_name}-fabric-${minecraft_version}"
 }
-
-version = "${version}${buildnumber}"
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -17,7 +17,7 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    implementation "com.google.code.findbugs:jsr305:3.0.1"
 	
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
 	modApi ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
@@ -47,5 +47,64 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/server')
         }
+    }
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}
+loom.remapConfigurations.configureEach {
+    configurations.named(it.name) {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    apiToken = System.getenv("curse_auth")
+
+    var mainFile = upload(222378, tasks.remapJar)
+    mainFile.changelogType = 'markdown'
+    mainFile.changelog = rootProject.findProperty('mod_changelog')
+    mainFile.addJavaVersion('Java 21')
+    mainFile.releaseType = 'release'
+    mainFile.addModLoader('Fabric')
+    mainFile.addRequirement('fabric-api')
+    mainFile.addRequirement('forge-config-api-port')
+    def vr = rootProject.parseVersionRange(minecraft_version_range)
+    mainFile.addGameVersion(*vr.quoted)
+}
+
+modrinth {
+    var changelogText = rootProject.findProperty('mod_changelog')
+
+    token = System.getenv("modrinth_auth")
+    projectId = "6HtC1GYa"
+    changelog = changelogText
+    versionNumber = "${version}"
+    versionName = "${mod_name}-fabric-${minecraft_version}-${version}"
+    versionType = "release"
+    loaders = ["fabric"]
+    gameVersions = rootProject.parseVersionRange(minecraft_version_range).list
+    uploadFile = remapJar
+    dependencies {
+        required.project('fabric-api')
+        required.project('forge-config-api-port')
     }
 }

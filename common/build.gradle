@@ -9,11 +9,11 @@ base {
 
 neoForge {
     neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-	
     parchment {
         minecraftVersion = parchment_minecraft_version
         mappingsVersion = parchment_version

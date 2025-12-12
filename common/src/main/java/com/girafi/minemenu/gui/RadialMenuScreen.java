@@ -6,14 +6,10 @@ import com.girafi.minemenu.helper.AngleHelper;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,10 +17,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4fStack;
 
 import javax.annotation.Nonnull;
 
@@ -47,8 +41,8 @@ public class RadialMenuScreen extends Screen {
     }
 
     public static void deactivate() {
-        active = false;
         if (Minecraft.getInstance().screen == INSTANCE) {
+            active = false;
             Minecraft.getInstance().setScreen(null);
         }
     }
@@ -73,7 +67,6 @@ public class RadialMenuScreen extends Screen {
 
                     if (mouseIn) {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
-
                         if (menuItem != null) {
                             if (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1)) {
                                 deactivate();
@@ -117,33 +110,32 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTick) {
+    public void renderBackground(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int x, int y, float partialTick) {
-        super.render(guiGraphics, x, y, partialTick);
+    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            renderButtonBackgrounds(guiGraphics);
             renderItems(guiGraphics);
             renderText(guiGraphics);
+            renderButtonBackgrounds(guiGraphics, mouseX, mouseY);
         }
     }
 
-    public static void renderButtonBackgrounds(GuiGraphics guiGraphics) {
+    public void renderButtonBackgrounds(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Minecraft mc = Minecraft.getInstance();
-        Matrix4fStack matrix = RenderSystem.getModelViewStack();
-        Camera camera = mc.gameRenderer.getMainCamera();
+        PoseStack poseStack = guiGraphics.pose();
 
+        poseStack.pushPose();
+        float x = this.width / 2.0F;
+        float y = this.height / 2.0F;
 
-        matrix.pushMatrix();
-        float guiX = guiGraphics.guiWidth() * 0.5F;
-        float guiY = guiGraphics.guiHeight() * 0.5F;
-
-        MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.gui());
+        MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource;
+        RenderType renderType = RenderType.debugQuads();
+        VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
 
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -166,46 +158,44 @@ public class RadialMenuScreen extends Screen {
             float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (130F);
             float outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (130F);
 
-            int r, g, b, alpha;
+            float r, g, b, alpha;
 
             if (mouseIn) {
-                r = Config.VISUAL.selectRed.get();
-                g = Config.VISUAL.selectGreen.get();
-                b = Config.VISUAL.selectBlue.get();
-                alpha = Config.VISUAL.selectAlpha.get();
+                r = (float) Config.VISUAL.selectRed.get() / (float) 255;
+                g = (float) Config.VISUAL.selectGreen.get() / (float) 255;
+                b = (float) Config.VISUAL.selectBlue.get() / (float) 255;
+                alpha = (float) Config.VISUAL.selectAlpha.get() / (float) 255;
             } else {
-                r = Config.VISUAL.menuRed.get();
-                g = Config.VISUAL.menuGreen.get();
-                b = Config.VISUAL.menuBlue.get();
-                alpha = Config.VISUAL.menuAlpha.get();
+                r = (float) Config.VISUAL.menuRed.get() / (float) 255;
+                g = (float) Config.VISUAL.menuGreen.get() / (float) 255;
+                b = (float) Config.VISUAL.menuBlue.get() / (float) 255;
+                alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
             }
 
-            float x1 = (float) (Math.cos(currAngle) * innerRadius) + guiX;
-            float x2 = (float) (Math.cos(currAngle) * outerRadius) + guiX;
-            float x3 = (float) (Math.cos(nextAngle) * outerRadius) + guiX;
-            float x4 = (float) (Math.cos(nextAngle) * innerRadius) + guiX;
+            float x1 = (float) (Math.cos(currAngle) * innerRadius) + x;
+            float x2 = (float) (Math.cos(currAngle) * outerRadius) + x;
+            float x3 = (float) (Math.cos(nextAngle) * outerRadius) + x;
+            float x4 = (float) (Math.cos(nextAngle) * innerRadius) + x;
 
-            float y1 = (float) (Math.sin(currAngle) * innerRadius) + guiY;
-            float y2 = (float) (Math.sin(currAngle) * outerRadius) + guiY;
-            float y3 = (float) (Math.sin(nextAngle) * outerRadius) + guiY;
-            float y4 = (float) (Math.sin(nextAngle) * innerRadius) + guiY;
+            float y1 = (float) (Math.sin(currAngle) * innerRadius) + y;
+            float y2 = (float) (Math.sin(currAngle) * outerRadius) + y;
+            float y3 = (float) (Math.sin(nextAngle) * outerRadius) + y;
+            float y4 = (float) (Math.sin(nextAngle) * innerRadius) + y;
 
-            //guiGraphics.fill(RenderType.gui(), (int) x1, (int) y1, (int) x2, (int) y2, ARGB.color(alpha, r, g, b));
-            //guiGraphics.fill(RenderType.gui(), (int) x3, (int) y3, (int) x4, (int) y4, ARGB.color(alpha, r, g, b));
             vertexConsumer.addVertex(x1, y1, 0).setColor(r, g, b, alpha);
             vertexConsumer.addVertex(x2, y2, 0).setColor(r, g, b, alpha);
             vertexConsumer.addVertex(x3, y3, 0).setColor(r, g, b, alpha);
-            //vertexConsumer.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
-
+            vertexConsumer.addVertex(x4, y4, 0).setColor(r, g, b, alpha);
         }
-        matrix.popMatrix();
+        buffer.endBatch(renderType);
+
+        poseStack.popPose();
     }
 
-    public static void renderItems(GuiGraphics guiGraphics) {
-        Minecraft mc = Minecraft.getInstance();
+    public void renderItems(GuiGraphics guiGraphics) {
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.translate(mc.getWindow().getGuiScaledWidth() * 0.5D, mc.getWindow().getGuiScaledHeight() * 0.5D, 0);
+        poseStack.translate(this.width * 0.5D, this.height * 0.5D, 0);
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
@@ -227,10 +217,8 @@ public class RadialMenuScreen extends Screen {
         poseStack.popPose();
     }
 
-    public static void renderText(GuiGraphics guiGraphics) {
+    public void renderText(GuiGraphics guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
-        Window window = mc.getWindow();
-        Font fontRenderer = mc.font;
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ANGLE_PER_ITEM / 2;
         mouseAngle = 360 - mouseAngle;
@@ -251,11 +239,11 @@ public class RadialMenuScreen extends Screen {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
-                int drawX = window.getGuiScaledWidth() / 2 - fontRenderer.width(string) / 2;
-                int drawY = window.getGuiScaledHeight() / 2;
+                int drawX = this.width / 2 - this.font.width(string) / 2;
+                int drawY = this.height / 2;
 
-                int drawWidth = mc.font.width(string);
-                int drawHeight = mc.font.lineHeight;
+                int drawWidth = this.font.width(string);
+                int drawHeight = this.font.lineHeight;
 
                 float padding = 5F;
 
@@ -274,7 +262,7 @@ public class RadialMenuScreen extends Screen {
                 vertexConsumer.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
 
                 // Text
-                guiGraphics.drawString(Minecraft.getInstance().font, string, drawX, drawY, 0xFFFFFF, false);
+                guiGraphics.drawString(this.font, string, drawX, drawY, 0xFFFFFF, false);
             }
         }
     }
