@@ -14,6 +14,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -240,27 +241,12 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char key, int keycode) {
-        this.textCommand.charTyped(key, keycode);
-        this.textCategory.charTyped(key, keycode);
-        return true;
-    }
-
-    @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        super.mouseClicked(mx, my, button);
-
-        this.textCommand.mouseClicked(mx, my, button);
-        return true;
-    }
-
-    @Override
-    public boolean keyPressed(int key, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.keyPressed(key, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(event);
         }
     }
 

@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -97,6 +98,9 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public void removed() {
+        if (this.textTitle != null) {
+            EditSessionData.title = this.textTitle.getValue(); //Remember title when going to another screen
+        }
     }
 
     @Override
@@ -105,26 +109,12 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char key, int keycode) {
-        this.textTitle.charTyped(key, keycode);
-        return true;
-    }
-
-    @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        super.mouseClicked(mx, my, button);
-
-        this.textTitle.mouseClicked(mx, my, button);
-        return true;
-    }
-
-    @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(event);
         }
     }
 

@@ -3,6 +3,7 @@ package com.girafi.minemenu.gui;
 import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.helper.AngleHelper;
+import com.girafi.minemenu.helper.KeyboardHandlerHelper;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -53,7 +55,7 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean isDoubleClick) {
         if (active && RadialMenu.animationTimer == 0) {
             double mouseAngle = AngleHelper.getMouseAngle();
             Minecraft mc = this.minecraft;
@@ -73,12 +75,12 @@ public class RadialMenuScreen extends Screen {
                     if (mouseIn) {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
                         if (menuItem != null) {
-                            if (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1)) {
+                            if (buttonEvent.hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && buttonEvent.button() == 1)) {
                                 deactivate();
                                 ScreenStack.push(new MenuItemScreen(i, menuItem));
                                 return true;
                             } else {
-                                if (button == 0) {
+                                if (buttonEvent.button() == 0) {
                                     if (menuItem.clickAction.deactivates()) {
                                         deactivate();
                                         menuItem.clickAction.onClicked();
@@ -90,7 +92,7 @@ public class RadialMenuScreen extends Screen {
                                 }
                             }
                         } else {
-                            if (button == 0) {
+                            if (buttonEvent.button() == 0) {
                                 deactivate();
                                 ScreenStack.push(new MenuItemScreen(i, menuItem));
                                 return true;
@@ -146,7 +148,7 @@ public class RadialMenuScreen extends Screen {
 
             double length = Math.sqrt(drawX * drawX + drawY * drawY);
 
-            drawX = (length * Math.cos(Math.toRadians(angle)));
+            drawX = -(length * Math.cos(Math.toRadians(angle)));
             drawY = (length * Math.sin(Math.toRadians(angle)));
 
             if (!stack.isEmpty()) {
@@ -176,7 +178,7 @@ public class RadialMenuScreen extends Screen {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.hasShiftDown() && item != null) {
+                if (KeyboardHandlerHelper.hasShiftDown() && item != null) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
@@ -215,7 +217,7 @@ public class RadialMenuScreen extends Screen {
         }
 
         @Override
-        public void buildVertices(@Nonnull VertexConsumer vertexConsumer, float z) {
+        public void buildVertices(@Nonnull VertexConsumer vertexConsumer) {
 
             double mouseAngle = AngleHelper.getMouseAngle();
             mouseAngle -= (ANGLE_PER_ITEM / 2);
@@ -261,10 +263,10 @@ public class RadialMenuScreen extends Screen {
                     alpha = Config.VISUAL.menuAlpha.get();
                 }
 
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos1OutX, pos1OutY, z).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos1InX, pos1InY, z).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos2InX, pos2InY, z).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos2OutX, pos2OutY, z).setColor(r, g, b, alpha);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos1OutX, pos1OutY).setColor(r, g, b, alpha);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos1InX, pos1InY).setColor(r, g, b, alpha);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos2InX, pos2InY).setColor(r, g, b, alpha);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos2OutX, pos2OutY).setColor(r, g, b, alpha);
             }
         }
 

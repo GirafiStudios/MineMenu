@@ -8,21 +8,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
+import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.Entry> {
     public final Minecraft mc;
@@ -35,19 +31,19 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
 
         KeyMapping[] keyBindings = Minecraft.getInstance().options.keyMappings;
         Arrays.sort(keyBindings);
-        String lastCategory = "";
+        KeyMapping.Category lastCategory = null;
 
         for (KeyMapping keybinding : keyBindings) {
-            String category = keybinding.getCategory();
+            KeyMapping.Category category = keybinding.getCategory();
 
             if (!keybinding.getName().equalsIgnoreCase("key.open_menu")) {
-                if (!category.equals(lastCategory)) {
+                if (category != lastCategory) {
                     lastCategory = category;
-                    this.addEntry(new CategoryEntry(Component.translatable(category)));
+                    this.addEntry(new CategoryEntry(category));
                 }
 
-                int width = mc.font.width(I18n.get(keybinding.getName()));
-
+                Component component = Component.translatable(keybinding.getName());
+                int width = mc.font.width(component);
                 if (width > this.maxWidth) {
                     this.maxWidth = width;
                 }
@@ -57,39 +53,26 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
     }
 
     public class CategoryEntry extends KeyBindsList.Entry {
-        final Component name;
-        private final int width;
+        private final FocusableTextWidget categoryName;
 
-        public CategoryEntry(Component name) {
-            this.name = name;
-            this.width = GuiControlList.this.mc.font.width(this.name);
+        public CategoryEntry(KeyMapping.Category category) {
+            this.categoryName = new FocusableTextWidget(GuiControlList.this.getRowWidth(), category.label(), GuiControlList.this.minecraft.font, false, FocusableTextWidget.BackgroundFill.ON_FOCUS, 4);
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (Objects.requireNonNull(GuiControlList.this.mc.screen).width / 2 - this.width / 2), (x + rowWidth - GuiControlList.this.mc.font.lineHeight - 1), -1);
+        public void renderContent(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            this.categoryName.setPosition(GuiControlList.this.width / 2 - this.categoryName.getWidth() / 2, this.getContentBottom() - 9 - 1);
+            this.categoryName.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         @Override
-        @Nonnull
         public List<? extends GuiEventListener> children() {
-            return Collections.emptyList();
+            return List.of(this.categoryName);
         }
 
         @Override
-        @Nonnull
         public List<? extends NarratableEntry> narratables() {
-            return ImmutableList.of(new NarratableEntry() {
-                @Nonnull
-                public NarrationPriority narrationPriority() {
-                    return NarrationPriority.HOVERED;
-                }
-
-                @Override
-                public void updateNarration(@Nonnull NarrationElementOutput output) {
-                    output.add(NarratedElementType.TITLE, CategoryEntry.this.name);
-                }
-            });
+            return List.of(this.categoryName);
         }
 
         @Override
@@ -107,19 +90,25 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
             this.key = keyBinding;
             this.name = Component.translatable(keyBinding.getName());
             this.buttonSelect = Button.builder(name, (screen) -> {
-                ClickActionScreen.keyBinding = keyBinding;
-                ScreenStack.pop();
-            }).bounds(0, 0, 95, 18).build();
+                        ClickActionScreen.keyBinding = keyBinding;
+                        ScreenStack.pop();
+                    }).bounds(0, 0, 95, 18)
+                    .createNarration(
+                            p_346090_ -> key.isUnbound()
+                                    ? Component.translatable("narrator.controls.unbound", name)
+                                    : Component.translatable("narrator.controls.bound", name, p_346090_.get())
+                    ).build();
             this.refreshEntry();
         }
 
         @Override
-        public void render(@Nonnull GuiGraphics guiGraphics, int slotIndex, int x, int y, int rowLeft, int rowWidth, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, (y + 90 - GuiControlList.this.maxWidth), (x + rowWidth / 2 - GuiControlList.this.mc.font.lineHeight / 2), -1);
-            this.buttonSelect.setX(y + 105);
-            this.buttonSelect.setY(x);
-            this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
-            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTicks);
+        public void renderContent(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            int x = GuiControlList.this.scrollBarX() - 10;
+            int y = this.getContentY() - 2;
+            int k = x - 5 - this.buttonSelect.getWidth();
+            this.buttonSelect.setPosition(k, y);
+            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, this.getContentX() - this.buttonSelect.getWidth() / 2, this.getContentYMiddle() - 9 / 2, -1);
         }
 
         @Override
@@ -132,16 +121,6 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         @Nonnull
         public List<? extends NarratableEntry> narratables() {
             return ImmutableList.of(this.buttonSelect);
-        }
-
-        @Override
-        public boolean mouseClicked(double x, double y, int button) {
-            return this.buttonSelect.mouseClicked(x, y, button);
-        }
-
-        @Override
-        public boolean mouseReleased(double x, double y, int button) {
-            return buttonSelect.mouseReleased(x, y, button);
         }
 
         @Override

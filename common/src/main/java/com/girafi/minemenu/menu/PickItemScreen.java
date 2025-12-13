@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -88,13 +90,13 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         Minecraft mc = this.minecraft;
 
-        if (mc != null && (button == 0 && mc.player != null)) {
+        if (mc != null && (event.input() == 0 && mc.player != null)) {
             for (int i1 = 0; i1 < mc.player.inventoryMenu.slots.size(); ++i1) {
                 Slot slot = mc.player.inventoryMenu.slots.get(i1);
-                if (mouseX - guiLeft >= slot.x && mouseX - guiLeft <= slot.x + 16 && mouseY - guiTop >= slot.y && mouseY - guiTop <= slot.y + 16) {
+                if (event.x() - guiLeft >= slot.x && event.x() - guiLeft <= slot.x + 16 && event.y() - guiTop >= slot.y && event.y() - guiTop <= slot.y + 16) {
                     ItemStack stack = slot.getItem();
                     if (!stack.isEmpty()) {
                         ClickActionScreen.item = stack.copy();
@@ -117,12 +119,12 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+            return super.keyPressed(keyEvent);
         }
     }
 }

@@ -26,7 +26,7 @@ public class MineMenu {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.spec);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
     }

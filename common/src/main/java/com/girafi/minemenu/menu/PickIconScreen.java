@@ -10,6 +10,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -112,8 +115,8 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char key, int keyCode) {
-        if (textSearch.charTyped(key, key)) {
+    public boolean charTyped(@Nonnull CharacterEvent event) {
+        if (textSearch.charTyped(event)) {
             listScrollIndex = 0;
 
             if (!textSearch.getValue().trim().isEmpty()) {
@@ -139,28 +142,28 @@ public class PickIconScreen extends Screen {
                 }
                 return true;
             }
-            return super.charTyped(key, keyCode);
+            return super.charTyped(event);
         }
         return false;
     }
 
     @Override
-    public boolean keyPressed(int keycode, int i2, int i3) {
-        if (keycode == GLFW.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(@Nonnull KeyEvent event) {
+        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
-        } else if (this.textSearch.keyPressed(keycode, i2, i3)) {
+        } else if (this.textSearch.keyPressed(event)) {
             return true;
         } else {
-            return super.keyPressed(keycode, i2, i3);
+            return super.keyPressed(event);
         }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(@Nonnull MouseButtonEvent event, boolean isDoubleClick) {
+        super.mouseClicked(event, isDoubleClick);
 
-        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
+        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), event.x(), event.y());
 
         if (!clicked.isEmpty()) {
             this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(clicked.getItem()).toString());
