@@ -20,6 +20,11 @@ public class ControllingCustomList extends ContainerObjectSelectionList<KeyBinds
     }
 
     @Override
+    public void clearEntries() {
+        super.clearEntries();
+    }
+
+    @Override
     public void sort(Comparator<KeyBindsList.Entry> comp) {
         super.sort(comp);
     }

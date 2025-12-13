@@ -4,6 +4,7 @@ import com.blamejared.controlling.ControllingConstants;
 import com.blamejared.controlling.api.DisplayMode;
 import com.blamejared.controlling.api.SortOrder;
 import com.blamejared.controlling.api.entries.IKeyEntry;
+import com.blamejared.controlling.mixin.AccessAbstractSelectionList;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
 import net.minecraft.client.gui.GuiGraphics;
@@ -119,29 +120,34 @@ public class ControllingPickKeyScreen extends OptionsSubScreen {
     }
 
     public void filterKeys(String lastSearch) {
-        ControllingGuiControlList list = getCustomList();
-        list.children().clear();
-        list.setScrollAmount(0);
-        if(lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
-            for(KeyBindsList.Entry allEntry : getCustomList().getAllEntries()) {
-                list.addEntry(allEntry);
+        ControllingCustomList list = getCustomList();
+
+        list.clearEntries();
+        getCustomList().setScrollAmount(0);
+        if (lastSearch.isEmpty() && displayMode == DisplayMode.ALL && sortOrder == SortOrder.NONE) {
+            for (KeyBindsList.Entry allEntry : getCustomList().getAllEntries()) {
+                list.addEntryInternal(allEntry);
             }
             return;
         }
 
         Predicate<KeyBindsList.Entry> extraPredicate = entry -> true;
-        Consumer<List<KeyBindsList.Entry>> postConsumer = entries -> {};
+        Consumer<List<IKeyEntry>> postConsumer = entries -> {
+        };
 
-        if(list != null) {
+        if (list instanceof ControllingGuiControlList) {
             extraPredicate = displayMode.getPredicate();
             postConsumer = entries -> {
                 entries.removeIf(entry -> !(entry instanceof IKeyEntry));
                 list.sort(sortOrder);
             };
         }
+        List<KeyBindsList.Entry> entries = ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate);
+        for (KeyBindsList.Entry entry : entries) {
+            list.addEntryInternal(entry);
+        }
 
-        list.children().addAll(ControllingConstants.SEARCHABLE_KEYBINDINGS.filterEntries(list.getAllEntries(), lastSearch, extraPredicate));
-        postConsumer.accept(list.children());
+        postConsumer.accept(((AccessAbstractSelectionList) this.controlList.get()).controlling$getChildren());
     }
 
     @Override
@@ -180,8 +186,11 @@ public class ControllingPickKeyScreen extends OptionsSubScreen {
         return super.keyPressed(event);
     }
 
-    public ControllingGuiControlList getCustomList() {
-        return this.controlList.get();
+    public ControllingCustomList getCustomList() {
+        if (this.controlList.get() instanceof ControllingCustomList list) {
+            return list;
+        }
+        throw new IllegalStateException("keyBindsList('%s') was not an instance of CustomList! You're either too early or another mod is messing with things.");
     }
 
     @Override
