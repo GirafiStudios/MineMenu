@@ -3,6 +3,8 @@ package com.girafi.minemenu.menu.button;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -19,9 +21,9 @@ public class ItemButton extends Button {
     }
 
     @Override
-    public void renderWidget(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            super.renderWidget(guiGraphics, mouseX, mouseY, partial);
+            this.renderDefaultSprite(guiGraphics);
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
 
             if (this.icon.isEmpty()) {

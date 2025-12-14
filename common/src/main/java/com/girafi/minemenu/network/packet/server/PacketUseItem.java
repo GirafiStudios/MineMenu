@@ -3,7 +3,9 @@ package com.girafi.minemenu.network.packet.server;
 import com.girafi.minemenu.Constants;
 import commonnetwork.networking.data.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -20,19 +22,24 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class PacketUseItem {
-    public static final ResourceLocation CHANNEL = ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "packet_use_item");
+    public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "packet_use_item");
+    public static final StreamCodec<FriendlyByteBuf, PacketUseItem> STREAM_CODEC = StreamCodec.ofMember(PacketUseItem::encode, PacketUseItem::new);
     private int slot;
 
     public PacketUseItem(int slot) {
         this.slot = slot;
     }
 
-    public static void encode(PacketUseItem pingPacket, FriendlyByteBuf buf) {
-        buf.writeInt(pingPacket.slot);
+    public PacketUseItem(FriendlyByteBuf buf) {
+        this.slot = buf.readInt();
     }
 
-    public static PacketUseItem decode(FriendlyByteBuf buf) {
-        return new PacketUseItem(buf.readInt());
+    public static CustomPacketPayload.Type<CustomPacketPayload> type() {
+        return new CustomPacketPayload.Type<>(CHANNEL);
+    }
+
+    public static void encode(PacketUseItem pingPacket, FriendlyByteBuf buf) {
+        buf.writeInt(pingPacket.slot);
     }
 
     public static void handle(PacketContext<PacketUseItem> ctx) {

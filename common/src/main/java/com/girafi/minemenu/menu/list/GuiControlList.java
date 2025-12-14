@@ -56,7 +56,10 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         private final FocusableTextWidget categoryName;
 
         public CategoryEntry(KeyMapping.Category category) {
-            this.categoryName = new FocusableTextWidget(GuiControlList.this.getRowWidth(), category.label(), GuiControlList.this.minecraft.font, false, FocusableTextWidget.BackgroundFill.ON_FOCUS, 4);
+            this.categoryName = FocusableTextWidget.builder(category.label(), GuiControlList.this.minecraft.font)
+                    .alwaysShowBorder(false)
+                    .backgroundFill(FocusableTextWidget.BackgroundFill.ON_FOCUS)
+                    .build();
         }
 
         @Override

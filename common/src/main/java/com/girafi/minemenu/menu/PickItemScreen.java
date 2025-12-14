@@ -5,13 +5,14 @@ import com.girafi.minemenu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
@@ -42,7 +43,7 @@ public class PickItemScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, -1);
         Minecraft mc = this.minecraft;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.withDefaultNamespace("textures/gui/container/inventory.png"), guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.INVENTORY_LOCATION, guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
 
         Slot mousedOver = null;
 
@@ -69,7 +70,7 @@ public class PickItemScreen extends Screen {
         ItemStack stack = slot.getItem();
 
         if (stack.isEmpty()) {
-            ResourceLocation slotNoItemIcon = slot.getNoItemIcon();
+            Identifier slotNoItemIcon = slot.getNoItemIcon();
 
             if (slotNoItemIcon != null) {
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, slotNoItemIcon, this.guiLeft + x, this.guiTop + y, 0, 16, 16);

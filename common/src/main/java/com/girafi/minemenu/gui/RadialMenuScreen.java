@@ -19,7 +19,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -138,7 +138,7 @@ public class RadialMenuScreen extends Screen {
 
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             MenuItem item = RadialMenu.getActiveArray()[i];
-            Item menuButton = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(Config.GENERAL.menuButtonIcon.get()));
+            Item menuButton = BuiltInRegistries.ITEM.getValue(Identifier.parse(Config.GENERAL.menuButtonIcon.get()));
             ItemStack stack = (item != null && !item.icon.isEmpty()) ? item.icon : (menuButton == null ? ItemStack.EMPTY : new ItemStack(menuButton));
 
             double angle = (ANGLE_PER_ITEM * i) + 90;

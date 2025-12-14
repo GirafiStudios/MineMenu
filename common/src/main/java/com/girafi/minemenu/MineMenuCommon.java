@@ -20,7 +20,7 @@ public class MineMenuCommon {
     }
 
     public static void registerPackets() {
-        Network.registerPacket(PacketUseItem.CHANNEL, PacketUseItem.class, PacketUseItem::encode, PacketUseItem::decode, PacketUseItem::handle);
+        Network.registerPacket(PacketUseItem.type(), PacketUseItem.class, PacketUseItem.STREAM_CODEC, PacketUseItem::handle);
     }
 
     public static void setupMenuLoader(RegistryAccess registryAccess) {
