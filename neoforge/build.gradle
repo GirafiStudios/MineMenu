@@ -45,8 +45,8 @@ neoForge {
 
 dependencies {
 	jarJar(implementation ("mysticdrew:common-networking-neoforge:${common_networking}-${minecraft_version}")) { transitive false }
-    //implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
-    //implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
+    implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
+    implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
