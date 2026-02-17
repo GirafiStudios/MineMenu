@@ -7,8 +7,8 @@ import com.girafi.minemenu.helper.KeyboardHandlerHelper;
 import com.girafi.minemenu.util.MineMenuKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ClientHandler implements ClientModInitializer {
@@ -17,7 +17,7 @@ public class ClientHandler implements ClientModInitializer {
     public void onInitializeClient() {
         MineMenuCommon.registerPackets();
         MineMenuCommon.loadMenuJson(FabricLoader.getInstance().getGameDir().toFile());
-        ServerWorldEvents.LOAD.register(((phase, load) -> MineMenuCommon.setupMenuLoader(load.registryAccess())));
+        ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register(((phase, load) -> MineMenuCommon.setupMenuLoader(load.registryAccess())));
         KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.RADIAL_MENU_OPEN);
 
         ClientTickEvents.END_CLIENT_TICK.register((mc) -> {
