@@ -1,10 +1,8 @@
 plugins {
     id 'git-changelog'
-    // see https://fabricmc.net/develop/ for new versions
-    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
-    // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.123' apply false
-    id("com.matyrobbrt.mc.registrationutils") version "1.21.3-0.1.1"
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply false
+    id 'net.neoforged.moddev' version '2.0.141' apply false
+    id("com.matyrobbrt.mc.registrationutils") version "26.1-0.1.0"
 }
 
 registrationUtils {
@@ -21,25 +19,26 @@ ext {
         def cleaned = range.trim().substring(1, range.length() - 1)
         def (minVer, maxVerRaw) = cleaned.split(',')
 
-        def (maj, min, patch) = maxVerRaw.tokenize('.').collect { it.toInteger() }
-        def maxVer = "${maj}.${min}.${patch - 1}"
+        def (maj, min) = maxVerRaw.tokenize('.').collect { it.toInteger() }
+        def maxVer = "${maj}.${min - 1}"
 
         def expand = { a, b ->
-            def (majA, minA, patchA) = a.tokenize('.').collect { it.toInteger() }
-            def (majB, minB, patchB) = b.tokenize('.').collect { it.toInteger() }
+            def (majA, minA) = a.tokenize('.').collect { it.toInteger() }
+            def (majB, minB) = b.tokenize('.').collect { it.toInteger() }
 
             def list = []
-            for (p = patchA; p <= patchB; p++) {
-                list << "${majA}.${minA}.${p}"
+            for (m = minA; m <= minB; m++) {
+                list << "${majA}.${m}"
             }
             return list
         }
 
         def expanded = expand(minVer, maxVer)
 
-        [
-            list: expanded,   // For Modrinth
-            quoted: expanded  // For CurseForge
+        def returnMap = [
+                list: expanded,   // For Modrinth
+                quoted: expanded  // For CurseForge
         ]
+        return returnMap
     }
 }

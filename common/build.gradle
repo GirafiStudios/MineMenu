@@ -14,16 +14,12 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft_version
-        mappingsVersion = parchment_version
-    }
 }
 
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-    implementation ("mysticdrew:common-networking-common:${common_networking}-${minecraft_version}") { transitive false }
+    compileOnly ("mysticdrew:common-networking-common:${common_networking}-${minecraft_version}") { transitive false }
     implementation "fuzs.forgeconfigapiport:forgeconfigapiport-common:${forge_config_api_port}"	
     implementation ("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api_port}") { transitive false }
     implementation "com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}"

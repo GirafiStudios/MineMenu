@@ -3,7 +3,7 @@ package com.girafi.minemenu.menu;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -39,9 +39,9 @@ public class PickItemScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.drawCenteredString(this.font, "Pick an item", this.width / 2, 8, -1);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.centeredText(this.font, "Pick an item", this.width / 2, 8, -1);
         Minecraft mc = this.minecraft;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.INVENTORY_LOCATION, guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
 
@@ -59,12 +59,12 @@ public class PickItemScreen extends Screen {
             }
             if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
                 drawSlot(guiGraphics, mousedOver, true);
-                guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(mousedOver.getItem().getItemName().getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(mousedOver.getItem().getItemName().getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         }
     }
 
-    private void drawSlot(@Nonnull GuiGraphics guiGraphics, Slot slot, boolean scale) {
+    private void drawSlot(@Nonnull GuiGraphicsExtractor guiGraphics, Slot slot, boolean scale) {
         int x = slot.x;
         int y = slot.y;
         ItemStack stack = slot.getItem();

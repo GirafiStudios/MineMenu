@@ -6,7 +6,7 @@ import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -194,15 +194,15 @@ public class PickIconScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        super.render(guiGraphics, mouseX, mouseY, partial);
-        this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
-        guiGraphics.drawCenteredString(this.font, "Select an Icon:", this.width / 2, 8, -1);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partial);
+        this.textSearch.extractRenderState(guiGraphics, mouseX, mouseY, partial);
+        guiGraphics.centeredText(this.font, "Select an Icon:", this.width / 2, 8, -1);
 
         drawList(guiGraphics, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
     }
 
-    private void drawList(GuiGraphics guiGraphics, int x, int y, int mx, int my) {
+    private void drawList(GuiGraphicsExtractor guiGraphics, int x, int y, int mx, int my) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;

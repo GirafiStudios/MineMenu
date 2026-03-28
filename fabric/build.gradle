@@ -1,7 +1,7 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
-    id 'net.darkhax.curseforgegradle' version '1.1.+'
+    id 'net.fabricmc.fabric-loom'
+    id 'net.darkhax.curseforgegradle' version '1.2.+'
     id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -11,19 +11,15 @@ base {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft_version}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation "com.google.code.findbugs:jsr305:3.0.1"
 	
-    modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
-	modApi ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
+    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
+	implementation ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
     include ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
-    modImplementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
-    modImplementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
+    implementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
+    implementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
 }
 
 loom {
@@ -68,21 +64,14 @@ sourceSets.configureEach {
         }
     }
 }
-loom.remapConfigurations.configureEach {
-    configurations.named(it.name) {
-        attributes {
-            attribute(loaderAttribute, 'fabric')
-        }
-    }
-}
 
 task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     apiToken = System.getenv("curse_auth")
 
-    var mainFile = upload(222378, tasks.remapJar)
+    var mainFile = upload(222378, tasks.jar)
     mainFile.changelogType = 'markdown'
     mainFile.changelog = rootProject.findProperty('mod_changelog')
-    mainFile.addJavaVersion('Java 21')
+    mainFile.addJavaVersion('Java 26')
     mainFile.releaseType = 'release'
     mainFile.addModLoader('Fabric')
     mainFile.addRequirement('fabric-api')
@@ -102,7 +91,7 @@ modrinth {
     versionType = "release"
     loaders = ["fabric"]
     gameVersions = rootProject.parseVersionRange(minecraft_version_range).list
-    uploadFile = remapJar
+    uploadFile = jar
     dependencies {
         required.project('fabric-api')
         required.project('forge-config-api-port')

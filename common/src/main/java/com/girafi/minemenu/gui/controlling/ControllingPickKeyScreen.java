@@ -7,7 +7,7 @@ import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.mixin.AccessAbstractSelectionList;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -110,9 +110,9 @@ public class ControllingPickKeyScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.search.autoComplete().render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        this.search.autoComplete().extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     public void filterKeys() {

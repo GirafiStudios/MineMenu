@@ -10,7 +10,7 @@ import com.girafi.minemenu.menu.ClickActionScreen;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -87,9 +87,9 @@ public class ControllingGuiControlList extends ControllingCustomList {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             this.categoryName.setPosition(ControllingGuiControlList.this.width / 2 - this.categoryName.getWidth() / 2, this.getContentBottom() - 9 - 1);
-            this.categoryName.render(guiGraphics, mouseX, mouseY, partialTick);
+            this.categoryName.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -136,13 +136,13 @@ public class ControllingGuiControlList extends ControllingCustomList {
             this.refreshEntry();
         }
         @Override
-        public void renderContent(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             int x = ControllingGuiControlList.this.scrollBarX() - 10;
             int y = this.getContentY() - 2;
             int k = x - 5 - this.buttonSelect.getWidth();
             this.buttonSelect.setPosition(k, y);
-            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTick);
-            guiGraphics.drawString(ControllingGuiControlList.this.minecraft.font, this.keyDesc, this.getContentX() - this.buttonSelect.getWidth() / 2, this.getContentYMiddle() - 9 / 2, -1);
+            this.buttonSelect.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.text(ControllingGuiControlList.this.minecraft.font, this.keyDesc, this.getContentX() - this.buttonSelect.getWidth() / 2, this.getContentYMiddle() - 9 / 2, -1);
 
             if(this.hasCollision) {
                 int markerWidth = 3;
@@ -165,7 +165,7 @@ public class ControllingGuiControlList extends ControllingCustomList {
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-            if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, event, isDoubleClick).map(IKeyEntryMouseClickedEvent::isHandled, UnaryOperator.identity())) {
+            if (Services.EVENT.fireKeyEntryMouseClickedEvent(this, event, isDoubleClick).map(IKeyEntryMouseClickedEvent::handled, UnaryOperator.identity())) {
                 return true;
             }
             return this.buttonSelect.mouseClicked(event, isDoubleClick);
@@ -173,7 +173,7 @@ public class ControllingGuiControlList extends ControllingCustomList {
 
         @Override
         public boolean mouseReleased(@Nonnull MouseButtonEvent event) {
-            if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, event).map(IKeyEntryMouseReleasedEvent::isHandled, UnaryOperator.identity())) {
+            if (Services.EVENT.fireKeyEntryMouseReleasedEvent(this, event).map(IKeyEntryMouseReleasedEvent::handled, UnaryOperator.identity())) {
                 return true;
             }
             return this.buttonSelect.mouseReleased(event);
@@ -215,7 +215,7 @@ public class ControllingGuiControlList extends ControllingCustomList {
         }
 
         @Override
-        public Component getKeyDesc() {
+        public Component getName() {
             return this.keyDesc;
         }
 

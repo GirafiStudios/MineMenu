@@ -10,13 +10,13 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -117,22 +117,22 @@ public class RadialMenuScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
-            guiGraphics.guiRenderState.submitGuiElement(new RadialMenuBackgroundElement(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphics.pose(), this.width / 2, this.height / 2, null));
+            guiGraphics.guiRenderState.addGuiElement(new RadialMenuBackgroundElement(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphics.pose(), this.width / 2, this.height / 2, null));
             renderItems(guiGraphics);
             renderText(guiGraphics);
         }
     }
 
-    public void renderItems(GuiGraphics guiGraphics) {
+    public void renderItems(GuiGraphicsExtractor guiGraphics) {
         int x = this.width / 2;
         int y = this.height / 2;
 
@@ -156,12 +156,12 @@ public class RadialMenuScreen extends Screen {
                 int itemY = (int) (drawY + y);
                 itemX -= 8;
                 itemY -= 8;
-                guiGraphics.renderItem(stack, itemX, itemY);
+                guiGraphics.item(stack, itemX, itemY);
             }
         }
     }
 
-    public void renderText(GuiGraphics guiGraphics) {
+    public void renderText(GuiGraphicsExtractor guiGraphics) {
         double mouseAngle = AngleHelper.getMouseAngle();
         mouseAngle -= ANGLE_PER_ITEM / 2;
         mouseAngle = 360 - mouseAngle;
@@ -199,7 +199,7 @@ public class RadialMenuScreen extends Screen {
 
                 guiGraphics.fill(RenderPipelines.GUI, (int) (drawX - padding), (int) (drawY - drawHeight + padding), (int) (drawX + drawWidth + padding), (int) (drawY + drawHeight + padding), color);
 
-                guiGraphics.drawString(this.font, string, drawX, drawY, 0xFFFFFFFF, false);
+                guiGraphics.text(this.font, string, drawX, drawY, 0xFFFFFFFF, false);
             }
         }
     }

@@ -7,7 +7,7 @@ import com.girafi.minemenu.gui.controlling.ControllingPickKeyScreen;
 import com.girafi.minemenu.menu.button.ItemButton;
 import com.girafi.minemenu.platform.Services;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -133,7 +133,7 @@ public class ClickActionScreen extends Screen {
             itemString = Component.literal("Item: " + item.getHoverName().getString());
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = Component.literal("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItem().getName().getString());
+                itemString = Component.literal("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItemName().getString());
             } else {
                 itemString = Component.translatable("mine_menu.selectSlot");
             }
@@ -251,10 +251,10 @@ public class ClickActionScreen extends Screen {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        super.render(guiGraphics, mouseX, mouseY, partial);
-        this.textCommand.render(guiGraphics, mouseX, mouseY, partial);
-        this.textCategory.render(guiGraphics, mouseX, mouseY, partial);
+    public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partial);
+        this.textCommand.extractRenderState(guiGraphics, mouseX, mouseY, partial);
+        this.textCategory.extractRenderState(guiGraphics, mouseX, mouseY, partial);
         String header = switch (mode) {
             case 0 -> "Enter a command";
             case 1 -> "Select a key";
@@ -262,15 +262,15 @@ public class ClickActionScreen extends Screen {
             case 3 -> "Enter a category";
             default -> "";
         };
-        guiGraphics.drawCenteredString(this.font, header, this.width / 2, 8, -1);
+        guiGraphics.centeredText(this.font, header, this.width / 2, 8, -1);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
-            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_command").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_command").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {
-            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeUseItem.getX() && mouseX < modeUseItem.getX() + modeUseItem.getWidth() && mouseY > modeUseItem.getY() && mouseY < modeUseItem.getY() + modeUseItem.getWidth()) {
-            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         } else if (mouseX > modeCategory.getX() && mouseX < modeCategory.getX() + modeCategory.getWidth() && mouseY > modeCategory.getY() && mouseY < modeCategory.getY() + modeCategory.getWidth()) {
-            guiGraphics.renderTooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_category").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_category").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 }

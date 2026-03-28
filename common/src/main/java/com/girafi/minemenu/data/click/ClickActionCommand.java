@@ -27,7 +27,7 @@ public class ClickActionCommand implements ClickAction.IClickAction {
 
             if (clipboard) {
                 mc.keyboardHandler.setClipboard(parsedCommand);
-                player.displayClientMessage(Component.translatable("mine_menu.clipboardCopy"), true);
+                player.sendOverlayMessage(Component.translatable("mine_menu.clipboardCopy"));
             } else {
                 if (parsedCommand.startsWith("//")) { //Special Case for World Edit //commands
                     parsedCommand = parsedCommand.replace("//", "/");

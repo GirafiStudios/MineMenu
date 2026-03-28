@@ -5,7 +5,7 @@ import com.girafi.minemenu.menu.ClickActionScreen;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.FocusableTextWidget;
@@ -63,9 +63,9 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        public void renderContent(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             this.categoryName.setPosition(GuiControlList.this.width / 2 - this.categoryName.getWidth() / 2, this.getContentBottom() - 9 - 1);
-            this.categoryName.render(guiGraphics, mouseX, mouseY, partialTick);
+            this.categoryName.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -105,13 +105,13 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        public void renderContent(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             int x = GuiControlList.this.scrollBarX() - 10;
             int y = this.getContentY() - 2;
             int k = x - 5 - this.buttonSelect.getWidth();
             this.buttonSelect.setPosition(k, y);
-            this.buttonSelect.render(guiGraphics, mouseX, mouseY, partialTick);
-            guiGraphics.drawString(GuiControlList.this.mc.font, this.name, this.getContentX() - this.buttonSelect.getWidth() / 2, this.getContentYMiddle() - 9 / 2, -1);
+            this.buttonSelect.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.text(GuiControlList.this.mc.font, this.name, this.getContentX() - this.buttonSelect.getWidth() / 2, this.getContentYMiddle() - 9 / 2, -1);
         }
 
         @Override
