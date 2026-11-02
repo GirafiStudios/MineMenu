@@ -9,6 +9,16 @@ import java.util.List;
 public class ScreenStack {
     private static final List<Screen> GUI_LIST = new ArrayList<>();
 
+    public static void open(Screen screen) {
+        GUI_LIST.clear();
+        push(screen);
+    }
+
+    public static void close() {
+        GUI_LIST.clear();
+        Minecraft.getInstance().setScreen(null);
+    }
+
     public static void push(Screen screen) {
         GUI_LIST.add(0, screen);
         Minecraft.getInstance().setScreen(screen);

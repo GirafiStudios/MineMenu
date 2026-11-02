@@ -9,7 +9,7 @@ import java.util.Set;
 public class RadialMenu {
     public static final int MAX_ITEMS = 10;
     private static final String MAIN_TAG = "main";
-    private static final Map<String, MenuItem[]> MENU_MAP = Maps.newHashMap();
+    private static final Map<String, Category> MENU_MAP = Maps.newHashMap();
     public static String currentCategory = MAIN_TAG;
     public static int animationTimer = 20;
 
@@ -34,20 +34,18 @@ public class RadialMenu {
     }
 
     public static MenuItem[] getActiveArray() {
-        return getArray(currentCategory);
+        return getActiveCategory().items;
+    }
+
+    public static Category getActiveCategory() {
+        return getCategory(currentCategory);
     }
 
     public static MenuItem[] getArray(String tag) {
-        if (!MENU_MAP.containsKey(tag)) {
-            MENU_MAP.put(tag, new MenuItem[MAX_ITEMS]);
-        }
-        return MENU_MAP.get(tag);
+        return getCategory(tag).items;
     }
 
-    public static void replaceArray(String tag, MenuItem[] array) {
-        if (array.length != MAX_ITEMS) {
-            throw new RuntimeException();
-        }
-        MENU_MAP.put(tag, array);
+    public static Category getCategory(String tag) {
+        return MENU_MAP.computeIfAbsent(tag, t -> new Category());
     }
 }
