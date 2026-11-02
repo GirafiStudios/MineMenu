@@ -18,4 +18,11 @@ public class GuiMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "renderHotbarAndDecorations", at = @At("HEAD"), cancellable = true)
+    private void minemenu$hideHotbarAndDecorations(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (RadialMenuScreen.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
 }
