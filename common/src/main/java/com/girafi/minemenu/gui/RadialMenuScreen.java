@@ -70,6 +70,10 @@ public class RadialMenuScreen extends Screen {
         return distance < innerEdgeDistance * CENTER_EDIT_FRACTION;
     }
 
+    public static boolean shouldHideHud() {
+        return active && Config.GENERAL.hideHud.get();
+    }
+
     public static boolean isEditClick(int button) {
         return (Config.GENERAL.shiftClickToEdit.get() && KeyboardHandlerHelper.hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
     }
