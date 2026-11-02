@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class MenuItemScreen extends Screen {
     private final int slot;
@@ -44,12 +42,6 @@ public class MenuItemScreen extends Screen {
     public void tick() {
         this.buttonConfirm.visible = EditSessionData.clickAction != null;
         this.buttonDelete.visible = RadialMenu.getActiveArray()[slot] != null;
-    }
-
-    @Override
-    @Nullable
-    public GuiEventListener getFocused() {
-        return this.textTitle;
     }
 
     @Override
@@ -94,9 +86,8 @@ public class MenuItemScreen extends Screen {
         }
         addRenderableWidget(this.buttonClickAction = Button.builder(string, (screen) -> ScreenStack.push(new ClickActionScreen())).bounds(this.width / 2 - 20, this.height / 2, 100, 20).build());
 
-        this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
+        addRenderableWidget(this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title")));
         this.textTitle.setMaxLength(32767);
-        this.textTitle.setFocused(true);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
         this.textTitle.setResponder(value -> EditSessionData.title = value);
 
@@ -113,20 +104,6 @@ public class MenuItemScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char key, int keycode) {
-        this.textTitle.charTyped(key, keycode);
-        return true;
-    }
-
-    @Override
-    public boolean mouseClicked(double mx, double my, int button) {
-        super.mouseClicked(mx, my, button);
-
-        this.textTitle.mouseClicked(mx, my, button);
-        return true;
-    }
-
-    @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (p_keyPressed_1_ == GLFW.GLFW_KEY_ESCAPE) {
             ScreenStack.pop();
@@ -139,7 +116,6 @@ public class MenuItemScreen extends Screen {
     @Override
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         super.render(guiGraphics, mouseX, mouseY, partial);
-        this.textTitle.render(guiGraphics, mouseX, mouseY, partial);
         guiGraphics.drawCenteredString(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, 16777215);
         guiGraphics.drawCenteredString(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, 16777215);
     }
