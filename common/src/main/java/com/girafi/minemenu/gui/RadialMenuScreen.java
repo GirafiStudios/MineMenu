@@ -39,7 +39,7 @@ public class RadialMenuScreen extends Screen {
     public static boolean isEditClick(int button) {
         return (Config.GENERAL.shiftClickToEdit.get() && hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
     }
-    
+
     public static boolean isShiftEditing() {
         return Config.GENERAL.shiftClickToEdit.get() && hasShiftDown();
     }

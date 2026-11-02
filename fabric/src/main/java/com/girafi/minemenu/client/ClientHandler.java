@@ -1,6 +1,7 @@
 package com.girafi.minemenu.client;
 
 import com.girafi.minemenu.MineMenuCommon;
+import com.girafi.minemenu.data.menu.MenuSession;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
 import com.girafi.minemenu.handler.ClientTickHelper;
@@ -20,7 +21,8 @@ public class ClientHandler implements ClientModInitializer {
     public void onInitializeClient() {
         MineMenuCommon.registerPackets();
         MineMenuCommon.loadMenuJson(FabricLoader.getInstance().getGameDir().toFile());
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> MineMenuCommon.setupMenuLoader(handler.registryAccess()));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> MenuSession.onJoin(handler.registryAccess()));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(MenuSession::onLeave));
         KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.RADIAL_MENU_OPEN);
 
         ClientTickEvents.END_CLIENT_TICK.register((mc) -> {
