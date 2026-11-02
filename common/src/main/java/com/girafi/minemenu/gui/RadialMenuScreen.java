@@ -5,6 +5,7 @@ import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.helper.AngleHelper;
 import com.girafi.minemenu.helper.KeyboardHandlerHelper;
+import com.girafi.minemenu.helper.RadialMenuInput;
 import com.girafi.minemenu.menu.CategoryColorScreen;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
@@ -79,66 +80,89 @@ public class RadialMenuScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean isDoubleClick) {
-        if (active && RadialMenu.animationTimer == 0) {
-            if (isMouseInCenter() && isEditClick(buttonEvent.button())) {
-                String category = RadialMenu.currentCategory;
-                deactivate();
-                Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
-                return true;
-            }
-
-            double mouseAngle = AngleHelper.getMouseAngle();
-            Minecraft mc = this.minecraft;
-            mouseAngle -= ANGLE_PER_ITEM / 2;
-            mouseAngle = 360 - mouseAngle;
-            mouseAngle = AngleHelper.correctAngle(mouseAngle);
-
-            if (mc != null && !mc.options.hideGui) {
-                for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-                    double currAngle = ANGLE_PER_ITEM * i;
-                    double nextAngle = currAngle + ANGLE_PER_ITEM;
-                    currAngle = AngleHelper.correctAngle(currAngle);
-                    nextAngle = AngleHelper.correctAngle(nextAngle);
-
-                    boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
-
-                    if (mouseIn) {
-                        MenuItem menuItem = RadialMenu.getActiveArray()[i];
-                        if (menuItem != null) {
-                            if (isEditClick(buttonEvent.button())) {
-                                deactivate();
-                                ScreenStack.open(new MenuItemScreen(i, menuItem));
-                                return true;
-                            } else {
-                                if (buttonEvent.button() == 0) {
-                                    if (menuItem.clickAction.deactivates()) {
-                                        deactivate();
-                                        menuItem.clickAction.onClicked();
-                                        return true;
-                                    } else {
-                                        menuItem.clickAction.onClicked();
-                                        return true;
-                                    }
-                                }
-                            }
-                        } else {
-                            if (buttonEvent.button() == 0) {
-                                deactivate();
-                                ScreenStack.open(new MenuItemScreen(i, menuItem));
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
+        if (isEditClick(buttonEvent.button())) {
+            return editHovered(buttonEvent.button() == 0);
+        } else if (buttonEvent.button() == 0) {
+            return selectHovered();
         }
         return false;
+    }
+
+    /**
+     * Runs the click action of the hovered menu item, or opens the screen for adding an item if the hovered slot is empty.
+     */
+    public boolean selectHovered() {
+        if (!canInteract()) {
+            return false;
+        }
+        int index = RadialMenuInput.getHoveredIndex();
+        if (index < 0) {
+            return false;
+        }
+        MenuItem menuItem = RadialMenu.getActiveArray()[index];
+        if (menuItem == null) {
+            deactivate();
+            ScreenStack.open(new MenuItemScreen(index, null));
+        } else {
+            if (menuItem.clickAction.deactivates()) {
+                deactivate();
+            }
+            menuItem.clickAction.onClicked();
+        }
+        return true;
+    }
+
+    /**
+     * Opens the edit screen for the hovered menu item, or the category color screen if the center is hovered.
+     *
+     * @param addIfEmpty Whether to open the screen for adding an item if the hovered slot is empty
+     */
+    public boolean editHovered(boolean addIfEmpty) {
+        if (!active || RadialMenu.animationTimer != 0) {
+            return false;
+        }
+        if (RadialMenuInput.isCenterHovered()) {
+            return editCategory();
+        }
+        if (!canInteract()) {
+            return false;
+        }
+        int index = RadialMenuInput.getHoveredIndex();
+        if (index < 0) {
+            return false;
+        }
+        MenuItem menuItem = RadialMenu.getActiveArray()[index];
+        if (menuItem != null || addIfEmpty) {
+            deactivate();
+            ScreenStack.open(new MenuItemScreen(index, menuItem));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Opens the color screen for the current category.
+     */
+    public boolean editCategory() {
+        if (!active || RadialMenu.animationTimer != 0) {
+            return false;
+        }
+        String category = RadialMenu.currentCategory;
+        deactivate();
+        Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
+        return true;
+    }
+
+    private static boolean canInteract() {
+        Minecraft mc = Minecraft.getInstance();
+        return active && RadialMenu.animationTimer == 0 && !mc.options.hideGui;
     }
 
     @Override
     public void removed() {
         super.removed();
         active = false;
+        RadialMenuInput.onMenuClosed();
     }
 
     @Override
@@ -192,44 +216,33 @@ public class RadialMenuScreen extends Screen {
     }
 
     public void renderText(GuiGraphicsExtractor guiGraphics) {
-        double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle -= ANGLE_PER_ITEM / 2;
-        mouseAngle = 360 - mouseAngle;
-        mouseAngle = AngleHelper.correctAngle(mouseAngle);
-
-        for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            double currAngle = ANGLE_PER_ITEM * i;
-            double nextAngle = currAngle + ANGLE_PER_ITEM;
-            currAngle = AngleHelper.correctAngle(currAngle);
-            nextAngle = AngleHelper.correctAngle(nextAngle);
-
-            boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
-
-            if (mouseIn) {
-                MenuItem item = RadialMenu.getActiveArray()[i];
-                String string = item == null ? "Add Item" : item.title;
-                if (isShiftEditing() && isMouseInCenter()) {
-                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
-                } else if (isShiftEditing() && item != null) {
-                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
-                }
-
-                int drawX = this.width / 2 - this.font.width(string) / 2;
-                int drawY = this.height / 2;
-
-                int drawWidth = this.font.width(string);
-                int drawHeight = this.font.lineHeight;
-
-                float padding = 5F;
-
-                // Background
-                int color = RadialMenu.getActiveCategory().getMenuColor();
-
-                guiGraphics.fill(RenderPipelines.GUI, (int) (drawX - padding), (int) (drawY - drawHeight + padding), (int) (drawX + drawWidth + padding), (int) (drawY + drawHeight + padding), color);
-
-                guiGraphics.text(this.font, string, drawX, drawY, 0xFFFFFFFF, false);
-            }
+        int hovered = RadialMenuInput.getHoveredIndex();
+        if (hovered < 0) {
+            return;
         }
+
+        MenuItem item = RadialMenu.getActiveArray()[hovered];
+        String string = item == null ? "Add Item" : item.title;
+        if (isShiftEditing() && RadialMenuInput.isCenterHovered()) {
+            string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
+        } else if (isShiftEditing() && item != null) {
+            string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
+        }
+
+        int drawX = this.width / 2 - this.font.width(string) / 2;
+        int drawY = this.height / 2;
+
+        int drawWidth = this.font.width(string);
+        int drawHeight = this.font.lineHeight;
+
+        float padding = 5F;
+
+        // Background
+        int color = RadialMenu.getActiveCategory().getMenuColor();
+
+        guiGraphics.fill(RenderPipelines.GUI, (int) (drawX - padding), (int) (drawY - drawHeight + padding), (int) (drawX + drawWidth + padding), (int) (drawY + drawHeight + padding), color);
+
+        guiGraphics.text(this.font, string, drawX, drawY, 0xFFFFFFFF, false);
     }
 
     public record RadialMenuBackgroundElement(RenderPipeline pipeline,
@@ -248,20 +261,14 @@ public class RadialMenuScreen extends Screen {
         public void buildVertices(@Nonnull VertexConsumer vertexConsumer) {
 
             Category category = RadialMenu.getActiveCategory();
-            double mouseAngle = AngleHelper.getMouseAngle();
-            mouseAngle -= (ANGLE_PER_ITEM / 2);
-            mouseAngle = AngleHelper.correctAngle(mouseAngle);
+            int hovered = RadialMenuInput.getHoveredIndex();
             for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
                 double currAngle = (ANGLE_PER_ITEM * i) + 90 + (ANGLE_PER_ITEM / 2);
                 double nextAngle = (currAngle + ANGLE_PER_ITEM);
-                double truecurrAngle = (ANGLE_PER_ITEM * i);
-                double truenextAngle = (truecurrAngle + ANGLE_PER_ITEM);
-                boolean mouseIn = (mouseAngle > truecurrAngle && mouseAngle < truenextAngle);
+                currAngle = AngleHelper.correctAngle(currAngle);
+                nextAngle = AngleHelper.correctAngle(nextAngle);
 
-                currAngle = AngleHelper.correctAngle(currAngle);
-                nextAngle = AngleHelper.correctAngle(nextAngle);
-                currAngle = AngleHelper.correctAngle(currAngle);
-                nextAngle = AngleHelper.correctAngle(nextAngle);
+                boolean mouseIn = hovered >= 0 && i == RadialMenu.MAX_ITEMS - 1 - hovered;
 
                 currAngle = Math.toRadians(currAngle);
                 nextAngle = Math.toRadians(nextAngle);

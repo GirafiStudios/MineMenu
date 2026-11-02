@@ -20,6 +20,10 @@ dependencies {
     include ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
     implementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
     implementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
+    compileOnly "curse.maven:controllable-317269:${controllable_fabric}"
+    compileOnly "curse.maven:framework-549225:${framework_fabric}"
+    //localRuntime "curse.maven:controllable-317269:${controllable_fabric}"
+    //localRuntime "curse.maven:framework-549225:${framework_fabric}"
 }
 
 loom {

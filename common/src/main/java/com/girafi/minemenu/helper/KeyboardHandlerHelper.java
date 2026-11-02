@@ -31,43 +31,44 @@ public class KeyboardHandlerHelper {
         Window window = Minecraft.getInstance().getWindow();
         KeyMapping key = MineMenuKeybinds.RADIAL_MENU_OPEN;
         int keycode = key.key.getValue();
-        if (keycode >= 0) {
-            boolean radialMenuKeyDown = key.key.getType() == InputConstants.Type.MOUSE ? GLFW.glfwGetMouseButton(window.handle(), keycode) == GLFW.GLFW_PRESS : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(window, keycode));
-            if (radialMenuKeyDown != lastWheelState) {
-                if (Config.GENERAL.toggle.get()) {
-                    if (radialMenuKeyDown) {
-                        if (RadialMenuScreen.active) {
-                            if (Config.GENERAL.releaseToSelect.get()) {
-                                RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-                            }
-                            RadialMenuScreen.deactivate();
-                        } else {
-                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                                RadialMenu.resetCategory();
-                                RadialMenu.resetTimer();
-                                RadialMenuScreen.activate();
-                            }
+        boolean radialMenuKeyDown = RadialMenuInput.isOpenHeld();
+        if (keycode >= 0 && !radialMenuKeyDown) {
+            radialMenuKeyDown = key.key.getType() == InputConstants.Type.MOUSE ? GLFW.glfwGetMouseButton(window.handle(), keycode) == GLFW.GLFW_PRESS : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(window, keycode));
+        }
+        if (radialMenuKeyDown != lastWheelState) {
+            if (Config.GENERAL.toggle.get()) {
+                if (radialMenuKeyDown) {
+                    if (RadialMenuScreen.active) {
+                        if (Config.GENERAL.releaseToSelect.get()) {
+                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
                         }
-                    }
-                } else {
-                    if (radialMenuKeyDown != RadialMenuScreen.active) {
-                        if (radialMenuKeyDown) {
-                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                                RadialMenu.resetCategory();
-                                RadialMenu.resetTimer();
-                                RadialMenuScreen.activate();
-                            }
-                        } else {
-                            if (Config.GENERAL.releaseToSelect.get()) {
-                                RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-                            }
-                            RadialMenuScreen.deactivate();
+                        RadialMenuScreen.deactivate();
+                    } else {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            RadialMenuScreen.activate();
                         }
                     }
                 }
+            } else {
+                if (radialMenuKeyDown != RadialMenuScreen.active) {
+                    if (radialMenuKeyDown) {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            RadialMenuScreen.activate();
+                        }
+                    } else {
+                        if (Config.GENERAL.releaseToSelect.get()) {
+                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+                        }
+                        RadialMenuScreen.deactivate();
+                    }
+                }
             }
-            lastWheelState = radialMenuKeyDown;
         }
+        lastWheelState = radialMenuKeyDown;
     }
 
     public static boolean hasShiftDown() {

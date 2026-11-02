@@ -32,6 +32,15 @@ repositories {
         name = "Forge Config API Port mod"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'CurseMaven'
+                url = 'https://cursemaven.com'
+            }
+        }
+        filter { includeGroup('curse.maven') }
+    }
     maven {
 		name = "Common Networking by Mysticdrew"
         url = "https://jm.gserv.me/repository/maven-public/"

@@ -1,10 +1,12 @@
 package com.girafi.minemenu.client;
 
 import com.girafi.minemenu.MineMenuCommon;
+import com.girafi.minemenu.compat.controllable.ControllableCompat;
 import com.girafi.minemenu.data.menu.MenuSession;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
 import com.girafi.minemenu.helper.KeyboardHandlerHelper;
+import com.girafi.minemenu.helper.RadialMenuInput;
 import com.girafi.minemenu.util.MineMenuKeybinds;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -21,6 +23,9 @@ public class ClientHandler implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> MenuSession.onJoin());
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(MenuSession::onLeave));
         KeyMappingHelper.registerKeyMapping(MineMenuKeybinds.RADIAL_MENU_OPEN);
+        if (FabricLoader.getInstance().isModLoaded("controllable")) {
+            ControllableCompat.init();
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register((mc) -> {
             RadialMenu.tickTimer();
@@ -30,6 +35,7 @@ public class ClientHandler implements ClientModInitializer {
             }
 
             KeyboardHandlerHelper.onClientTick();
+            RadialMenuInput.tick();
         });
     }
 }
