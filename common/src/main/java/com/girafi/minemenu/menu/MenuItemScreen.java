@@ -48,10 +48,9 @@ public class MenuItemScreen extends Screen {
     @Override
     public void init() {
         addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
+            EditSessionData.title = this.textTitle.getValue();
             if (EditSessionData.title.isEmpty()) {
                 EditSessionData.title = "Menu Item #" + slot;
-            } else {
-                EditSessionData.title = this.textTitle.getValue();
             }
 
             if (EditSessionData.clickAction != null) {
@@ -91,6 +90,7 @@ public class MenuItemScreen extends Screen {
         this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
         this.textTitle.setMaxLength(32767);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
+        this.textTitle.setResponder(value -> EditSessionData.title = value);
         this.addRenderableWidget(this.textTitle);
 
         this.buttonPickIcon.icon = EditSessionData.icon;
