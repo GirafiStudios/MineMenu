@@ -36,10 +36,18 @@ public class RadialMenuScreen extends Screen {
         }
     }
 
+    public static boolean isEditClick(int button) {
+        return (Config.GENERAL.shiftClickToEdit.get() && hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
+    }
+    
+    public static boolean isShiftEditing() {
+        return Config.GENERAL.shiftClickToEdit.get() && hasShiftDown();
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (active && RadialMenu.animationTimer == 0) {
-            if (ClientTickHelper.isMouseInCenter() && (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1))) {
+            if (ClientTickHelper.isMouseInCenter() && isEditClick(button)) {
                 String category = RadialMenu.currentCategory;
                 deactivate();
                 Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
@@ -65,7 +73,7 @@ public class RadialMenuScreen extends Screen {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
 
                         if (menuItem != null) {
-                            if (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1)) {
+                            if (isEditClick(button)) {
                                 deactivate();
                                 ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;

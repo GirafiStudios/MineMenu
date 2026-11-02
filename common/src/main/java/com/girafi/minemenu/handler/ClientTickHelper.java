@@ -152,9 +152,9 @@ public class ClientTickHelper {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.hasShiftDown() && isMouseInCenter()) {
+                if (RadialMenuScreen.isShiftEditing() && isMouseInCenter()) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
-                } else if (RadialMenuScreen.hasShiftDown() && item != null) {
+                } else if (RadialMenuScreen.isShiftEditing() && item != null) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 

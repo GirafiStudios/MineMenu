@@ -111,7 +111,7 @@ public class CategoryColorScreen extends Screen {
     public boolean isPauseScreen() {
         return false;
     }
-    
+
     private static class ChannelSlider extends AbstractSliderButton {
         private final String channel;
         private final int shift;

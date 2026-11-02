@@ -28,6 +28,7 @@
   "minemenu.configuration.general": "General",
   "minemenu.configuration.general.button": "General settings",
   "minemenu.configuration.toggle": "Toggle Menu",
+  "minemenu.configuration.shiftClickToEdit": "Shift-click to Edit",
   "minemenu.configuration.rightClickToEdit": "Right-click to Edit",
   "minemenu.configuration.releaseToSelect": "Release to Select",
   "minemenu.configuration.menuAnimation": "Menu Animation",

@@ -10,6 +10,7 @@ public class Config {
 
     public static class General {
         public ModConfigSpec.BooleanValue toggle;
+        public ModConfigSpec.BooleanValue shiftClickToEdit;
         public ModConfigSpec.BooleanValue rightClickToEdit;
         public ModConfigSpec.BooleanValue releaseToSelect;
         public ModConfigSpec.BooleanValue menuAnimation;
@@ -21,8 +22,12 @@ public class Config {
                     .comment("Press the menu key once to open the menu and again to close it, instead of holding it down")
                     .translation("minemenu.configuration.toggle")
                     .define("toggle", false);
+            shiftClickToEdit = builder
+                    .comment("Shift + left-click a button to edit")
+                    .translation("minemenu.configuration.shiftClickToEdit")
+                    .define("shiftClickToEdit", true);
             rightClickToEdit = builder
-                    .comment("Right-click a button to edit it. Shift + left-click always works")
+                    .comment("Right-click a button to edit")
                     .translation("minemenu.configuration.rightClickToEdit")
                     .define("rightClickToEdit", false);
             releaseToSelect = builder
