@@ -1,14 +1,12 @@
-package com.girafi.minemenu;
+package com.girafi.minemenu.handler;
 
+import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.compat.controllable.ControllableCompat;
 import com.girafi.minemenu.data.menu.MenuSession;
 import com.girafi.minemenu.gui.RadialMenuScreen;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -20,15 +18,14 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Set;
 
-@Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
-public class MineMenuClient {
+public class ClientHandler {
 
-    public MineMenuClient(ModContainer modContainer, IEventBus modBus) {
+    public static void setup(FMLClientSetupEvent setupEvent, ModContainer modContainer) {
         if (ModList.get().isLoaded("controllable")) {
-            modBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(ControllableCompat::init));
+            setupEvent.enqueueWork(ControllableCompat::init);
         }
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        NeoForge.EVENT_BUS.addListener(MineMenuClient::hideHudLayers);
+        NeoForge.EVENT_BUS.addListener(ClientHandler::hideHudLayers);
 
         MineMenuCommon.loadMenuJson(FMLPaths.GAMEDIR.get().toFile());
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn event) -> MenuSession.onJoin());
