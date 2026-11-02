@@ -86,7 +86,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     var mainFile = upload(222378, tasks.remapJar)
     mainFile.changelogType = 'markdown'
     mainFile.changelog = rootProject.findProperty('mod_changelog')
-    mainFile.addJavaVersion('Java 21')
+    mainFile.addJavaVersion('Java 25')
     mainFile.releaseType = 'release'
     mainFile.addModLoader('Fabric')
     mainFile.addRequirement('fabric-api')
