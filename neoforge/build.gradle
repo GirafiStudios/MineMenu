@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
-    id 'net.darkhax.curseforgegradle' version '1.1.+'
+    id 'net.darkhax.curseforgegradle' version '1.+'
     id "com.modrinth.minotaur" version "2.+"
 }
 
