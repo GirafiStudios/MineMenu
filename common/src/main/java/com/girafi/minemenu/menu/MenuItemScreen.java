@@ -11,7 +11,6 @@ import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.button.ItemButton;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -59,15 +58,15 @@ public class MenuItemScreen extends Screen {
                 RadialMenu.getActiveArray()[slot] = EditSessionData.toMenuItem();
             }
             MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
-            Minecraft.getInstance().setScreen(null);
+            ScreenStack.close();
         }).bounds(this.width / 2 - 4 - 150, this.height - 60, 100, 20).build());
-        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> Minecraft.getInstance().setScreen(null)).bounds(this.width / 2 + 4 + 50, this.height - 60, 100, 20).build());
+        addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.close()).bounds(this.width / 2 + 4 + 50, this.height - 60, 100, 20).build());
         addRenderableWidget(this.buttonDelete = Button.builder(Component.translatable("gui.delete"), (screen) -> {
             if (RadialMenu.getActiveArray()[slot] != null) {
                 RadialMenu.getActiveArray()[slot].onRemoved();
                 RadialMenu.getActiveArray()[slot] = null;
                 MenuLoader.save(this.minecraft.level.registryAccess(), MineMenuCommon.menuFile);
-                Minecraft.getInstance().setScreen(null);
+                ScreenStack.close();
             }
         }).bounds(this.width / 2 - 50, this.height - 60, 100, 20).build());
         addRenderableWidget(this.buttonPickIcon = new ItemButton(this.width / 2 - 4 - 40, this.height / 2, 20, 20, new ItemStack(Blocks.STONE), (screen) -> ScreenStack.push(new PickIconScreen())));

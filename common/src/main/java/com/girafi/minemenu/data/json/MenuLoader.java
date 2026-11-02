@@ -4,6 +4,7 @@ import com.girafi.minemenu.Constants;
 import com.girafi.minemenu.data.click.ClickAction;
 import com.girafi.minemenu.data.click.ClickActionCommand;
 import com.girafi.minemenu.data.click.ClickActionKey;
+import com.girafi.minemenu.data.menu.Category;
 import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +28,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Map;
 
 public class MenuLoader {
+    private static final String SETTINGS_KEY = "settings";
+    private static final String MENU_COLOR_KEY = "menuColor";
+    private static final String SELECT_COLOR_KEY = "selectColor";
     private static Gson GSON;
 
     public static void setGson(RegistryAccess registryAccess) {
@@ -53,16 +58,25 @@ public class MenuLoader {
         }
 
         for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
-            MenuItem[] array = RadialMenu.getArray(entry.getKey());
+            Category category = RadialMenu.getCategory(entry.getKey());
+            MenuItem[] array = category.items;
 
             if (!entry.getValue().isJsonObject()) {
                 Constants.LOG.error(String.format("Failed to load %s category! Improperly formatted!", entry.getKey()));
                 continue;
             }
 
+            category.menuColor = null;
+            category.selectColor = null;
+
             for (Map.Entry<String, JsonElement> entry1 : entry.getValue().getAsJsonObject().entrySet()) {
                 String key = entry1.getKey();
                 JsonElement data = entry1.getValue();
+
+                if (key.equals(SETTINGS_KEY)) {
+                    loadSettings(entry.getKey(), category, data);
+                    continue;
+                }
 
                 try {
                     int id = Integer.parseInt(key);
@@ -100,14 +114,45 @@ public class MenuLoader {
                     Constants.LOG.error(String.format("Failed to load menu item %s in category %s. Ignoring it.", key, entry.getKey()), ex);
                 }
             }
-
-            RadialMenu.replaceArray(entry.getKey(), array);
         }
     }
 
-    /**
-     * Keeps a copy of an unreadable menu.json, so the user's configuration isn't lost when the menu is saved again.
-     */
+    private static void loadSettings(String categoryName, Category category, JsonElement data) {
+        if (!data.isJsonObject()) {
+            Constants.LOG.warn("Settings for category {} are improperly formatted. Ignoring them.", categoryName);
+            return;
+        }
+        JsonObject settings = data.getAsJsonObject();
+        category.menuColor = parseColor(categoryName, settings, MENU_COLOR_KEY);
+        category.selectColor = parseColor(categoryName, settings, SELECT_COLOR_KEY);
+    }
+
+    @Nullable
+    private static Integer parseColor(String categoryName, JsonObject settings, String key) {
+        if (!settings.has(key)) {
+            return null;
+        }
+        try {
+            String hex = settings.get(key).getAsString().trim();
+            if (hex.startsWith("#")) {
+                hex = hex.substring(1);
+            }
+            if (hex.length() == 6) {
+                return 0xFF000000 | Integer.parseUnsignedInt(hex, 16);
+            } else if (hex.length() == 8) {
+                return Integer.parseUnsignedInt(hex, 16);
+            }
+        } catch (RuntimeException ignored) {
+        }
+        Constants.LOG.warn("Invalid {} for category {}. Expected #AARRGGBB. Using the default color.", key, categoryName);
+        return null;
+    }
+
+    private static String formatColor(int color) {
+        return String.format("#%08X", color);
+    }
+
+
     private static void backupBrokenFile(File file) {
         Path backup = file.toPath().resolveSibling(file.getName() + ".broken");
         try {
@@ -123,9 +168,21 @@ public class MenuLoader {
 
         JsonObject object = new JsonObject();
 
-        for (String category : RadialMenu.getCategories()) {
+        for (String categoryName : RadialMenu.getCategories()) {
             JsonObject object1 = new JsonObject();
-            MenuItem[] array = RadialMenu.getArray(category);
+            Category category = RadialMenu.getCategory(categoryName);
+            MenuItem[] array = category.items;
+
+            if (category.hasCustomColors()) {
+                JsonObject settings = new JsonObject();
+                if (category.menuColor != null) {
+                    settings.addProperty(MENU_COLOR_KEY, formatColor(category.menuColor));
+                }
+                if (category.selectColor != null) {
+                    settings.addProperty(SELECT_COLOR_KEY, formatColor(category.selectColor));
+                }
+                object1.add(SETTINGS_KEY, settings);
+            }
 
             for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
                 if (array[i] != null) {
@@ -133,7 +190,7 @@ public class MenuLoader {
                 }
             }
 
-            object.add(category, object1);
+            object.add(categoryName, object1);
         }
 
         // Write to a temporary file first, then replace menu.json, so a failed write never leaves it deleted or half-written

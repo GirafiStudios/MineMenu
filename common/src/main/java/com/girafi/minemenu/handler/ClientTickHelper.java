@@ -1,5 +1,6 @@
 package com.girafi.minemenu.handler;
 
+import com.girafi.minemenu.data.menu.Category;
 import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
@@ -14,8 +15,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4fStack;
@@ -26,8 +29,19 @@ public class ClientTickHelper {
     private static final float OUTER_RADIUS = 80;
     private static final float INNER_RADIUS = 60;
 
+    public static boolean isMouseInCenter() {
+        Minecraft mc = Minecraft.getInstance();
+        Window window = mc.getWindow();
+        double dx = mc.mouseHandler.xpos() - window.getScreenWidth() * 0.5D;
+        double dy = mc.mouseHandler.ypos() - window.getScreenHeight() * 0.5D;
+        double distance = Math.sqrt(dx * dx + dy * dy) * window.getGuiScaledWidth() / window.getScreenWidth();
+        float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer) / 100F) * (130F);
+        return distance < innerRadius;
+    }
+
     public static void renderButtonBackgrounds() {
         Minecraft mc = Minecraft.getInstance();
+        Category category = RadialMenu.getActiveCategory();
         Matrix4fStack matrix = RenderSystem.getModelViewStack();
         matrix.pushMatrix();
         matrix.translate((float) (mc.getWindow().getGuiScaledWidth() * 0.5D), (float) (mc.getWindow().getGuiScaledHeight() * 0.5D), 0);
@@ -61,19 +75,11 @@ public class ClientTickHelper {
             float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - (mouseIn ? 2 : 0)) / 100F) * (130F);
             float outerRadius = ((OUTER_RADIUS - RadialMenu.animationTimer + (mouseIn ? 2 : 0)) / 100F) * (130F);
 
-            float r, g, b, alpha;
-
-            if (mouseIn) {
-                r = (float) Config.VISUAL.selectRed.get() / (float) 255;
-                g = (float) Config.VISUAL.selectGreen.get() / (float) 255;
-                b = (float) Config.VISUAL.selectBlue.get() / (float) 255;
-                alpha = (float) Config.VISUAL.selectAlpha.get() / (float) 255;
-            } else {
-                r = (float) Config.VISUAL.menuRed.get() / (float) 255;
-                g = (float) Config.VISUAL.menuGreen.get() / (float) 255;
-                b = (float) Config.VISUAL.menuBlue.get() / (float) 255;
-                alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
-            }
+            int color = mouseIn ? category.getSelectColor() : category.getMenuColor();
+            float r = FastColor.ARGB32.red(color) / 255F;
+            float g = FastColor.ARGB32.green(color) / 255F;
+            float b = FastColor.ARGB32.blue(color) / 255F;
+            float alpha = FastColor.ARGB32.alpha(color) / 255F;
 
             float x1 = (float) (Math.cos(currAngle) * innerRadius);
             float x2 = (float) (Math.cos(currAngle) * outerRadius);
@@ -146,7 +152,9 @@ public class ClientTickHelper {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.hasShiftDown() && item != null) {
+                if (RadialMenuScreen.hasShiftDown() && isMouseInCenter()) {
+                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
+                } else if (RadialMenuScreen.hasShiftDown() && item != null) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
@@ -166,10 +174,11 @@ public class ClientTickHelper {
                 Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-                float r = (float) Config.VISUAL.menuRed.get() / (float) 255;
-                float g = (float) Config.VISUAL.menuGreen.get() / (float) 255;
-                float b = (float) Config.VISUAL.menuBlue.get() / (float) 255;
-                float alpha = (float) Config.VISUAL.menuAlpha.get() / (float) 255;
+                int color = RadialMenu.getActiveCategory().getMenuColor();
+                float r = FastColor.ARGB32.red(color) / 255F;
+                float g = FastColor.ARGB32.green(color) / 255F;
+                float b = FastColor.ARGB32.blue(color) / 255F;
+                float alpha = FastColor.ARGB32.alpha(color) / 255F;
 
                 bufferBuilder.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
                 bufferBuilder.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);

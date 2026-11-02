@@ -45,5 +45,15 @@
   "minemenu.configuration.selectAlpha": "Alpha",
   "minemenu.configuration.selectRed": "Red",
   "minemenu.configuration.selectGreen": "Green",
-  "minemenu.configuration.selectBlue": "Blue"
+  "minemenu.configuration.selectBlue": "Blue",
+  "mine_menu.categoryScreen.title": "Category Colors: %s",
+  "mine_menu.categoryScreen.edit": "Category Colors",
+  "mine_menu.categoryScreen.background": "Button Background",
+  "mine_menu.categoryScreen.selected": "Selected Button",
+  "mine_menu.categoryScreen.usingDefault": "(config default)",
+  "mine_menu.categoryScreen.useDefault": "Use Default",
+  "mine_menu.color.alpha": "Alpha: %s",
+  "mine_menu.color.red": "Red: %s",
+  "mine_menu.color.green": "Green: %s",
+  "mine_menu.color.blue": "Blue: %s"
 }

@@ -4,6 +4,7 @@ import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.handler.ClientTickHelper;
 import com.girafi.minemenu.helper.AngleHelper;
+import com.girafi.minemenu.menu.CategoryColorScreen;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
 import net.minecraft.client.Minecraft;
@@ -38,6 +39,13 @@ public class RadialMenuScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (active && RadialMenu.animationTimer == 0) {
+            if (ClientTickHelper.isMouseInCenter() && (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1))) {
+                String category = RadialMenu.currentCategory;
+                deactivate();
+                Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
+                return true;
+            }
+
             double mouseAngle = AngleHelper.getMouseAngle();
             Minecraft mc = this.minecraft;
             mouseAngle -= ClientTickHelper.ANGLE_PER_ITEM / 2;
@@ -59,7 +67,7 @@ public class RadialMenuScreen extends Screen {
                         if (menuItem != null) {
                             if (hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && button == 1)) {
                                 deactivate();
-                                ScreenStack.push(new MenuItemScreen(i, menuItem));
+                                ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;
                             } else {
                                 if (button == 0) {
@@ -76,7 +84,7 @@ public class RadialMenuScreen extends Screen {
                         } else {
                             if (button == 0) {
                                 deactivate();
-                                ScreenStack.push(new MenuItemScreen(i, menuItem));
+                                ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;
                             }
                         }
