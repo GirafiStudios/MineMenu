@@ -14,6 +14,7 @@ public class Config {
         public ModConfigSpec.BooleanValue rightClickToEdit;
         public ModConfigSpec.BooleanValue releaseToSelect;
         public ModConfigSpec.BooleanValue menuAnimation;
+        public ModConfigSpec.BooleanValue hideHud;
         public ModConfigSpec.ConfigValue<String> menuButtonIcon;
         public ModConfigSpec.EnumValue<MenuScope> menuScope;
 
@@ -39,6 +40,10 @@ public class Config {
                     .comment("Animate the menu when it opens")
                     .translation("minemenu.configuration.menuAnimation")
                     .define("menuAnimation", true);
+            hideHud = builder
+                    .comment("Hide the hotbar, health, hunger, armor, air and experience bar while the menu is open")
+                    .translation("minemenu.configuration.hideHud")
+                    .define("hideHud", false);
             menuButtonIcon = builder
                     .comment("Item ID shown as the icon for empty buttons, e.g. minecraft:stone")
                     .translation("minemenu.configuration.menuButtonIcon")

@@ -29,7 +29,6 @@ public class ClientTickHelper {
     private static final float OUTER_RADIUS = 80;
     private static final float INNER_RADIUS = 60;
     private static final double CENTER_EDIT_FRACTION = 0.5D;
-
     public static boolean isMouseInCenter() {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();

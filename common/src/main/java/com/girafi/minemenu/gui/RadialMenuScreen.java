@@ -35,6 +35,10 @@ public class RadialMenuScreen extends Screen {
         }
     }
 
+    public static boolean shouldHideHud() {
+        return active && Config.GENERAL.hideHud.get();
+    }
+
     public static boolean isEditClick(int button) {
         return (Config.GENERAL.shiftClickToEdit.get() && hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
     }
