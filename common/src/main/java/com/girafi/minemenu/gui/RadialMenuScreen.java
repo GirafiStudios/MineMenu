@@ -1,12 +1,15 @@
 package com.girafi.minemenu.gui;
 
+import com.girafi.minemenu.data.menu.Category;
 import com.girafi.minemenu.data.menu.MenuItem;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.helper.AngleHelper;
 import com.girafi.minemenu.helper.KeyboardHandlerHelper;
+import com.girafi.minemenu.menu.CategoryColorScreen;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,10 +20,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,9 +57,26 @@ public class RadialMenuScreen extends Screen {
         }
     }
 
+    public static boolean isMouseInCenter() {
+        Minecraft mc = Minecraft.getInstance();
+        Window window = mc.getWindow();
+        double dx = mc.mouseHandler.xpos() - window.getScreenWidth() * 0.5D;
+        double dy = mc.mouseHandler.ypos() - window.getScreenHeight() * 0.5D;
+        double distance = Math.sqrt(dx * dx + dy * dy) * window.getGuiScaledWidth() / window.getScreenWidth();
+        float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer) / 100F) * (130F);
+        return distance < innerRadius;
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean isDoubleClick) {
         if (active && RadialMenu.animationTimer == 0) {
+            if (isMouseInCenter() && (buttonEvent.hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && buttonEvent.button() == 1))) {
+                String category = RadialMenu.currentCategory;
+                deactivate();
+                Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
+                return true;
+            }
+
             double mouseAngle = AngleHelper.getMouseAngle();
             Minecraft mc = this.minecraft;
             mouseAngle -= ANGLE_PER_ITEM / 2;
@@ -77,7 +97,7 @@ public class RadialMenuScreen extends Screen {
                         if (menuItem != null) {
                             if (buttonEvent.hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && buttonEvent.button() == 1)) {
                                 deactivate();
-                                ScreenStack.push(new MenuItemScreen(i, menuItem));
+                                ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;
                             } else {
                                 if (buttonEvent.button() == 0) {
@@ -94,7 +114,7 @@ public class RadialMenuScreen extends Screen {
                         } else {
                             if (buttonEvent.button() == 0) {
                                 deactivate();
-                                ScreenStack.push(new MenuItemScreen(i, menuItem));
+                                ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;
                             }
                         }
@@ -178,7 +198,9 @@ public class RadialMenuScreen extends Screen {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (KeyboardHandlerHelper.hasShiftDown() && item != null) {
+                if (KeyboardHandlerHelper.hasShiftDown() && isMouseInCenter()) {
+                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
+                } else if (KeyboardHandlerHelper.hasShiftDown() && item != null) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
@@ -191,11 +213,7 @@ public class RadialMenuScreen extends Screen {
                 float padding = 5F;
 
                 // Background
-                int r = Config.VISUAL.menuRed.get();
-                int g = Config.VISUAL.menuGreen.get();
-                int b = Config.VISUAL.menuBlue.get();
-                int alpha = Config.VISUAL.menuAlpha.get();
-                int color = ARGB.color(alpha, r, g, b);
+                int color = RadialMenu.getActiveCategory().getMenuColor();
 
                 guiGraphics.fill(RenderPipelines.GUI, (int) (drawX - padding), (int) (drawY - drawHeight + padding), (int) (drawX + drawWidth + padding), (int) (drawY + drawHeight + padding), color);
 
@@ -219,6 +237,7 @@ public class RadialMenuScreen extends Screen {
         @Override
         public void buildVertices(@Nonnull VertexConsumer vertexConsumer) {
 
+            Category category = RadialMenu.getActiveCategory();
             double mouseAngle = AngleHelper.getMouseAngle();
             mouseAngle -= (ANGLE_PER_ITEM / 2);
             mouseAngle = AngleHelper.correctAngle(mouseAngle);
@@ -249,24 +268,12 @@ public class RadialMenuScreen extends Screen {
                 float pos2InX = x + innerRadius * Mth.cos((float) nextAngle);
                 float pos2InY = y + innerRadius * Mth.sin((float) nextAngle);
 
-                int r, g, b, alpha;
+                int color = mouseIn ? category.getSelectColor() : category.getMenuColor();
 
-                if (mouseIn) {
-                    r = Config.VISUAL.selectRed.get();
-                    g = Config.VISUAL.selectGreen.get();
-                    b = Config.VISUAL.selectBlue.get();
-                    alpha = Config.VISUAL.selectAlpha.get();
-                } else {
-                    r = Config.VISUAL.menuRed.get();
-                    g = Config.VISUAL.menuGreen.get();
-                    b = Config.VISUAL.menuBlue.get();
-                    alpha = Config.VISUAL.menuAlpha.get();
-                }
-
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos1OutX, pos1OutY).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos1InX, pos1InY).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos2InX, pos2InY).setColor(r, g, b, alpha);
-                vertexConsumer.addVertexWith2DPose(this.pose(), pos2OutX, pos2OutY).setColor(r, g, b, alpha);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos1OutX, pos1OutY).setColor(color);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos1InX, pos1InY).setColor(color);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos2InX, pos2InY).setColor(color);
+                vertexConsumer.addVertexWith2DPose(this.pose(), pos2OutX, pos2OutY).setColor(color);
             }
         }
 
