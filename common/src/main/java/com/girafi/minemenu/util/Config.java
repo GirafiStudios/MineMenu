@@ -1,5 +1,6 @@
 package com.girafi.minemenu.util;
 
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
@@ -15,17 +16,27 @@ public class Config {
         public ModConfigSpec.ConfigValue<String> menuButtonIcon;
 
         General(ModConfigSpec.Builder builder) {
-            builder.push("general");
+            builder.translation("minemenu.configuration.general").push("general");
             toggle = builder
+                    .comment("Press the menu key once to open the menu and again to close it, instead of holding it down")
+                    .translation("minemenu.configuration.toggle")
                     .define("toggle", false);
             rightClickToEdit = builder
+                    .comment("Right-click a button to edit it. Shift + left-click always works")
+                    .translation("minemenu.configuration.rightClickToEdit")
                     .define("rightClickToEdit", false);
             releaseToSelect = builder
+                    .comment("Selects the button under the mouse when the menu key is released")
+                    .translation("minemenu.configuration.releaseToSelect")
                     .define("releaseToSelect", false);
             menuAnimation = builder
+                    .comment("Animate the menu when it opens")
+                    .translation("minemenu.configuration.menuAnimation")
                     .define("menuAnimation", true);
             menuButtonIcon = builder
-                    .define("menuButtonIcon", "minecraft:stone");
+                    .comment("Item ID shown as the icon for empty buttons, e.g. minecraft:stone")
+                    .translation("minemenu.configuration.menuButtonIcon")
+                    .define("menuButtonIcon", "minecraft:stone", o -> o instanceof String id && Identifier.tryParse(id) != null);
             builder.pop();
         }
     }
@@ -41,27 +52,35 @@ public class Config {
         public ModConfigSpec.IntValue selectBlue;
 
         Visual(ModConfigSpec.Builder builder) {
-            builder.push("visual");
-            builder.push("menu");
+            builder.translation("minemenu.configuration.visual").push("visual");
+            builder.comment("Menu background color").translation("minemenu.configuration.menu").push("menu");
             menuAlpha = builder
+                    .translation("minemenu.configuration.menuAlpha")
                     .defineInRange("alpha", 153, 0, 255);
             menuRed = builder
+                    .translation("minemenu.configuration.menuRed")
                     .defineInRange("red", 0, 0, 255);
             menuGreen = builder
+                    .translation("minemenu.configuration.menuGreen")
                     .defineInRange("green", 0, 0, 255);
             menuBlue = builder
+                    .translation("minemenu.configuration.menuBlue")
                     .defineInRange("blue", 0, 0, 255);
             builder.pop();
-            builder.push("select");
+            builder.comment("Selected button color").translation("minemenu.configuration.select").push("select");
             selectAlpha = builder
+                    .translation("minemenu.configuration.selectAlpha")
                     .defineInRange("alpha", 153, 0, 255);
             selectRed = builder
+                    .translation("minemenu.configuration.selectRed")
                     .defineInRange("red", 255, 0, 255);
             selectGreen = builder
+                    .translation("minemenu.configuration.selectGreen")
                     .defineInRange("green", 0, 0, 255);
             selectBlue = builder
+                    .translation("minemenu.configuration.selectBlue")
                     .defineInRange("blue", 0, 0, 255);
-            builder.pop();
+            builder.pop(2);
         }
     }
 
