@@ -32,6 +32,7 @@ public class MineMenu {
     }
 
     public void setupMenuLoader(LevelEvent.Load event) {
+        if (!event.getLevel().isClientSide()) return;
         MineMenuCommon.loadMenuJson(FMLPaths.GAMEDIR.get().toFile());
         MineMenuCommon.setupMenuLoader(event.getLevel().registryAccess());
     }

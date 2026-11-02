@@ -19,6 +19,9 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     @Override
     public JsonElement serialize(ItemStack stack, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
+        if (stack.isEmpty()) {
+            return object;
+        }
 
         DataResult<Tag> dataResult = ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack);
 
