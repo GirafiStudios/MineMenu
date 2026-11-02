@@ -300,7 +300,8 @@ public class RadialMenuScreen extends Screen {
 
         @Nullable
         private static ScreenRectangle getBounds(int x, int y, Matrix3x2f pose, @Nullable ScreenRectangle rect) {
-            ScreenRectangle screenrectangle = new ScreenRectangle(x, y, 0, 0).transformMaxBounds(pose);
+            int radius = Mth.ceil(((OUTER_RADIUS + 2) / 100F) * 130F);
+            ScreenRectangle screenrectangle = new ScreenRectangle(x - radius, y - radius, radius * 2, radius * 2).transformMaxBounds(pose);
             return rect != null ? rect.intersection(screenrectangle) : screenrectangle;
         }
     }
