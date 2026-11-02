@@ -87,11 +87,10 @@ public class MenuItemScreen extends Screen {
         }
         addRenderableWidget(this.buttonClickAction = Button.builder(string, (screen) -> ScreenStack.push(new ClickActionScreen())).bounds(this.width / 2 - 20, this.height / 2, 100, 20).build());
 
-        this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title"));
+        addRenderableWidget(this.textTitle = new EditBox(this.font, this.width / 2 - 150, 50, 300, 20, Component.translatable("mine_menu.menuItem.title")));
         this.textTitle.setMaxLength(32767);
         this.textTitle.setValue(EditSessionData.title != null && !EditSessionData.title.isEmpty() ? EditSessionData.title : "");
         this.textTitle.setResponder(value -> EditSessionData.title = value);
-        this.addRenderableWidget(this.textTitle);
 
         this.buttonPickIcon.icon = EditSessionData.icon;
     }
@@ -121,7 +120,6 @@ public class MenuItemScreen extends Screen {
     @Override
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partial);
-        this.textTitle.extractRenderState(guiGraphics, mouseX, mouseY, partial);
         guiGraphics.centeredText(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, -1);
         guiGraphics.centeredText(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, -1);
     }
