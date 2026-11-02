@@ -56,20 +56,14 @@ public class ClientTickHelper {
         RenderSystem.disableCull();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle -= (ANGLE_PER_ITEM / 2);
-        mouseAngle = AngleHelper.correctAngle(mouseAngle);
+        int hovered = RadialMenuInput.getHoveredIndex();
         for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
             double currAngle = (ANGLE_PER_ITEM * i) + 90 + (ANGLE_PER_ITEM / 2);
             double nextAngle = (currAngle + ANGLE_PER_ITEM);
             currAngle = AngleHelper.correctAngle(currAngle);
             nextAngle = AngleHelper.correctAngle(nextAngle);
-            double truecurrAngle = (ANGLE_PER_ITEM * i);
-            double truenextAngle = (truecurrAngle + ANGLE_PER_ITEM);
-            currAngle = AngleHelper.correctAngle(currAngle);
-            nextAngle = AngleHelper.correctAngle(nextAngle);
 
-            boolean mouseIn = (mouseAngle > truecurrAngle && mouseAngle < truenextAngle);
+            boolean mouseIn = hovered >= 0 && i == RadialMenu.MAX_ITEMS - 1 - hovered;
 
             currAngle = Math.toRadians(currAngle);
             nextAngle = Math.toRadians(nextAngle);
@@ -138,61 +132,50 @@ public class ClientTickHelper {
         Minecraft mc = Minecraft.getInstance();
         Window window = mc.getWindow();
         Font fontRenderer = mc.font;
-        double mouseAngle = AngleHelper.getMouseAngle();
-        mouseAngle -= ClientTickHelper.ANGLE_PER_ITEM / 2;
-        mouseAngle = 360 - mouseAngle;
-        mouseAngle = AngleHelper.correctAngle(mouseAngle);
-
-        for (int i = 0; i < RadialMenu.MAX_ITEMS; i++) {
-            double currAngle = ClientTickHelper.ANGLE_PER_ITEM * i;
-            double nextAngle = currAngle + ClientTickHelper.ANGLE_PER_ITEM;
-            currAngle = AngleHelper.correctAngle(currAngle);
-            nextAngle = AngleHelper.correctAngle(nextAngle);
-
-            boolean mouseIn = mouseAngle > currAngle && mouseAngle < nextAngle;
-
-            if (mouseIn) {
-                MenuItem item = RadialMenu.getActiveArray()[i];
-                String string = item == null ? "Add Item" : item.title;
-                if (RadialMenuScreen.isShiftEditing() && isMouseInCenter()) {
-                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
-                } else if (RadialMenuScreen.isShiftEditing() && item != null) {
-                    string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
-                }
-
-                int drawX = window.getGuiScaledWidth() / 2 - fontRenderer.width(string) / 2;
-                int drawY = window.getGuiScaledHeight() / 2;
-
-                int drawWidth = mc.font.width(string);
-                int drawHeight = mc.font.lineHeight;
-
-                float padding = 5F;
-
-                // Background
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-                Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
-                int color = RadialMenu.getActiveCategory().getMenuColor();
-                float r = FastColor.ARGB32.red(color) / 255F;
-                float g = FastColor.ARGB32.green(color) / 255F;
-                float b = FastColor.ARGB32.blue(color) / 255F;
-                float alpha = FastColor.ARGB32.alpha(color) / 255F;
-
-                bufferBuilder.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX + drawWidth + padding, drawY - padding, 0).setColor(r, g, b, alpha);
-                bufferBuilder.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
-
-                BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-                RenderSystem.disableBlend();
-
-                // Text
-                guiGraphics.drawString(Minecraft.getInstance().font, string, drawX, drawY, 0xFFFFFF, false);
-            }
+        int hovered = RadialMenuInput.getHoveredIndex();
+        if (hovered < 0) {
+            return;
         }
+
+        MenuItem item = RadialMenu.getActiveArray()[hovered];
+        String string = item == null ? "Add Item" : item.title;
+        if (RadialMenuScreen.isShiftEditing() && RadialMenuInput.isCenterHovered()) {
+            string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
+        } else if (RadialMenuScreen.isShiftEditing() && item != null) {
+            string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
+        }
+
+        int drawX = window.getGuiScaledWidth() / 2 - fontRenderer.width(string) / 2;
+        int drawY = window.getGuiScaledHeight() / 2;
+
+        int drawWidth = mc.font.width(string);
+        int drawHeight = mc.font.lineHeight;
+
+        float padding = 5F;
+
+        // Background
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        int color = RadialMenu.getActiveCategory().getMenuColor();
+        float r = FastColor.ARGB32.red(color) / 255F;
+        float g = FastColor.ARGB32.green(color) / 255F;
+        float b = FastColor.ARGB32.blue(color) / 255F;
+        float alpha = FastColor.ARGB32.alpha(color) / 255F;
+
+        bufferBuilder.addVertex(drawX - padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+        bufferBuilder.addVertex(drawX + drawWidth + padding, drawY + drawHeight + padding, 0).setColor(r, g, b, alpha);
+        bufferBuilder.addVertex(drawX + drawWidth + padding, drawY - padding, 0).setColor(r, g, b, alpha);
+        bufferBuilder.addVertex(drawX - padding, drawY - padding, 0).setColor(r, g, b, alpha);
+
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+        RenderSystem.disableBlend();
+
+        // Text
+        guiGraphics.drawString(Minecraft.getInstance().font, string, drawX, drawY, 0xFFFFFF, false);
     }
 }

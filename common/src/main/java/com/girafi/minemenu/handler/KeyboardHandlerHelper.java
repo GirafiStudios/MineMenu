@@ -26,42 +26,43 @@ public class KeyboardHandlerHelper {
 
         long handle = Minecraft.getInstance().getWindow().getWindow();
         int keycode = MineMenuKeybinds.RADIAL_MENU_OPEN.key.getValue();
-        if (keycode >= 0) {
-            boolean radialMenuKeyDown = (MineMenuKeybinds.RADIAL_MENU_OPEN.matchesMouse(keycode) ? GLFW.glfwGetMouseButton(handle, keycode) == 1 : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(handle, keycode)));
-            if (radialMenuKeyDown != lastWheelState) {
-                if (Config.GENERAL.toggle.get()) {
-                    if (radialMenuKeyDown) {
-                        if (RadialMenuScreen.active) {
-                            if (Config.GENERAL.releaseToSelect.get()) {
-                                RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
-                            }
-                            RadialMenuScreen.deactivate();
-                        } else {
-                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                                RadialMenu.resetCategory();
-                                RadialMenu.resetTimer();
-                                RadialMenuScreen.activate();
-                            }
+        boolean radialMenuKeyDown = RadialMenuInput.isOpenHeld();
+        if (keycode >= 0 && !radialMenuKeyDown) {
+            radialMenuKeyDown = (MineMenuKeybinds.RADIAL_MENU_OPEN.matchesMouse(keycode) ? GLFW.glfwGetMouseButton(handle, keycode) == 1 : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(handle, keycode)));
+        }
+        if (radialMenuKeyDown != lastWheelState) {
+            if (Config.GENERAL.toggle.get()) {
+                if (radialMenuKeyDown) {
+                    if (RadialMenuScreen.active) {
+                        if (Config.GENERAL.releaseToSelect.get()) {
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
                         }
-                    }
-                } else {
-                    if (radialMenuKeyDown != RadialMenuScreen.active) {
-                        if (radialMenuKeyDown) {
-                            if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
-                                RadialMenu.resetCategory();
-                                RadialMenu.resetTimer();
-                                RadialMenuScreen.activate();
-                            }
-                        } else {
-                            if (Config.GENERAL.releaseToSelect.get()) {
-                                RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
-                            }
-                            RadialMenuScreen.deactivate();
+                        RadialMenuScreen.deactivate();
+                    } else {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            RadialMenuScreen.activate();
                         }
                     }
                 }
+            } else {
+                if (radialMenuKeyDown != RadialMenuScreen.active) {
+                    if (radialMenuKeyDown) {
+                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                            RadialMenu.resetCategory();
+                            RadialMenu.resetTimer();
+                            RadialMenuScreen.activate();
+                        }
+                    } else {
+                        if (Config.GENERAL.releaseToSelect.get()) {
+                            RadialMenuScreen.INSTANCE.mouseClicked(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), 0);
+                        }
+                        RadialMenuScreen.deactivate();
+                    }
+                }
             }
-            lastWheelState = radialMenuKeyDown;
         }
+        lastWheelState = radialMenuKeyDown;
     }
 }

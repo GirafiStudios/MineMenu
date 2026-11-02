@@ -18,6 +18,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         RadialMenu.tickTimer();
+        RadialMenuInput.tick();
 
         Minecraft mc = Minecraft.getInstance();
         if ((mc.level == null || mc.isPaused()) && RadialMenuScreen.active) {

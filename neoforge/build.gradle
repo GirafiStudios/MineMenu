@@ -44,6 +44,11 @@ dependencies {
     jarJar group: 'mysticdrew', name: 'common-networking-neoforge', version: "${common_networking}-${minecraft_version}"
     implementation "com.blamejared.controlling:Controlling-neoforge-${minecraft_version}:${controlling}"
     implementation "com.blamejared.searchables:Searchables-neoforge-${minecraft_version}:${searchables}"
+    compileOnly "curse.maven:controllable-317269:${controllable_neoforge}"
+    compileOnly "curse.maven:framework-549225:${framework_neoforge}"
+
+    //runtimeOnly "curse.maven:controllable-317269:${controllable_neoforge}"
+    //runtimeOnly "curse.maven:framework-549225:${framework_neoforge}"
 }
 
 tasks.named('jar') {

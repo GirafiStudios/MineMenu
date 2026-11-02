@@ -23,6 +23,9 @@ dependencies {
     implementation ("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api_port}") { transitive false }
     implementation "com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}"
     implementation "com.blamejared.searchables:Searchables-common-${minecraft_version}:${searchables}"
+    // Only Controllable's loader independent classes are used, which are the same in the NeoForge jar
+    compileOnly "curse.maven:controllable-317269:${controllable_neoforge}"
+    compileOnly "curse.maven:framework-549225:${framework_neoforge}"
 }
 
 configurations {
