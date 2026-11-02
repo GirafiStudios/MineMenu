@@ -15,6 +15,7 @@ public class Config {
         public ModConfigSpec.BooleanValue releaseToSelect;
         public ModConfigSpec.BooleanValue menuAnimation;
         public ModConfigSpec.ConfigValue<String> menuButtonIcon;
+        public ModConfigSpec.EnumValue<MenuScope> menuScope;
 
         General(ModConfigSpec.Builder builder) {
             builder.translation("minemenu.configuration.general").push("general");
@@ -42,8 +43,19 @@ public class Config {
                     .comment("Item ID shown as the icon for empty buttons, e.g. minecraft:stone")
                     .translation("minemenu.configuration.menuButtonIcon")
                     .define("menuButtonIcon", "minecraft:stone", o -> o instanceof String id && Identifier.tryParse(id) != null);
+            menuScope = builder
+                    .comment("GLOBAL: one menu shared by all worlds and servers (old method)",
+                            "PER_WORLD: singleplayer worlds and servers has its own menu. Starting as a copy of the global menu.json, if present.",
+                            "Takes effect the next time you join a world or server.")
+                    .translation("minemenu.configuration.menuScope")
+                    .defineEnum("menuScope", MenuScope.PER_WORLD);
             builder.pop();
         }
+    }
+
+    public enum MenuScope {
+        GLOBAL,
+        PER_WORLD
     }
 
     public static class Visual {

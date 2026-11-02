@@ -32,6 +32,7 @@
   "minemenu.configuration.releaseToSelect": "Release to Select",
   "minemenu.configuration.menuAnimation": "Menu Animation",
   "minemenu.configuration.menuButtonIcon": "Empty Button Icon",
+  "minemenu.configuration.menuScope": "Menu Scope",
   "minemenu.configuration.visual": "Visual",
   "minemenu.configuration.visual.button": "Colors",
   "minemenu.configuration.menu": "Menu Background",
