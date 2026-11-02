@@ -1,12 +1,12 @@
 package com.girafi.minemenu.data.click;
 
-import com.girafi.minemenu.handler.KeyboardHandlerHelper;
+import com.girafi.minemenu.handler.KeyEmulator;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
 public class ClickActionKey implements ClickAction.IClickAction {
     public final String key;
-    public static boolean toggle;
+    public final boolean toggle;
 
     public ClickActionKey(String key, boolean toggle) {
         this.key = key;
@@ -31,10 +31,10 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public void onClicked() {
         KeyMapping binding = getKeyBinding();
         if (binding != null) {
-            if (toggle) {
-                KeyboardHandlerHelper.INSTANCE.toggleKey(binding);
+            if (this.toggle) {
+                KeyEmulator.toggle(binding);
             } else {
-                KeyboardHandlerHelper.INSTANCE.fireKey(binding);
+                KeyEmulator.pressOnce(binding);
             }
         }
     }
@@ -48,8 +48,7 @@ public class ClickActionKey implements ClickAction.IClickAction {
     public void onRemoved() {
         KeyMapping keyBinding = getKeyBinding();
         if (keyBinding != null) {
-            keyBinding.setDown(false);
-            keyBinding.clickCount = 0;
+            KeyEmulator.stopToggle(keyBinding);
         }
     }
 }

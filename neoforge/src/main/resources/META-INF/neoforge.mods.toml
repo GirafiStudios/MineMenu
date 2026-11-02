@@ -13,6 +13,9 @@ credits="${credits}" #optional
 authors = "${mod_author}" #optional
 description = '''${description}''' #mandatory (Supports multiline text)
 
+[[mixins]]
+config = "${mod_id}.neoforge.mixins.json"
+
 [[dependencies.${mod_id}]] #optional
 modId = "neoforge" #mandatory
 type = "required" #mandatory
