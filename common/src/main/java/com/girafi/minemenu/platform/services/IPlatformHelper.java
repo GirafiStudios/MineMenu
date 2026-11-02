@@ -1,5 +1,7 @@
 package com.girafi.minemenu.platform.services;
 
+import net.minecraft.client.KeyMapping;
+
 public interface IPlatformHelper {
 
     /**
@@ -31,5 +33,21 @@ public interface IPlatformHelper {
      */
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
+    }
+
+    /**
+     * Gets the keys a key binding needs held as a modifier, e.g. Ctrl for a "Ctrl + K" binding. Client only.
+     *
+     * @return GLFW key codes, or an empty array if the binding has no modifier. Only NeoForge supports key modifiers
+     */
+    default int[] getKeyModifierKeys(KeyMapping mapping) {
+        return new int[0];
+    }
+
+    /**
+     * Gets the GLFW modifier flags (GLFW_MOD_*) matching the key binding's modifier, sent along with emulated key events. Client only.
+     */
+    default int getKeyModifierFlags(KeyMapping mapping) {
+        return 0;
     }
 }

@@ -3,6 +3,7 @@ package com.girafi.minemenu.data.menu;
 import com.girafi.minemenu.Constants;
 import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.json.MenuLoader;
+import com.girafi.minemenu.helper.KeyEmulator;
 import com.girafi.minemenu.util.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -29,6 +30,7 @@ public class MenuSession {
     }
 
     public static void onLeave() {
+        KeyEmulator.releaseAll();
         RadialMenu.clear();
         MineMenuCommon.menuFile = MineMenuCommon.globalMenuFile;
     }

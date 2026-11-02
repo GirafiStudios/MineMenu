@@ -49,6 +49,8 @@ public class ClickActionScreen extends Screen {
         super(Component.translatable("mine_menu.actionScreen.title"));
         ClickActionScreen.keyBinding = null;
         ClickActionScreen.item = ItemStack.EMPTY;
+        ClickActionScreen.toggle = EditSessionData.clickAction instanceof ClickActionKey keyAction && keyAction.toggle;
+        ClickActionScreen.clipboard = EditSessionData.clickAction instanceof ClickActionCommand commandAction && commandAction.clipboard;
     }
 
     @Override
@@ -78,6 +80,8 @@ public class ClickActionScreen extends Screen {
                 EditSessionData.clickAction = !textCommand.getValue().trim().isEmpty() ? new ClickActionCommand(textCommand.getValue().trim(), clipboard) : null;
             } else if (mode == 1 && ClickActionScreen.keyBinding != null) {
                 EditSessionData.clickAction = new ClickActionKey(keyBinding.getName(), toggle);
+            } else if (mode == 1 && EditSessionData.clickAction instanceof ClickActionKey keyAction) {
+                EditSessionData.clickAction = new ClickActionKey(keyAction.key, toggle);
             } else if (mode == 2 && !ClickActionScreen.item.isEmpty()) {
                 EditSessionData.clickAction = new ClickActionUseItem(item);
             } else if (mode == 3) {
@@ -89,12 +93,7 @@ public class ClickActionScreen extends Screen {
 
         addRenderableWidget(this.buttonCancel = Button.builder(Component.translatable("gui.cancel"), (screen) -> ScreenStack.pop()).bounds(this.width / 2 + 4, this.height - 60, 150, 20).build());
 
-        Component commandString;
-        if (EditSessionData.clickAction instanceof ClickActionCommand) {
-            commandString = Component.translatable(((ClickActionCommand) EditSessionData.clickAction).clipboard ? "mine_menu.clipboard" : "mine_menu.send");
-        } else {
-            commandString = Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send");
-        }
+        Component commandString = Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send");
         addRenderableWidget(this.commandClipboardButton = Button.builder(commandString, (screen) -> {
             clipboard = !clipboard;
             commandClipboardButton.setMessage(Component.translatable(clipboard ? "mine_menu.clipboard" : "mine_menu.send"));
@@ -116,15 +115,9 @@ public class ClickActionScreen extends Screen {
             addRenderableWidget(this.keybindButton = Button.builder(keyString, (screen) -> ScreenStack.push(new PickKeyScreen())).bounds(this.width / 2 - 75, 50, 150, 20).build());
         }
 
-        Component keyToggleString;
-        if (EditSessionData.clickAction instanceof ClickActionKey) {
-            keyToggleString = Component.translatable(((ClickActionKey) EditSessionData.clickAction).toggle ? "mine_menu.toggle" : "mine_menu.press");
-        } else {
-            keyToggleString = Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press");
-        }
+        Component keyToggleString = Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press");
         addRenderableWidget(this.keybindToggleButton = Button.builder(keyToggleString, (screen) -> {
             toggle = !toggle;
-            ClickActionKey.toggle = toggle;
             keybindToggleButton.setMessage(Component.translatable(toggle ? "mine_menu.toggle" : "mine_menu.press"));
         }).bounds(this.width / 2 - 75, 80, 150, 20).build());
 
