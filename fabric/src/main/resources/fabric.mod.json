@@ -5,6 +5,9 @@
     "name": "${mod_name}",
     "description": "${description}",
     "accessWidener" : "${mod_id}.accesswidener",
+    "mixins": [
+        "${mod_id}.fabric.mixins.json"
+    ],
     "authors": [
         "${mod_author}"
     ],
