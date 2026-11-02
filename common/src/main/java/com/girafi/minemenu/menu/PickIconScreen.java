@@ -33,7 +33,9 @@ import java.util.Locale;
 
 public class PickIconScreen extends Screen {
     private static final int MAX_COLUMN = 14;
-    private static final int MAX_ROW = 4; // Actually increased by one
+    private static final int CELL_SIZE = 20;
+    private static final int GRID_TOP = 66;
+    private static final int GRID_BOTTOM_MARGIN = 48 + 4;
     private EditBox textSearch;
     private Button buttonDone;
     private Button buttonCancel;
@@ -163,7 +165,7 @@ public class PickIconScreen extends Screen {
     public boolean mouseClicked(@Nonnull MouseButtonEvent event, boolean isDoubleClick) {
         super.mouseClicked(event, isDoubleClick);
 
-        ItemStack clicked = getClickedStack(this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), event.x(), event.y());
+        ItemStack clicked = getClickedStack(event.x(), event.y());
 
         if (!clicked.isEmpty()) {
             this.textSearch.setValue(BuiltInRegistries.ITEM.getKey(clicked.getItem()).toString());
@@ -173,24 +175,22 @@ public class PickIconScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double d, double wheel) {
-        wheel = -wheel;
-
-        if (wheel < 0) {
-            listScrollIndex -= 2;
-            if (listScrollIndex < 0) {
-                listScrollIndex = 0;
-            }
-            return true;
-        }
-
-        if (wheel > 0) {
-            listScrollIndex += 2;
-            if (listScrollIndex > Math.max(0, (stacks.size() / MAX_COLUMN)) - MAX_ROW) {
-                listScrollIndex = Math.max(0, (stacks.size() / MAX_COLUMN) - MAX_ROW);
-            }
+        if (wheel != 0) {
+            this.listScrollIndex += wheel > 0 ? -2 : 2;
+            clampScroll();
             return true;
         }
         return false;
+    }
+
+    private int getVisibleRows() {
+        return Math.max(1, (this.height - GRID_BOTTOM_MARGIN - GRID_TOP) / CELL_SIZE);
+    }
+
+    private void clampScroll() {
+        int totalRows = (this.stacks.size() + MAX_COLUMN - 1) / MAX_COLUMN;
+        int maxScroll = Math.max(0, totalRows - getVisibleRows());
+        this.listScrollIndex = Math.max(0, Math.min(this.listScrollIndex, maxScroll));
     }
 
     @Override
@@ -199,40 +199,40 @@ public class PickIconScreen extends Screen {
         this.textSearch.render(guiGraphics, mouseX, mouseY, partial);
         guiGraphics.drawCenteredString(this.font, "Select an Icon:", this.width / 2, 8, -1);
 
-        drawList(guiGraphics, this.width / 2, this.height - (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 80), mouseX, mouseY);
+        clampScroll();
+        drawList(guiGraphics, mouseX, mouseY);
     }
 
-    private void drawList(GuiGraphics guiGraphics, int x, int y, int mx, int my) {
+    private int getCellCenterX(int column) {
+        return this.width / 2 - (MAX_COLUMN * CELL_SIZE) / 2 + column * CELL_SIZE + CELL_SIZE / 2;
+    }
+
+    private int getCellCenterY(int visibleRow) {
+        return GRID_TOP + visibleRow * CELL_SIZE + CELL_SIZE / 2;
+    }
+
+    private static boolean isInCell(int centerX, int centerY, double mouseX, double mouseY) {
+        int half = CELL_SIZE / 2;
+        return mouseX >= centerX - half && mouseX < centerX + half && mouseY >= centerY - half && mouseY < centerY + half;
+    }
+
+    private void drawList(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         ItemStack highlighted = ItemStack.EMPTY;
         int highlightedX = 0;
         int highlightedY = 0;
 
-        int amountOfRowsThatFits = ((this.minecraft.getWindow().getGuiScaledHeight() - 150) / 16);
-        amountOfRowsThatFits = amountOfRowsThatFits > 7 ? amountOfRowsThatFits - 6 : amountOfRowsThatFits;
+        int first = MAX_COLUMN * this.listScrollIndex;
+        int last = Math.min(this.stacks.size(), first + MAX_COLUMN * getVisibleRows());
+        for (int i = first; i < last; i++) {
+            int centerX = getCellCenterX(i % MAX_COLUMN);
+            int centerY = getCellCenterY((i - first) / MAX_COLUMN);
 
-        for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
-            int drawX = i % MAX_COLUMN;
-            int drawY = i / MAX_COLUMN;
-
-            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= amountOfRowsThatFits) {
-                boolean scaled = false;
-                int actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
-                int actualDrawY = (y + drawY * 20);
-                actualDrawY -= 20 * listScrollIndex;
-
-                if (mx > (actualDrawX - 8) && mx < (actualDrawX + 20 - 8) && my > actualDrawY - 8 && my < actualDrawY + 20 - 8) {
-                    scaled = true;
-                    highlighted = stacks.get(i);
-                    highlightedX = actualDrawX / 2;
-                    highlightedY = actualDrawY / 2;
-                }
-
-                if (!scaled) {
-                    ItemRenderHelper.renderItem(guiGraphics, actualDrawX, actualDrawY, stacks.get(i));
-                }
-
+            if (isInCell(centerX, centerY, mouseX, mouseY)) {
+                highlighted = this.stacks.get(i);
+                highlightedX = centerX / 2;
+                highlightedY = centerY / 2;
             } else {
-                break;
+                ItemRenderHelper.renderItem(guiGraphics, centerX, centerY, this.stacks.get(i));
             }
         }
 
@@ -246,22 +246,12 @@ public class PickIconScreen extends Screen {
     }
 
     @Nonnull
-    private ItemStack getClickedStack(int x, int y, double mx, double my) {
-        for (int i = MAX_COLUMN * listScrollIndex; i < stacks.size(); i++) {
-            int drawX = i % MAX_COLUMN;
-            int drawY = i / MAX_COLUMN;
-
-            int amountOfRowsThatFits = ((this.minecraft.getWindow().getGuiScaledHeight() - 150) / 16);
-            amountOfRowsThatFits = amountOfRowsThatFits > 7 ? amountOfRowsThatFits - 6 : amountOfRowsThatFits;
-
-            if (((i - 14 * listScrollIndex) / MAX_COLUMN) <= amountOfRowsThatFits) {
-                float actualDrawX = (x + drawX * 20) - (7 * 20) + 10;
-                float actualDrawY = (y + drawY * 20);
-                actualDrawY -= 20 * listScrollIndex;
-
-                if (mx > (actualDrawX - 8) && mx < (actualDrawX + 20 - 8) && my > actualDrawY - 8 && my < actualDrawY + 20 - 8) {
-                    return stacks.get(i);
-                }
+    private ItemStack getClickedStack(double mouseX, double mouseY) {
+        int first = MAX_COLUMN * this.listScrollIndex;
+        int last = Math.min(this.stacks.size(), first + MAX_COLUMN * getVisibleRows());
+        for (int i = first; i < last; i++) {
+            if (isInCell(getCellCenterX(i % MAX_COLUMN), getCellCenterY((i - first) / MAX_COLUMN), mouseX, mouseY)) {
+                return this.stacks.get(i);
             }
         }
         return ItemStack.EMPTY;
