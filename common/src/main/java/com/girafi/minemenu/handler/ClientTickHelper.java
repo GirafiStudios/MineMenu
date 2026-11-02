@@ -28,6 +28,7 @@ public class ClientTickHelper {
     public static final double ANGLE_PER_ITEM = 360F / RadialMenu.MAX_ITEMS;
     private static final float OUTER_RADIUS = 80;
     private static final float INNER_RADIUS = 60;
+    private static final double CENTER_EDIT_FRACTION = 0.5D;
 
     public static boolean isMouseInCenter() {
         Minecraft mc = Minecraft.getInstance();
@@ -35,8 +36,9 @@ public class ClientTickHelper {
         double dx = mc.mouseHandler.xpos() - window.getScreenWidth() * 0.5D;
         double dy = mc.mouseHandler.ypos() - window.getScreenHeight() * 0.5D;
         double distance = Math.sqrt(dx * dx + dy * dy) * window.getGuiScaledWidth() / window.getScreenWidth();
-        float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer) / 100F) * (130F);
-        return distance < innerRadius;
+        float innerRadius = ((INNER_RADIUS - RadialMenu.animationTimer - 2) / 100F) * (130F);
+        double innerEdgeDistance = innerRadius * Math.cos(Math.toRadians(ANGLE_PER_ITEM / 2));
+        return distance < innerEdgeDistance * CENTER_EDIT_FRACTION;
     }
 
     public static void renderButtonBackgrounds() {
