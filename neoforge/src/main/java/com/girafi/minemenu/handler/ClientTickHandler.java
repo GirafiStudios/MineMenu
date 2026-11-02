@@ -3,6 +3,7 @@ package com.girafi.minemenu.handler;
 import com.girafi.minemenu.Constants;
 import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.gui.RadialMenuScreen;
+import com.girafi.minemenu.helper.RadialMenuInput;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,6 +16,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         RadialMenu.tickTimer();
+        RadialMenuInput.tick();
 
         Minecraft mc = Minecraft.getInstance();
         if ((mc.level == null || mc.isPaused()) && RadialMenuScreen.active) {
