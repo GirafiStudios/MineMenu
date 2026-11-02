@@ -10,7 +10,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 
@@ -20,7 +20,7 @@ public class ClientHandler implements ClientModInitializer {
     public void onInitializeClient() {
         MineMenuCommon.registerPackets();
         MineMenuCommon.loadMenuJson(FabricLoader.getInstance().getGameDir().toFile());
-        ServerWorldEvents.LOAD.register(((phase, load) -> MineMenuCommon.setupMenuLoader(load.registryAccess())));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> MineMenuCommon.setupMenuLoader(handler.registryAccess()));
         KeyBindingHelper.registerKeyBinding(MineMenuKeybinds.RADIAL_MENU_OPEN);
 
         ClientTickEvents.END_CLIENT_TICK.register((mc) -> {

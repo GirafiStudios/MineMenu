@@ -22,6 +22,9 @@ public class ItemStackSerializer implements JsonSerializer<ItemStack>, JsonDeser
     @Override
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
+        if (src.isEmpty()) {
+            return object;
+        }
 
         object.add("stack", new JsonPrimitive(String.valueOf(src.save(this.registryAccess))));
 
