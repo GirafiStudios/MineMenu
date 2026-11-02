@@ -67,10 +67,18 @@ public class RadialMenuScreen extends Screen {
         return distance < innerRadius;
     }
 
+    public static boolean isEditClick(int button) {
+        return (Config.GENERAL.shiftClickToEdit.get() && KeyboardHandlerHelper.hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
+    }
+
+    public static boolean isShiftEditing() {
+        return Config.GENERAL.shiftClickToEdit.get() && KeyboardHandlerHelper.hasShiftDown();
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean isDoubleClick) {
         if (active && RadialMenu.animationTimer == 0) {
-            if (isMouseInCenter() && (buttonEvent.hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && buttonEvent.button() == 1))) {
+            if (isMouseInCenter() && isEditClick(buttonEvent.button())) {
                 String category = RadialMenu.currentCategory;
                 deactivate();
                 Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
@@ -95,7 +103,7 @@ public class RadialMenuScreen extends Screen {
                     if (mouseIn) {
                         MenuItem menuItem = RadialMenu.getActiveArray()[i];
                         if (menuItem != null) {
-                            if (buttonEvent.hasShiftDown() || (Config.GENERAL.rightClickToEdit.get() && buttonEvent.button() == 1)) {
+                            if (isEditClick(buttonEvent.button())) {
                                 deactivate();
                                 ScreenStack.open(new MenuItemScreen(i, menuItem));
                                 return true;
@@ -198,9 +206,9 @@ public class RadialMenuScreen extends Screen {
             if (mouseIn) {
                 MenuItem item = RadialMenu.getActiveArray()[i];
                 String string = item == null ? "Add Item" : item.title;
-                if (KeyboardHandlerHelper.hasShiftDown() && isMouseInCenter()) {
+                if (isShiftEditing() && isMouseInCenter()) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
-                } else if (KeyboardHandlerHelper.hasShiftDown() && item != null) {
+                } else if (isShiftEditing() && item != null) {
                     string = ChatFormatting.RED + "EDIT: " + ChatFormatting.WHITE + string;
                 }
 
