@@ -1,9 +1,12 @@
 package com.girafi.minemenu;
 
+import com.girafi.minemenu.data.menu.MenuSession;
 import com.girafi.minemenu.gui.RadialMenuScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -16,6 +19,10 @@ public class MineMenuClient {
     public MineMenuClient(ModContainer modContainer) {
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         NeoForge.EVENT_BUS.addListener(MineMenuClient::hideCrosshair);
+
+        MineMenuCommon.loadMenuJson(FMLPaths.GAMEDIR.get().toFile());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn event) -> MenuSession.onJoin());
+        NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> MenuSession.onLeave());
     }
 
     private static void hideCrosshair(RenderGuiLayerEvent.Pre event) {

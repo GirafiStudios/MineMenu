@@ -17,6 +17,11 @@ public class RadialMenu {
         return MENU_MAP.keySet();
     }
 
+    public static void clear() {
+        MENU_MAP.clear();
+        resetCategory();
+    }
+
     public static void resetCategory() {
         currentCategory = MAIN_TAG;
     }
