@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLKeyboard;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
@@ -114,14 +114,14 @@ public class KeyEmulator {
 
     private static void press(KeyMapping mapping) {
         HELD.add(mapping);
-        if (!sendKeyEvent(mapping, GLFW.GLFW_PRESS)) {
+        if (!sendKeyEvent(mapping, InputConstants.PRESS)) {
             setState(mapping, true);
         }
     }
 
     private static void release(KeyMapping mapping) {
         // Still held while releasing, as NeoForge looks up bindings with a modifier only while that modifier is down
-        if (!sendKeyEvent(mapping, GLFW.GLFW_RELEASE)) {
+        if (!sendKeyEvent(mapping, InputConstants.RELEASE)) {
             setState(mapping, false);
         }
         HELD.remove(mapping);
@@ -134,30 +134,18 @@ public class KeyEmulator {
      */
     private static boolean sendKeyEvent(KeyMapping mapping, int action) {
         InputConstants.Key key = mapping.key;
-        if (key == null || key.equals(InputConstants.UNKNOWN)) {
+        if (key == null || key.equals(InputConstants.UNKNOWN) || key.getType() != InputConstants.Type.KEYBOARD) {
             return false;
         }
 
-        int keyCode;
-        int scanCode;
-        switch (key.getType()) {
-            case KEYSYM -> {
-                keyCode = key.getValue();
-                scanCode = GLFW.glfwGetKeyScancode(keyCode);
-            }
-            case SCANCODE -> {
-                keyCode = GLFW.GLFW_KEY_UNKNOWN;
-                scanCode = key.getValue();
-            }
-            default -> {
-                return false; // Mouse buttons
-            }
-        }
+        int modifiers = Services.PLATFORM.getKeyModifierFlags(mapping);
+        int scanCode = key.getValue();
+        int keyCode = SDLKeyboard.SDL_GetKeyFromScancode(scanCode, (short) modifiers, true);
 
         Minecraft mc = Minecraft.getInstance();
         sending = mapping;
         try {
-            mc.keyboardHandler.keyPress(mc.getWindow().handle(), action, new KeyEvent(keyCode, scanCode, Services.PLATFORM.getKeyModifierFlags(mapping)));
+            mc.keyboardHandler.keyPress(mc.getWindow().handle(), action, new KeyEvent(scanCode, keyCode, modifiers));
         } finally {
             sending = null;
         }

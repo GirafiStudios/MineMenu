@@ -2,12 +2,12 @@ package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.list.GuiControlList;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +32,7 @@ public class PickKeyScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.input() == InputConstants.KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         }
@@ -41,7 +41,7 @@ public class PickKeyScreen extends Screen {
 
     @Override
     public boolean mouseReleased(@Nonnull MouseButtonEvent event) {
-        if (event.input() == 0 && this.controlList.mouseReleased(event)) {
+        if (event.input() == InputConstants.MOUSE_BUTTON_LEFT && this.controlList.mouseReleased(event)) {
             this.setDragging(false);
             return true;
         } else {
@@ -51,7 +51,7 @@ public class PickKeyScreen extends Screen {
 
     @Override
     public boolean mouseClicked(@Nonnull MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.input() == 0 && this.controlList.mouseClicked(event, isDoubleClick)) {
+        if (event.input() == InputConstants.MOUSE_BUTTON_LEFT && this.controlList.mouseClicked(event, isDoubleClick)) {
             this.setDragging(true);
             this.setFocused(this.controlList);
             return true;

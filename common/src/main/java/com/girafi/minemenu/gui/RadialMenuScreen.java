@@ -9,9 +9,10 @@ import com.girafi.minemenu.helper.RadialMenuInput;
 import com.girafi.minemenu.menu.CategoryColorScreen;
 import com.girafi.minemenu.menu.MenuItemScreen;
 import com.girafi.minemenu.util.Config;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -75,7 +76,7 @@ public class RadialMenuScreen extends Screen {
     }
 
     public static boolean isEditClick(int button) {
-        return (Config.GENERAL.shiftClickToEdit.get() && KeyboardHandlerHelper.hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == 1);
+        return (Config.GENERAL.shiftClickToEdit.get() && KeyboardHandlerHelper.hasShiftDown()) || (Config.GENERAL.rightClickToEdit.get() && button == InputConstants.MOUSE_BUTTON_RIGHT);
     }
 
     public static boolean isShiftEditing() {
@@ -85,8 +86,8 @@ public class RadialMenuScreen extends Screen {
     @Override
     public boolean mouseClicked(MouseButtonEvent buttonEvent, boolean isDoubleClick) {
         if (isEditClick(buttonEvent.button())) {
-            return editHovered(buttonEvent.button() == 0);
-        } else if (buttonEvent.button() == 0) {
+            return editHovered(buttonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT);
+        } else if (buttonEvent.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             return selectHovered();
         }
         return false;

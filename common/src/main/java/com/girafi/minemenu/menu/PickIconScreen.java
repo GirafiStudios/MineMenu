@@ -4,6 +4,7 @@ import com.girafi.minemenu.MineMenuCommon;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -26,7 +27,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
@@ -151,7 +151,7 @@ public class PickIconScreen extends Screen {
 
     @Override
     public boolean keyPressed(@Nonnull KeyEvent event) {
-        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.input() == InputConstants.KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else if (this.textSearch.keyPressed(event)) {

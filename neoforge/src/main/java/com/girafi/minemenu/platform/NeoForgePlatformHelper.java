@@ -7,7 +7,6 @@ import net.minecraft.client.input.InputQuirks;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
 
@@ -36,10 +35,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public int getKeyModifierFlags(KeyMapping mapping) {
         return switch (mapping.getKeyModifier()) {
-            case CONTROL -> GLFW.GLFW_MOD_CONTROL;
-            case CONTROL_OR_COMMAND -> InputQuirks.ON_OSX ? GLFW.GLFW_MOD_SUPER : GLFW.GLFW_MOD_CONTROL;
-            case SHIFT -> GLFW.GLFW_MOD_SHIFT;
-            case ALT -> GLFW.GLFW_MOD_ALT;
+            case CONTROL -> InputConstants.MOD_CONTROL;
+            case CONTROL_OR_COMMAND -> InputQuirks.ON_OSX ? InputConstants.MOD_SUPER : InputConstants.MOD_CONTROL;
+            case SHIFT -> InputConstants.MOD_SHIFT;
+            case ALT -> InputConstants.MOD_ALT;
             case NONE -> 0;
         };
     }

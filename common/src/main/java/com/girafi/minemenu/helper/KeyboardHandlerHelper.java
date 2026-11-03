@@ -5,12 +5,11 @@ import com.girafi.minemenu.gui.RadialMenuScreen;
 import com.girafi.minemenu.util.Config;
 import com.girafi.minemenu.util.MineMenuKeybinds;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 
 public class KeyboardHandlerHelper {
@@ -28,19 +27,18 @@ public class KeyboardHandlerHelper {
         }
         KeyEmulator.tick();
 
-        Window window = Minecraft.getInstance().getWindow();
         KeyMapping key = MineMenuKeybinds.RADIAL_MENU_OPEN;
         int keycode = key.key.getValue();
         boolean radialMenuKeyDown = RadialMenuInput.isOpenHeld();
-        if (keycode >= 0 && !radialMenuKeyDown) {
-            radialMenuKeyDown = key.key.getType() == InputConstants.Type.MOUSE ? GLFW.glfwGetMouseButton(window.handle(), keycode) == GLFW.GLFW_PRESS : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(window, keycode));
+        if (!key.isUnbound() && !radialMenuKeyDown) {
+            radialMenuKeyDown = key.key.getType() == InputConstants.Type.MOUSE ? isMouseButtonDown(keycode) : KeyEmulator.readPhysical(() -> InputConstants.isKeyDown(keycode));
         }
         if (radialMenuKeyDown != lastWheelState) {
             if (Config.GENERAL.toggle.get()) {
                 if (radialMenuKeyDown) {
                     if (RadialMenuScreen.active) {
                         if (Config.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
                         }
                         RadialMenuScreen.deactivate();
                     } else {
@@ -61,7 +59,7 @@ public class KeyboardHandlerHelper {
                         }
                     } else {
                         if (Config.GENERAL.releaseToSelect.get()) {
-                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+                            RadialMenuScreen.INSTANCE.mouseClicked(new MouseButtonEvent(mc.mouseHandler.xpos(), mc.mouseHandler.ypos(), new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
                         }
                         RadialMenuScreen.deactivate();
                     }
@@ -72,8 +70,11 @@ public class KeyboardHandlerHelper {
     }
 
     public static boolean hasShiftDown() {
-        Window window = Minecraft.getInstance().getWindow();
-        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT)
-                || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
+        return InputConstants.isKeyDown(InputConstants.KEY_LSHIFT)
+                || InputConstants.isKeyDown(InputConstants.KEY_RSHIFT);
+    }
+
+    private static boolean isMouseButtonDown(int button) {
+        return button > 0 && button <= 32 && (SDLMouse.SDL_GetMouseState(null, null) & (1 << (button - 1))) != 0;
     }
 }

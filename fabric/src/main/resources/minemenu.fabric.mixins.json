@@ -4,7 +4,7 @@
   "package": "com.girafi.minemenu.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "GuiMixin"
+    "HudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

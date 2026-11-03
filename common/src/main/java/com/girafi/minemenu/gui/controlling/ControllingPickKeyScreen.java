@@ -7,6 +7,7 @@ import com.blamejared.controlling.api.entries.IKeyEntry;
 import com.blamejared.controlling.mixin.AccessAbstractSelectionList;
 import com.blamejared.searchables.api.autcomplete.AutoCompletingEditBox;
 import com.google.common.base.Suppliers;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -18,7 +19,6 @@ import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -172,7 +172,7 @@ public class ControllingPickKeyScreen extends OptionsSubScreen {
     @Override
     public boolean keyPressed(@Nonnull KeyEvent event) {
         if (!search.isFocused()) {
-            if (event.hasControlDown() && event.key() == GLFW.GLFW_KEY_F) {
+            if (event.hasControlDown() && event.shortcutKey() == InputConstants.KEYCODE_F) {
                 search.setFocused(true);
                 return true;
             }

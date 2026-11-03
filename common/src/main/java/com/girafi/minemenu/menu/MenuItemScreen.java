@@ -11,6 +11,7 @@ import com.girafi.minemenu.data.menu.RadialMenu;
 import com.girafi.minemenu.data.session.EditSessionData;
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.menu.button.ItemButton;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -19,7 +20,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 
@@ -108,7 +108,7 @@ public class MenuItemScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.input() == InputConstants.KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {

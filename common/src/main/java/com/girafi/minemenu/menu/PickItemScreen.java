@@ -2,6 +2,7 @@ package com.girafi.minemenu.menu;
 
 import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.helper.ItemRenderHelper;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -16,7 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,7 +59,7 @@ public class PickItemScreen extends Screen {
             }
             if (mousedOver != null && !mousedOver.getItem().isEmpty()) {
                 drawSlot(guiGraphics, mousedOver, true);
-                guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(mousedOver.getItem().getItemName().getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(mousedOver.getItem().getItemName().getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
             }
         }
     }
@@ -94,7 +94,7 @@ public class PickItemScreen extends Screen {
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         Minecraft mc = this.minecraft;
 
-        if (mc != null && (event.input() == 0 && mc.player != null)) {
+        if (mc != null && (event.input() == InputConstants.MOUSE_BUTTON_LEFT && mc.player != null)) {
             for (int i1 = 0; i1 < mc.player.inventoryMenu.slots.size(); ++i1) {
                 Slot slot = mc.player.inventoryMenu.slots.get(i1);
                 if (event.x() - guiLeft >= slot.x && event.x() - guiLeft <= slot.x + 16 && event.y() - guiTop >= slot.y && event.y() - guiTop <= slot.y + 16) {
@@ -121,7 +121,7 @@ public class PickItemScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.key() == GLFW.GLFW_KEY_ESCAPE) {
+        if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {

@@ -21,7 +21,7 @@ public class MineMenu {
 
         MineMenuCommon.registerPackets();
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.spec);
+        modContainer.registerConfig(ModConfig.Type.LOCAL, Config.spec);
     }
 
     public void setupClient(FMLClientSetupEvent event) {

@@ -6,6 +6,7 @@ import com.girafi.minemenu.gui.ScreenStack;
 import com.girafi.minemenu.gui.controlling.ControllingPickKeyScreen;
 import com.girafi.minemenu.menu.button.ItemButton;
 import com.girafi.minemenu.platform.Services;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -19,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -235,7 +235,7 @@ public class ClickActionScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (event.input() == GLFW.GLFW_KEY_ESCAPE) {
+        if (event.input() == InputConstants.KEY_ESCAPE) {
             ScreenStack.pop();
             return true;
         } else {
@@ -257,13 +257,13 @@ public class ClickActionScreen extends Screen {
         };
         guiGraphics.centeredText(this.font, header, this.width / 2, 8, -1);
         if (mouseX > modeCommand.getX() && mouseX < modeCommand.getX() + modeCommand.getWidth() && mouseY > modeCommand.getY() && mouseY < modeCommand.getY() + modeCommand.getWidth()) {
-            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_command").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_command").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
         } else if (mouseX > modeKeybinding.getX() && mouseX < modeKeybinding.getX() + modeKeybinding.getWidth() && mouseY > modeKeybinding.getY() && mouseY < modeKeybinding.getY() + modeKeybinding.getWidth()) {
-            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_keybinding").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
         } else if (mouseX > modeUseItem.getX() && mouseX < modeUseItem.getX() + modeUseItem.getWidth() && mouseY > modeUseItem.getY() && mouseY < modeUseItem.getY() + modeUseItem.getWidth()) {
-            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_useItem").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
         } else if (mouseX > modeCategory.getX() && mouseX < modeCategory.getX() + modeCategory.getWidth() && mouseY > modeCategory.getY() && mouseY < modeCategory.getY() + modeCategory.getWidth()) {
-            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_category").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            guiGraphics.tooltip(this.font, List.of(ClientTooltipComponent.create(Component.translatable("mine_menu.clickAction_category").getVisualOrderText())), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, false);
         }
     }
 }
