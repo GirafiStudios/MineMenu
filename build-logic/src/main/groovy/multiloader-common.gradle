@@ -40,7 +40,7 @@ repositories {
     }
 }
 
-tasks.withType(Jar).configureEach {
+tasks.withType(Jar).matching { !(it.name ==~ /.*Reg(Combined|Sources)?Jar/) }.configureEach {
     from(rootProject.file('LICENSE')) {
         rename { "${it}_${mod_name}" }
     }

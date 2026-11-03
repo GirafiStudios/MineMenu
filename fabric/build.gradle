@@ -16,7 +16,7 @@ dependencies {
     implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
     implementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}")
     implementation ("mysticdrew:common-networking-fabric:${minecraft_version}-${common_networking}") { transitive false }
-    include ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
+    include ("mysticdrew:common-networking-fabric:${minecraft_version}-${common_networking}") { transitive false }
     implementation ("com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}")
     implementation ("com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}")
     compileOnly ("curse.maven:controllable-317269:${controllable_fabric}")
