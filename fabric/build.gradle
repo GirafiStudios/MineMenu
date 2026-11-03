@@ -10,20 +10,19 @@ base {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation "com.google.code.findbugs:jsr305:3.0.1"
-	
-    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}"
-	implementation ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
+    minecraft("com.mojang:minecraft:${minecraft_version}")
+    implementation("com.google.code.findbugs:jsr305:3.0.1")
+    implementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
+    implementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port}")
+    implementation ("mysticdrew:common-networking-fabric:${minecraft_version}-${common_networking}") { transitive false }
     include ("mysticdrew:common-networking-fabric:${common_networking}-${minecraft_version}") { transitive false }
-    implementation "com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}"
-    implementation "com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}"
-    compileOnly "curse.maven:controllable-317269:${controllable_fabric}"
-    compileOnly "curse.maven:framework-549225:${framework_fabric}"
-    //localRuntime "curse.maven:controllable-317269:${controllable_fabric}"
-    //localRuntime "curse.maven:framework-549225:${framework_fabric}"
+    implementation ("com.blamejared.controlling:Controlling-fabric-${minecraft_version}:${controlling}")
+    implementation ("com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${searchables}")
+    compileOnly ("curse.maven:controllable-317269:${controllable_fabric}")
+    compileOnly ("curse.maven:framework-549225:${framework_fabric}")
+    //localRuntime ("curse.maven:controllable-317269:${controllable_fabric}")
+    //localRuntime ("curse.maven:framework-549225:${framework_fabric}")
 }
 
 loom {
@@ -53,7 +52,7 @@ loom {
 // Implement mcgradleconventions loader attribute
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
 ['apiElements', 'runtimeElements', 'sourcesElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
-    configurations.named("$variant") {
+    configurations.named(variant) {
         attributes {
             attribute(loaderAttribute, 'fabric')
         }
@@ -61,7 +60,7 @@ def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', Strin
 }
 sourceSets.configureEach {
     [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
-        configurations.named("$variant") {
+        configurations.named(variant) {
             attributes {
                 attribute(loaderAttribute, 'fabric')
             }

@@ -64,7 +64,7 @@ public class KeyEmulator {
         if (HELD.isEmpty() || physicalOnly) {
             return false;
         }
-        if (sending == null && Minecraft.getInstance().screen != null) {
+        if (sending == null && Minecraft.getInstance().gui.screen() != null) {
             return false;
         }
         for (KeyMapping mapping : HELD) {
@@ -101,7 +101,7 @@ public class KeyEmulator {
 
         // Opening and closing screens resets key states to the physical keyboard (KeyMapping.releaseAll/setAll), which would drop toggled keys.
         // Quietly restore them while in game, like a physically held key, without sending another press
-        if (Minecraft.getInstance().screen == null) {
+        if (Minecraft.getInstance().gui.screen() == null) {
             for (KeyMapping mapping : TOGGLED) {
                 mapping.setDown(true);
             }

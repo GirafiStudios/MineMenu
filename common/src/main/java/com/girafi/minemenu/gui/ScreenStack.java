@@ -16,22 +16,22 @@ public class ScreenStack {
 
     public static void close() {
         GUI_LIST.clear();
-        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().gui.setScreen(null);
     }
 
     public static void push(Screen screen) {
-        GUI_LIST.add(0, screen);
-        Minecraft.getInstance().setScreen(screen);
+        GUI_LIST.addFirst(screen);
+        Minecraft.getInstance().gui.setScreen(screen);
     }
 
     public static void pop() {
-        if (GUI_LIST.size() > 0) {
-            GUI_LIST.remove(0);
+        if (!GUI_LIST.isEmpty()) {
+            GUI_LIST.removeFirst();
         }
-        if (GUI_LIST.size() > 0) {
-            Minecraft.getInstance().setScreen(GUI_LIST.get(0));
+        if (!GUI_LIST.isEmpty()) {
+            Minecraft.getInstance().gui.setScreen(GUI_LIST.get(0));
         } else {
-            Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().gui.setScreen(null);
         }
     }
 }

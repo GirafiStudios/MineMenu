@@ -79,7 +79,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
         }
     }
 
@@ -127,7 +127,7 @@ public class GuiControlList extends ContainerObjectSelectionList<KeyBindsList.En
         }
 
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
             this.buttonSelect.setMessage(this.key.getTranslatedKeyMessage());
             MutableComponent mutablecomponent = Component.empty();
             if (!this.key.isUnbound()) {

@@ -57,7 +57,7 @@ public class ControllableCompat implements RadialMenuInput.Source {
         RadialMenuContext inRadialMenu = new RadialMenuContext(Identifier.fromNamespaceAndPath(Constants.MOD_ID, "in_radial_menu"), Set.of(HasPlayerRule.get(), HasScreenRule.of(Set.<Class<? extends Screen>>of(RadialMenuScreen.class))));
 
         INSTANCE.openBinding = new ButtonBinding(Buttons.DPAD_LEFT, "minemenu.controllable.open_menu", CATEGORY, anywhere, OnPressHandler.create(context -> {
-            Screen screen = context.minecraft().screen;
+            Screen screen = context.minecraft().gui.screen();
             if (screen == null || screen instanceof RadialMenuScreen) {
                 // Opening and closing is handled by KeyboardHandlerHelper, through isOpenHeld()
                 return Optional.of(() -> INSTANCE.engaged = true);
@@ -122,7 +122,7 @@ public class ControllableCompat implements RadialMenuInput.Source {
     @Override
     public void tick() {
         Minecraft mc = Minecraft.getInstance();
-        if (!RadialMenuScreen.active || mc.options.hideGui || Config.CLIENT.options.showButtonHints.get() == ActionVisibility.NONE) {
+        if (!RadialMenuScreen.active || mc.gui.hud.isHidden() || Config.CLIENT.options.showButtonHints.get() == ActionVisibility.NONE) {
             return;
         }
         Map<Integer, Action> actions = this.getHintActions();

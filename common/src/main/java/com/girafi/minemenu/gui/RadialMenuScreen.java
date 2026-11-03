@@ -46,16 +46,16 @@ public class RadialMenuScreen extends Screen {
     }
 
     public static void activate() {
-        if (Minecraft.getInstance().screen == null) {
+        if (Minecraft.getInstance().gui.screen() == null) {
             active = true;
-            Minecraft.getInstance().setScreen(INSTANCE);
+            Minecraft.getInstance().gui.setScreen(INSTANCE);
         }
     }
 
     public static void deactivate() {
-        if (Minecraft.getInstance().screen == INSTANCE) {
+        if (Minecraft.getInstance().gui.screen() == INSTANCE) {
             active = false;
-            Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().gui.setScreen(null);
         }
     }
 
@@ -153,13 +153,13 @@ public class RadialMenuScreen extends Screen {
         }
         String category = RadialMenu.currentCategory;
         deactivate();
-        Minecraft.getInstance().setScreen(new CategoryColorScreen(category));
+        Minecraft.getInstance().gui.setScreen(new CategoryColorScreen(category));
         return true;
     }
 
     private static boolean canInteract() {
         Minecraft mc = Minecraft.getInstance();
-        return active && RadialMenu.animationTimer == 0 && !mc.options.hideGui;
+        return active && RadialMenu.animationTimer == 0 && !mc.gui.hud.isHidden();
     }
 
     @Override
@@ -183,7 +183,7 @@ public class RadialMenuScreen extends Screen {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level != null && !mc.options.hideGui && !mc.isPaused() && RadialMenuScreen.active) {
+        if (mc.level != null && !mc.gui.hud.isHidden() && !mc.isPaused() && RadialMenuScreen.active) {
             guiGraphics.guiRenderState.addGuiElement(new RadialMenuBackgroundElement(RenderPipelines.GUI, TextureSetup.noTexture(), guiGraphics.pose(), this.width / 2, this.height / 2, null));
             renderItems(guiGraphics);
             renderText(guiGraphics);

@@ -21,8 +21,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class PacketUseItem {
+public class PacketUseItem implements CustomPacketPayload {
     public static final Identifier CHANNEL = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "packet_use_item");
+    public static final CustomPacketPayload.Type<PacketUseItem> TYPE = new CustomPacketPayload.Type<>(CHANNEL);
     public static final StreamCodec<FriendlyByteBuf, PacketUseItem> STREAM_CODEC = StreamCodec.ofMember(PacketUseItem::encode, PacketUseItem::new);
     private int slot;
 
@@ -34,8 +35,9 @@ public class PacketUseItem {
         this.slot = buf.readInt();
     }
 
-    public static CustomPacketPayload.Type<CustomPacketPayload> type() {
-        return new CustomPacketPayload.Type<>(CHANNEL);
+    @Override
+    public CustomPacketPayload.Type<PacketUseItem> type() {
+        return TYPE;
     }
 
     public static void encode(PacketUseItem pingPacket, FriendlyByteBuf buf) {

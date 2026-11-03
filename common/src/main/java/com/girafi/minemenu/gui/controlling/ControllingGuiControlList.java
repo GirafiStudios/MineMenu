@@ -105,7 +105,7 @@ public class ControllingGuiControlList extends ControllingCustomList {
         }
 
         @Override
-        protected void refreshEntry() {}
+        public void refreshEntry() {}
 
         @Override
         public KeyMapping.Category category() {
@@ -180,7 +180,7 @@ public class ControllingGuiControlList extends ControllingCustomList {
         }
 
         @Override
-        protected void refreshEntry() {
+        public void refreshEntry() {
             this.hasCollision = false;
             MutableComponent duplicates = Component.empty();
             if (!this.key.isUnbound()) {

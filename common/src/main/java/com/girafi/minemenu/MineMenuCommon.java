@@ -20,6 +20,6 @@ public class MineMenuCommon {
     }
 
     public static void registerPackets() {
-        Network.registerPacket(PacketUseItem.type(), PacketUseItem.class, PacketUseItem.STREAM_CODEC, PacketUseItem::handle);
+        Network.registerPacket(PacketUseItem.TYPE, PacketUseItem.STREAM_CODEC, PacketUseItem::handle);
     }
 }

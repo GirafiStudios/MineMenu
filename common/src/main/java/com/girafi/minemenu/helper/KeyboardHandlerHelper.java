@@ -44,7 +44,7 @@ public class KeyboardHandlerHelper {
                         }
                         RadialMenuScreen.deactivate();
                     } else {
-                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                        if (mc.gui.screen() == null || mc.gui.screen() instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();
@@ -54,7 +54,7 @@ public class KeyboardHandlerHelper {
             } else {
                 if (radialMenuKeyDown != RadialMenuScreen.active) {
                     if (radialMenuKeyDown) {
-                        if (mc.screen == null || mc.screen instanceof RadialMenuScreen) {
+                        if (mc.gui.screen() == null || mc.gui.screen() instanceof RadialMenuScreen) {
                             RadialMenu.resetCategory();
                             RadialMenu.resetTimer();
                             RadialMenuScreen.activate();

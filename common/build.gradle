@@ -17,16 +17,17 @@ neoForge {
 }
 
 dependencies {
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    compileOnly('net.fabricmc:sponge-mixin:0.17.3+mixin.0.8.7')
+    compileOnly(annotationProcessor('io.github.llamalad7:mixinextras-common:0.5.3'))
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-    compileOnly ("mysticdrew:common-networking-common:${common_networking}-${minecraft_version}") { transitive false }
-    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-common:${forge_config_api_port}"	
+    compileOnly ("mysticdrew:common-networking-common:${minecraft_version}-${common_networking}") { transitive false }
+    implementation ("fuzs.forgeconfigapiport:forgeconfigapiport-common:${forge_config_api_port}")
     implementation ("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api_port}") { transitive false }
-    implementation "com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}"
-    implementation "com.blamejared.searchables:Searchables-common-${minecraft_version}:${searchables}"
+    implementation ("com.blamejared.controlling:Controlling-common-${minecraft_version}:${controlling}")
+    implementation ("com.blamejared.searchables:Searchables-common-${minecraft_version}:${searchables}")
     // Only Controllable's loader independent classes are used, which are the same in the NeoForge jar
-    compileOnly "curse.maven:controllable-317269:${controllable_neoforge}"
-    compileOnly "curse.maven:framework-549225:${framework_neoforge}"
+    compileOnly ("curse.maven:controllable-317269:${controllable_neoforge}")
+    compileOnly ("curse.maven:framework-549225:${framework_neoforge}")
 }
 
 configurations {
