@@ -123,10 +123,10 @@ public class ClickActionScreen extends Screen {
 
         Component itemString;
         if (!ClickActionScreen.item.isEmpty()) {
-            itemString = Component.literal("Item: " + item.getHoverName().getString());
+            itemString = Component.translatable("mine_menu.item", item.getHoverName());
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = Component.literal("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItemName().getString());
+                itemString = Component.translatable("mine_menu.item", ((ClickActionUseItem) EditSessionData.clickAction).stack.getItemName());
             } else {
                 itemString = Component.translatable("mine_menu.selectSlot");
             }
@@ -249,10 +249,10 @@ public class ClickActionScreen extends Screen {
         this.textCommand.extractRenderState(guiGraphics, mouseX, mouseY, partial);
         this.textCategory.extractRenderState(guiGraphics, mouseX, mouseY, partial);
         String header = switch (mode) {
-            case 0 -> "Enter a command";
-            case 1 -> "Select a key";
-            case 2 -> "Pick an item";
-            case 3 -> "Enter a category";
+            case 0 -> Component.translatable("mine_menu.enterCommand").getString();
+            case 1 -> Component.translatable("mine_menu.selectKey").getString();
+            case 2 -> Component.translatable("mine_menu.pickItem").getString();
+            case 3 -> Component.translatable("mine_menu.enterCategory").getString();
             default -> "";
         };
         guiGraphics.centeredText(this.font, header, this.width / 2, 8, -1);

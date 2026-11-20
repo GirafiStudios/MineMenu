@@ -197,7 +197,7 @@ public class PickIconScreen extends Screen {
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partial);
         this.textSearch.extractRenderState(guiGraphics, mouseX, mouseY, partial);
-        guiGraphics.centeredText(this.font, "Select an Icon:", this.width / 2, 8, -1);
+        guiGraphics.centeredText(this.font, Component.translatable("mine_menu.iconScreen.select").getString(), this.width / 2, 8, -1);
 
         clampScroll();
         drawList(guiGraphics, mouseX, mouseY);
