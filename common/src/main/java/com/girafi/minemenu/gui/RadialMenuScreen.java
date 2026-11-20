@@ -227,7 +227,7 @@ public class RadialMenuScreen extends Screen {
         }
 
         MenuItem item = RadialMenu.getActiveArray()[hovered];
-        String string = item == null ? "Add Item" : item.title;
+        String string = item == null ? I18n.get("mine_menu.addItem") : item.title;
         if (isShiftEditing() && RadialMenuInput.isCenterHovered()) {
             string = ChatFormatting.RED + I18n.get("mine_menu.edit") + ChatFormatting.WHITE + I18n.get("mine_menu.categoryScreen.edit");
         } else if (isShiftEditing() && item != null) {

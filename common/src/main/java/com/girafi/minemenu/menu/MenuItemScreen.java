@@ -49,7 +49,7 @@ public class MenuItemScreen extends Screen {
         addRenderableWidget(this.buttonConfirm = Button.builder(Component.translatable("gui.done"), (screen) -> {
             EditSessionData.title = this.textTitle.getValue();
             if (EditSessionData.title.isEmpty()) {
-                EditSessionData.title = "Menu Item #" + slot;
+                EditSessionData.title = Component.translatable("mine_menu.menuItem.defaultTitle", slot).getString();
             }
 
             if (EditSessionData.clickAction != null) {
@@ -119,7 +119,7 @@ public class MenuItemScreen extends Screen {
     @Override
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partial);
-        guiGraphics.centeredText(this.font, "Modifying Menu Item #" + slot, this.width / 2, 8, -1);
-        guiGraphics.centeredText(this.font, "Enter a title, then configure using the options below", this.width / 2, 80, -1);
+        guiGraphics.centeredText(this.font, Component.translatable("mine_menu.menuItem.modifying", slot).getString(), this.width / 2, 8, -1);
+        guiGraphics.centeredText(this.font, Component.translatable("mine_menu.menuItem.hint").getString(), this.width / 2, 80, -1);
     }
 }

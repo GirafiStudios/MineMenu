@@ -41,7 +41,7 @@ public class PickItemScreen extends Screen {
     @Override
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.centeredText(this.font, "Pick an item", this.width / 2, 8, -1);
+        guiGraphics.centeredText(this.font, Component.translatable("mine_menu.pickItem").getString(), this.width / 2, 8, -1);
         Minecraft mc = this.minecraft;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, AbstractContainerScreen.INVENTORY_LOCATION, guiLeft, guiTop, 0, 0, XSIZE, YSIZE, 256, 256);
 

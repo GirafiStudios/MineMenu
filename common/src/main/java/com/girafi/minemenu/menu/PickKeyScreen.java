@@ -64,6 +64,6 @@ public class PickKeyScreen extends Screen {
     public void extractRenderState(@Nonnull GuiGraphicsExtractor guiGraphics, int x, int y, float partialTicks) {
         super.extractRenderState(guiGraphics, x, y, partialTicks);
         this.controlList.extractRenderState(guiGraphics, x, y, partialTicks);
-        guiGraphics.centeredText(this.font, "Select a key", this.width / 2, 8, -1);
+        guiGraphics.centeredText(this.font, Component.translatable("mine_menu.selectKey").getString(), this.width / 2, 8, -1);
     }
 }
