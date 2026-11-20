@@ -123,10 +123,10 @@ public class ClickActionScreen extends Screen {
 
         Component itemString;
         if (!ClickActionScreen.item.isEmpty()) {
-            itemString = Component.literal("Item: " + item.getHoverName().getString());
+            itemString = Component.translatable("mine_menu.item", item.getHoverName());
         } else {
             if (EditSessionData.clickAction != null && EditSessionData.clickAction.getClickAction() == ClickAction.ITEM_USE) {
-                itemString = Component.literal("Item: " + ((ClickActionUseItem) EditSessionData.clickAction).stack.getItemName().getString());
+                itemString = Component.translatable("mine_menu.item", ((ClickActionUseItem) EditSessionData.clickAction).stack.getItemName());
             } else {
                 itemString = Component.translatable("mine_menu.selectSlot");
             }
