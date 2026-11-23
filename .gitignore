@@ -13,6 +13,7 @@ out
 *.iml
 .idea/*
 !.idea/scopes
+.vscode
 
 # gradle
 build
@@ -24,3 +25,4 @@ run
 runs
 libs
 logs
+neoforge/.eclipse
